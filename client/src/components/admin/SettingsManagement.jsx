@@ -277,19 +277,12 @@ const SettingsManagement = () => {
               />
               {formData.store_url && (formData.store_url.includes('localhost') || formData.store_url.includes('127.0.0.1')) && (
                 <div className="mt-2 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-                  <p className="font-medium mb-1">⚠️ تحذير:</p>
+                  <p className="font-medium mb-1">⚠️ {t('warning')}</p>
                   <p className="text-sm">
-                    الرابط يحتوي على localhost أو 127.0.0.1. هذا الرابط لن يعمل على أجهزة أخرى! 
-                    يجب استخدام رابط عام يمكن الوصول إليه من الإنترنت (مثال: https://yourstore.com أو IP عام).
+                    {t('localhostWarning')}
                   </p>
                 </div>
               )}
-              <p className="text-sm text-gray-500 mt-2">
-                <strong>مهم:</strong> أدخل رابط المتجر الكامل الذي يمكن للزبائن الوصول إليه من أي جهاز. 
-                يجب أن يبدأ بـ http:// أو https:// (مثال: https://yourstore.com).
-                <br />
-                <span className="text-red-600">لا تستخدم localhost أو 127.0.0.1 لأنهما لن يعملا على أجهزة أخرى.</span>
-              </p>
             </div>
           </div>
         </div>
