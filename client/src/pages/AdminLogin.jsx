@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../utils/api'
+import { useLanguage } from '../context/LanguageContext'
 
 const AdminLogin = () => {
   const [username, setUsername] = useState('')
@@ -8,6 +9,7 @@ const AdminLogin = () => {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const { t, language, changeLanguage } = useLanguage()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -20,7 +22,7 @@ const AdminLogin = () => {
       localStorage.setItem('user', JSON.stringify(response.data.user))
       navigate('/admin/dashboard')
     } catch (err) {
-      setError(err.response?.data?.error || 'خطأ في تسجيل الدخول')
+      setError(err.response?.data?.error || t('login') + ' ' + t('error'))
     } finally {
       setLoading(false)
     }
@@ -29,14 +31,22 @@ const AdminLogin = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
-        <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">
-          تسجيل الدخول
-        </h2>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-3xl font-bold text-gray-800">
+            {t('adminLogin')}
+          </h2>
+          <button
+            onClick={() => changeLanguage(language === 'ar' ? 'en' : 'ar')}
+            className="px-3 py-1 rounded-lg border border-gray-300 hover:bg-gray-100 transition text-sm font-medium"
+          >
+            {language === 'ar' ? 'English' : 'العربية'}
+          </button>
+        </div>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-gray-700 font-medium mb-2">
-              اسم المستخدم
+              {language === 'ar' ? 'اسم المستخدم' : 'Username'}
             </label>
             <input
               type="text"
@@ -49,7 +59,7 @@ const AdminLogin = () => {
           
           <div>
             <label className="block text-gray-700 font-medium mb-2">
-              كلمة المرور
+              {language === 'ar' ? 'كلمة المرور' : 'Password'}
             </label>
             <input
               type="password"
@@ -71,7 +81,7 @@ const AdminLogin = () => {
             disabled={loading}
             className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50"
           >
-            {loading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول'}
+            {loading ? t('loading') : t('login')}
           </button>
         </form>
       </div>

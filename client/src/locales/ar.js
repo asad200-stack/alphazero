@@ -95,12 +95,13 @@ export default {
   
   // Admin
   adminDashboard: 'لوحة التحكم',
+  adminLogin: 'تسجيل الدخول',
   productsManagement: 'إدارة المنتجات',
   addProduct: 'إضافة منتج جديد',
   editProduct: 'تعديل منتج',
-  productName: 'اسم المنتج',
+  productName: 'اسم المنتج (عربي)',
   productNameEn: 'اسم المنتج (إنجليزي)',
-  productDescription: 'الوصف',
+  productDescription: 'الوصف (عربي)',
   productDescriptionEn: 'الوصف (إنجليزي)',
   originalPrice: 'السعر الأصلي',
   discountPrice: 'السعر بعد الخصم',
@@ -109,6 +110,12 @@ export default {
   dragDropImage: 'اسحب الصورة هنا أو انقر للاختيار',
   changeImage: 'تغيير الصورة',
   uploadLogo: 'رفع شعار',
+  viewStore: 'عرض المتجر',
+  shareStoreLink: 'مشاركة رابط المتجر',
+  storeUrl: 'رابط المتجر العام (للمشاركة مع الزبائن)',
+  storeInfo: 'معلومات المتجر',
+  enableBanner: 'تفعيل بانر العروض',
+  saving: 'جاري الحفظ...',
   
   // Messages
   productAdded: 'تم إضافة المنتج بنجاح',

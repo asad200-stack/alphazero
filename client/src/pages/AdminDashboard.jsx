@@ -3,11 +3,13 @@ import { Routes, Route, Navigate, useNavigate, Link } from 'react-router-dom'
 import ProductsManagement from '../components/admin/ProductsManagement'
 import SettingsManagement from '../components/admin/SettingsManagement'
 import api from '../utils/api'
+import { useLanguage } from '../context/LanguageContext'
 
 const AdminDashboard = () => {
   const [authenticated, setAuthenticated] = useState(false)
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
+  const { t, language, changeLanguage } = useLanguage()
 
   useEffect(() => {
     checkAuth()
@@ -64,16 +66,22 @@ const AdminDashboard = () => {
       <nav className="bg-white shadow-md">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            <h1 className="text-2xl font-bold text-gray-800">لوحة التحكم</h1>
-            <div className="flex items-center space-x-4 space-x-reverse">
+            <h1 className="text-2xl font-bold text-gray-800">{t('adminDashboard')}</h1>
+            <div className="flex items-center space-x-4 space-x-reverse rtl:space-x-reverse">
+              <button
+                onClick={() => changeLanguage(language === 'ar' ? 'en' : 'ar')}
+                className="px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition text-sm font-medium"
+              >
+                {language === 'ar' ? 'English' : 'العربية'}
+              </button>
               <Link to="/" className="text-gray-600 hover:text-gray-900">
-                عرض المتجر
+                {t('viewStore')}
               </Link>
               <button
                 onClick={handleLogout}
                 className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
               >
-                تسجيل الخروج
+                {t('logout')}
               </button>
             </div>
           </div>
@@ -82,7 +90,7 @@ const AdminDashboard = () => {
 
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <div className="flex space-x-4 space-x-reverse">
+          <div className="flex space-x-4 space-x-reverse rtl:space-x-reverse">
             <Link
               to="/admin/dashboard"
               className="px-6 py-3 rounded-lg font-medium transition"
@@ -91,13 +99,13 @@ const AdminDashboard = () => {
                 color: 'white'
               }}
             >
-              المنتجات
+              {t('products')}
             </Link>
             <Link
               to="/admin/settings"
               className="px-6 py-3 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
             >
-              الإعدادات
+              {t('settings')}
             </Link>
           </div>
         </div>

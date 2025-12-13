@@ -3,12 +3,14 @@ import ProductForm from './ProductForm'
 import ShareStoreLink from './ShareStoreLink'
 import api from '../../utils/api'
 import { getImageUrl } from '../../utils/config'
+import { useLanguage } from '../../context/LanguageContext'
 
 const ProductsManagement = () => {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editingProduct, setEditingProduct] = useState(null)
+  const { t } = useLanguage()
 
   useEffect(() => {
     fetchProducts()
@@ -31,7 +33,7 @@ const ProductsManagement = () => {
   }
 
   const handleDelete = async (id) => {
-    if (!window.confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
+    if (!window.confirm(t('confirmDelete'))) {
       return
     }
 
@@ -40,7 +42,7 @@ const ProductsManagement = () => {
       fetchProducts()
     } catch (error) {
       console.error('Error deleting product:', error)
-      alert('حدث خطأ أثناء حذف المنتج')
+      alert(t('error'))
     }
   }
 
@@ -53,14 +55,14 @@ const ProductsManagement = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
-        <h2 className="text-2xl font-bold text-gray-800">إدارة المنتجات</h2>
-        <div className="flex items-center space-x-3 space-x-reverse gap-3">
+        <h2 className="text-2xl font-bold text-gray-800">{t('productsManagement')}</h2>
+        <div className="flex items-center space-x-3 space-x-reverse gap-3 rtl:space-x-reverse">
           <ShareStoreLink />
           <button
             onClick={() => setShowForm(true)}
             className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition shadow-md hover:shadow-lg"
           >
-            + إضافة منتج جديد
+            + {t('addProduct')}
           </button>
         </div>
       </div>
@@ -79,12 +81,12 @@ const ProductsManagement = () => {
         </div>
       ) : products.length === 0 ? (
         <div className="bg-white rounded-lg shadow-md p-12 text-center">
-          <p className="text-gray-500 text-lg mb-4">لا توجد منتجات</p>
+          <p className="text-gray-500 text-lg mb-4">{t('noProducts')}</p>
           <button
             onClick={() => setShowForm(true)}
             className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
           >
-            إضافة أول منتج
+            {t('addProduct')}
           </button>
         </div>
       ) : (
@@ -99,7 +101,7 @@ const ProductsManagement = () => {
                 />
               ) : (
                 <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-400">لا توجد صورة</span>
+                  <span className="text-gray-400">{t('noImage')}</span>
                 </div>
               )}
               <div className="p-4">
@@ -108,30 +110,30 @@ const ProductsManagement = () => {
                   {product.discount_price ? (
                     <div>
                       <span className="text-xl font-bold text-blue-600">
-                        {product.discount_price.toFixed(2)} د.أ
+                        {product.discount_price.toFixed(2)} {t('currency')}
                       </span>
-                      <span className="text-sm text-gray-500 line-through mr-2">
-                        {product.price.toFixed(2)} د.أ
+                      <span className="text-sm text-gray-500 line-through mr-2 rtl:mr-0 rtl:ml-2">
+                        {product.price.toFixed(2)} {t('currency')}
                       </span>
                     </div>
                   ) : (
                     <span className="text-xl font-bold text-blue-600">
-                      {product.price.toFixed(2)} د.أ
+                      {product.price.toFixed(2)} {t('currency')}
                     </span>
                   )}
                 </div>
-                <div className="flex space-x-2 space-x-reverse">
+                <div className="flex space-x-2 space-x-reverse rtl:space-x-reverse">
                   <button
                     onClick={() => handleEdit(product)}
                     className="flex-1 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
                   >
-                    تعديل
+                    {t('edit')}
                   </button>
                   <button
                     onClick={() => handleDelete(product.id)}
                     className="flex-1 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
                   >
-                    حذف
+                    {t('delete')}
                   </button>
                 </div>
               </div>

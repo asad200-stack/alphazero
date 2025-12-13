@@ -2,9 +2,11 @@ import { useState, useEffect, useRef } from 'react'
 import { useSettings } from '../../context/SettingsContext'
 import api from '../../utils/api'
 import { getImageUrl } from '../../utils/config'
+import { useLanguage } from '../../context/LanguageContext'
 
 const SettingsManagement = () => {
   const { settings, updateSettings, fetchSettings } = useSettings()
+  const { t } = useLanguage()
   const [formData, setFormData] = useState({
     store_name: '',
     store_name_en: '',
@@ -54,7 +56,7 @@ const SettingsManagement = () => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0]
       if (!file.type.startsWith('image/')) {
-        alert('الرجاء اختيار ملف صورة')
+        alert(t('error'))
         return
       }
       
@@ -89,10 +91,10 @@ const SettingsManagement = () => {
       })
 
       await fetchSettings()
-      alert('تم حفظ الإعدادات بنجاح!')
+      alert(t('settingsSaved'))
     } catch (error) {
       console.error('Error saving settings:', error)
-      alert('حدث خطأ أثناء حفظ الإعدادات')
+      alert(t('error'))
     } finally {
       setLoading(false)
     }
@@ -100,15 +102,15 @@ const SettingsManagement = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">إعدادات المتجر</h2>
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">{t('storeSettings')}</h2>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 space-y-6">
         <div>
-          <h3 className="text-lg font-semibold mb-4 text-gray-700">معلومات المتجر</h3>
+          <h3 className="text-lg font-semibold mb-4 text-gray-700">{t('storeInfo')}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-gray-700 font-medium mb-2">
-                اسم المتجر (عربي)
+                {t('storeName')}
               </label>
               <input
                 type="text"
@@ -121,7 +123,7 @@ const SettingsManagement = () => {
 
             <div>
               <label className="block text-gray-700 font-medium mb-2">
-                اسم المتجر (إنجليزي)
+                {t('storeNameEn')}
               </label>
               <input
                 type="text"
@@ -135,8 +137,8 @@ const SettingsManagement = () => {
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold mb-4 text-gray-700">الشعار</h3>
-          <div className="flex items-center space-x-6 space-x-reverse">
+          <h3 className="text-lg font-semibold mb-4 text-gray-700">{t('logo')}</h3>
+          <div className="flex items-center space-x-6 space-x-reverse rtl:space-x-reverse">
             {preview && (
               <img
                 src={preview}
@@ -157,20 +159,20 @@ const SettingsManagement = () => {
                 onClick={() => fileInputRef.current?.click()}
                 className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition"
               >
-                {preview ? 'تغيير الشعار' : 'رفع شعار'}
+                {preview ? t('changeImage') : t('uploadLogo')}
               </button>
             </div>
           </div>
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold mb-4 text-gray-700">الألوان</h3>
+          <h3 className="text-lg font-semibold mb-4 text-gray-700">{t('colors')}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-gray-700 font-medium mb-2">
-                اللون الأساسي
+                {t('primaryColor')}
               </label>
-              <div className="flex items-center space-x-3 space-x-reverse">
+              <div className="flex items-center space-x-3 space-x-reverse rtl:space-x-reverse">
                 <input
                   type="color"
                   name="primary_color"
@@ -189,9 +191,9 @@ const SettingsManagement = () => {
 
             <div>
               <label className="block text-gray-700 font-medium mb-2">
-                اللون الثانوي
+                {t('secondaryColor')}
               </label>
-              <div className="flex items-center space-x-3 space-x-reverse">
+              <div className="flex items-center space-x-3 space-x-reverse rtl:space-x-reverse">
                 <input
                   type="color"
                   name="secondary_color"
@@ -211,11 +213,11 @@ const SettingsManagement = () => {
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold mb-4 text-gray-700">معلومات التواصل</h3>
+          <h3 className="text-lg font-semibold mb-4 text-gray-700">{t('contactInfo')}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-gray-700 font-medium mb-2">
-                رقم واتساب
+                {t('whatsappNumber')}
               </label>
               <input
                 type="text"
@@ -229,7 +231,7 @@ const SettingsManagement = () => {
 
             <div>
               <label className="block text-gray-700 font-medium mb-2">
-                رقم الهاتف
+                {t('phoneNumber')}
               </label>
               <input
                 type="text"
@@ -243,7 +245,7 @@ const SettingsManagement = () => {
 
             <div className="md:col-span-2">
               <label className="block text-gray-700 font-medium mb-2">
-                رابط إنستغرام
+                {t('instagramUrl')}
               </label>
               <input
                 type="url"
@@ -257,7 +259,7 @@ const SettingsManagement = () => {
 
             <div className="md:col-span-2">
               <label className="block text-gray-700 font-medium mb-2">
-                رابط المتجر العام (للمشاركة مع الزبائن) *
+                {t('storeUrl')} *
               </label>
               <input
                 type="url"
@@ -291,11 +293,11 @@ const SettingsManagement = () => {
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold mb-4 text-gray-700">إعدادات اللغة</h3>
+          <h3 className="text-lg font-semibold mb-4 text-gray-700">{t('languageSettings')}</h3>
           <div className="space-y-4">
             <div>
               <label className="block text-gray-700 font-medium mb-2">
-                اللغة الافتراضية
+                {t('defaultLanguage')}
               </label>
               <select
                 name="default_language"
@@ -303,28 +305,25 @@ const SettingsManagement = () => {
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
-                <option value="ar">العربية</option>
-                <option value="en">English</option>
+                <option value="ar">{t('arabic')}</option>
+                <option value="en">{t('english')}</option>
               </select>
-              <p className="text-sm text-gray-500 mt-2">
-                سيتم تطبيق اللغة المختارة كافتراضية لجميع الزوار. يمكن للزوار تغيير اللغة من القائمة.
-              </p>
             </div>
           </div>
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold mb-4 text-gray-700">بانر العروض</h3>
+          <h3 className="text-lg font-semibold mb-4 text-gray-700">{t('bannerSettings')}</h3>
           <div className="space-y-4">
             <div>
-              <label className="flex items-center space-x-2 space-x-reverse">
+              <label className="flex items-center space-x-2 space-x-reverse rtl:space-x-reverse">
                 <input
                   type="checkbox"
                   checked={formData.banner_enabled === 'true'}
                   onChange={(e) => setFormData(prev => ({ ...prev, banner_enabled: e.target.checked ? 'true' : 'false' }))}
                   className="w-5 h-5"
                 />
-                <span className="text-gray-700">تفعيل بانر العروض</span>
+                <span className="text-gray-700">{t('enableBanner')}</span>
               </label>
             </div>
 
@@ -332,7 +331,7 @@ const SettingsManagement = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-gray-700 font-medium mb-2">
-                    نص البانر (عربي)
+                    {t('bannerText')}
                   </label>
                   <input
                     type="text"
@@ -345,7 +344,7 @@ const SettingsManagement = () => {
 
                 <div>
                   <label className="block text-gray-700 font-medium mb-2">
-                    نص البانر (إنجليزي)
+                    {t('bannerTextEn')}
                   </label>
                   <input
                     type="text"
@@ -366,7 +365,7 @@ const SettingsManagement = () => {
             disabled={loading}
             className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50"
           >
-            {loading ? 'جاري الحفظ...' : 'حفظ الإعدادات'}
+            {loading ? t('saving') : t('save') + ' ' + t('settings')}
           </button>
         </div>
       </form>

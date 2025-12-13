@@ -95,13 +95,14 @@ export default {
   
   // Admin
   adminDashboard: 'Admin Dashboard',
+  adminLogin: 'Login',
   productsManagement: 'Products Management',
   addProduct: 'Add New Product',
   editProduct: 'Edit Product',
-  productName: 'Product Name (English)',
-  productNameEn: 'Product Name (Arabic)',
-  productDescription: 'Description (English)',
-  productDescriptionEn: 'Description (Arabic)',
+  productName: 'Product Name (Arabic)',
+  productNameEn: 'Product Name (English)',
+  productDescription: 'Description (Arabic)',
+  productDescriptionEn: 'Description (English)',
   originalPrice: 'Original Price',
   discountPrice: 'Discount Price',
   discountPercentage: 'Discount Percentage',
@@ -109,6 +110,12 @@ export default {
   dragDropImage: 'Drag image here or click to select',
   changeImage: 'Change Image',
   uploadLogo: 'Upload Logo',
+  viewStore: 'View Store',
+  shareStoreLink: 'Share Store Link',
+  storeUrl: 'Store Public URL (for sharing with customers)',
+  storeInfo: 'Store Information',
+  enableBanner: 'Enable Banner',
+  saving: 'Saving...',
   
   // Messages
   productAdded: 'Product added successfully',
