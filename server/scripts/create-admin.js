@@ -3,8 +3,8 @@ const db = require('../database');
 
 // Create admin user with hashed password
 const createAdmin = async () => {
-  const username = 'admin';
-  const password = 'admin123';
+  const username = 'web';
+  const password = 'web12345';
   const hashedPassword = bcrypt.hashSync(password, 10);
 
   db.run(
@@ -15,8 +15,8 @@ const createAdmin = async () => {
         console.error('Error creating admin:', err);
       } else {
         console.log('Admin user created successfully!');
-        console.log('Username: admin');
-        console.log('Password: admin123');
+        console.log('Username: web');
+        console.log('Password: web12345');
       }
       process.exit(0);
     }

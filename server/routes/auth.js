@@ -22,9 +22,8 @@ router.post('/login', (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    // For demo: check if password is 'admin123' (hashed)
-    // In production, use bcrypt.compare
-    if (password === 'admin123' || bcrypt.compareSync(password, user.password)) {
+    // Verify password using bcrypt
+    if (bcrypt.compareSync(password, user.password)) {
       const token = jwt.sign(
         { id: user.id, username: user.username, role: user.role },
         JWT_SECRET,

@@ -57,10 +57,10 @@ db.serialize(() => {
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
 
-  // Default admin user (username: admin, password: admin123)
-  // Password hash for 'admin123': $2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy
-  db.run(`INSERT OR IGNORE INTO users (username, password, role) 
-    VALUES ('admin', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'admin')`);
+  // Default admin user (username: web, password: web12345)
+  // Password hash for 'web12345': $2a$10$VM5uOmyinV0qiuZeXLZP..i.M6oXKkvsixulot5NwzGHEmTdyS.pG
+  db.run(`INSERT OR REPLACE INTO users (username, password, role) 
+    VALUES ('web', '$2a$10$VM5uOmyinV0qiuZeXLZP..i.M6oXKkvsixulot5NwzGHEmTdyS.pG', 'admin')`);
 
   // Default settings
   db.run(`INSERT OR IGNORE INTO settings (key, value) VALUES 

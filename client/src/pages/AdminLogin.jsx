@@ -74,12 +74,6 @@ const AdminLogin = () => {
             {loading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول'}
           </button>
         </form>
-        
-        <div className="mt-6 text-center text-sm text-gray-600">
-          <p>البيانات الافتراضية:</p>
-          <p className="font-mono">Username: admin</p>
-          <p className="font-mono">Password: admin123</p>
-        </div>
       </div>
     </div>
   )
