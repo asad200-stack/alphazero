@@ -45,6 +45,12 @@ export const SettingsProvider = ({ children }) => {
       if (response.data.secondary_color) {
         document.documentElement.style.setProperty('--secondary-color', response.data.secondary_color)
       }
+      // Apply holiday theme
+      if (response.data.holiday_theme) {
+        document.documentElement.setAttribute('data-holiday-theme', response.data.holiday_theme)
+      } else {
+        document.documentElement.setAttribute('data-holiday-theme', 'none')
+      }
     } catch (error) {
       console.error('Error fetching settings:', error)
     } finally {

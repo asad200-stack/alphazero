@@ -361,6 +361,33 @@ const SettingsManagement = () => {
           </div>
         </div>
 
+        <div>
+          <h3 className="text-lg font-semibold mb-4 text-gray-700">{t('holidayTheme')}</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">
+                {t('selectHolidayTheme')}
+              </label>
+              <select
+                name="holiday_theme"
+                value={formData.holiday_theme}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="none">{t('noTheme')}</option>
+                <option value="christmas">{t('christmasTheme')}</option>
+                <option value="eid">{t('eidTheme')}</option>
+                <option value="ramadan">{t('ramadanTheme')}</option>
+                <option value="valentine">{t('valentineTheme')}</option>
+                <option value="newyear">{t('newYearTheme')}</option>
+              </select>
+              <p className="text-sm text-gray-500 mt-2">
+                {t('holidayThemeDescription')}
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div className="pt-4 border-t">
           <button
             type="submit"
