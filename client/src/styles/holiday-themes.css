@@ -1,245 +1,678 @@
-/* Holiday Themes Styles */
+/* Advanced Holiday Themes Styles */
 
-/* Christmas Theme */
+/* ============================================
+   CHRISTMAS THEME - متطور وجذاب
+   ============================================ */
 [data-holiday-theme="christmas"] {
   --holiday-primary: #C8102E; /* Red */
   --holiday-secondary: #006747; /* Green */
   --holiday-accent: #FFD700; /* Gold */
+  --holiday-snow: #FFFFFF;
+  --holiday-glow: rgba(255, 215, 0, 0.5);
 }
 
+/* Background Effects */
+[data-holiday-theme="christmas"] body {
+  background: linear-gradient(180deg, #0a1929 0%, #1a1a2e 50%, #16213e 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Animated Snowflakes */
+[data-holiday-theme="christmas"] body::before {
+  content: '';
+  position: fixed;
+  top: -100px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 20% 50%, white 1px, transparent 1px),
+    radial-gradient(circle at 40% 20%, white 1px, transparent 1px),
+    radial-gradient(circle at 90% 80%, white 1px, transparent 1px),
+    radial-gradient(circle at 70% 30%, white 1px, transparent 1px),
+    radial-gradient(circle at 10% 70%, white 1px, transparent 1px),
+    radial-gradient(circle at 60% 60%, white 1px, transparent 1px);
+  background-size: 200px 200px, 150px 150px, 180px 180px, 160px 160px, 170px 170px, 140px 140px;
+  background-position: 0 0, 50px 50px, 100px 100px, 150px 150px, 200px 200px, 250px 250px;
+  animation: snowfall 15s linear infinite;
+  opacity: 0.6;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes snowfall {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(100vh); }
+}
+
+/* Floating Christmas Tree Icon */
+[data-holiday-theme="christmas"] body::after {
+  content: '🎄';
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  font-size: 3rem;
+  z-index: 1000;
+  pointer-events: none;
+  animation: christmasFloat 4s ease-in-out infinite, rotate 10s linear infinite;
+  filter: drop-shadow(0 0 20px var(--holiday-glow));
+}
+
+@keyframes christmasFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+/* Header & Banner Effects */
+[data-holiday-theme="christmas"] header,
+[data-holiday-theme="christmas"] .bg-gradient-to-br {
+  background: linear-gradient(135deg, var(--holiday-primary) 0%, var(--holiday-secondary) 50%, var(--holiday-primary) 100%) !important;
+  background-size: 200% 200%;
+  animation: gradientShift 5s ease infinite;
+  box-shadow: 0 4px 30px rgba(200, 16, 46, 0.4),
+              0 0 40px rgba(0, 103, 71, 0.3),
+              inset 0 0 20px rgba(255, 215, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+[data-holiday-theme="christmas"] header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shine 3s infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Buttons */
 [data-holiday-theme="christmas"] .bg-blue-600,
 [data-holiday-theme="christmas"] .bg-blue-500 {
-  background-color: var(--holiday-primary) !important;
+  background: linear-gradient(135deg, var(--holiday-primary) 0%, #E63946 100%) !important;
+  box-shadow: 0 4px 15px rgba(200, 16, 46, 0.5),
+              0 0 20px rgba(200, 16, 46, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+[data-holiday-theme="christmas"] .bg-blue-600::before,
+[data-holiday-theme="christmas"] .bg-blue-500::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+[data-holiday-theme="christmas"] .bg-blue-600:hover::before,
+[data-holiday-theme="christmas"] .bg-blue-500:hover::before {
+  width: 300px;
+  height: 300px;
 }
 
 [data-holiday-theme="christmas"] .bg-blue-700:hover {
-  background-color: #A00D25 !important;
+  background: linear-gradient(135deg, #A00D25 0%, var(--holiday-primary) 100%) !important;
+  box-shadow: 0 6px 25px rgba(200, 16, 46, 0.7),
+              0 0 30px rgba(255, 215, 0, 0.4);
+  transform: translateY(-2px);
 }
 
-[data-holiday-theme="christmas"] .text-blue-600,
-[data-holiday-theme="christmas"] .text-blue-500 {
-  color: var(--holiday-primary) !important;
+/* Product Cards */
+[data-holiday-theme="christmas"] .bg-white {
+  border: 2px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              linear-gradient(135deg, var(--holiday-primary), var(--holiday-secondary), var(--holiday-accent)) border-box;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1),
+              0 0 30px rgba(255, 215, 0, 0.2);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-[data-holiday-theme="christmas"]::before {
-  content: '🎄';
-  position: fixed;
+[data-holiday-theme="christmas"] .bg-white::before {
+  content: '❄️';
+  position: absolute;
   top: 10px;
   right: 10px;
-  font-size: 2rem;
-  z-index: 1000;
+  font-size: 1.5rem;
+  opacity: 0.6;
+  animation: sparkle 2s ease-in-out infinite;
   pointer-events: none;
-  animation: float 3s ease-in-out infinite;
 }
 
-[data-holiday-theme="christmas"] header,
-[data-holiday-theme="christmas"] .bg-gradient-to-br {
-  background: linear-gradient(135deg, var(--holiday-primary) 0%, var(--holiday-secondary) 100%) !important;
+[data-holiday-theme="christmas"] .bg-white:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 8px 30px rgba(200, 16, 46, 0.4),
+              0 0 40px rgba(255, 215, 0, 0.3);
 }
 
-[data-holiday-theme="christmas"] .bg-white {
-  border-top: 3px solid var(--holiday-accent);
-}
-
-/* Eid Theme */
+/* ============================================
+   EID THEME - احتفالي ومبهج
+   ============================================ */
 [data-holiday-theme="eid"] {
   --holiday-primary: #FFD700; /* Gold */
   --holiday-secondary: #228B22; /* Forest Green */
   --holiday-accent: #FF6347; /* Tomato */
+  --holiday-glow: rgba(255, 215, 0, 0.6);
 }
 
-[data-holiday-theme="eid"] .bg-blue-600,
-[data-holiday-theme="eid"] .bg-blue-500 {
-  background-color: var(--holiday-primary) !important;
-  color: #000 !important;
+[data-holiday-theme="eid"] body {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  position: relative;
 }
 
-[data-holiday-theme="eid"] .bg-blue-700:hover {
-  background-color: #FFC107 !important;
+/* Floating Confetti */
+[data-holiday-theme="eid"] body::before {
+  content: '🎊🎉✨';
+  position: fixed;
+  top: -50px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 2rem;
+  display: flex;
+  justify-content: space-around;
+  animation: confetti 8s linear infinite;
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 1;
 }
 
-[data-holiday-theme="eid"] .text-blue-600,
-[data-holiday-theme="eid"] .text-blue-500 {
-  color: var(--holiday-primary) !important;
+@keyframes confetti {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
 }
 
-[data-holiday-theme="eid"]::before {
+[data-holiday-theme="eid"] body::after {
   content: '🎉';
   position: fixed;
-  top: 10px;
-  right: 10px;
-  font-size: 2rem;
+  top: 20px;
+  right: 20px;
+  font-size: 3rem;
   z-index: 1000;
   pointer-events: none;
-  animation: float 3s ease-in-out infinite;
+  animation: bounce 2s ease-in-out infinite, rotate 8s linear infinite;
+  filter: drop-shadow(0 0 25px var(--holiday-glow));
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
 }
 
 [data-holiday-theme="eid"] header,
 [data-holiday-theme="eid"] .bg-gradient-to-br {
   background: linear-gradient(135deg, var(--holiday-primary) 0%, var(--holiday-secondary) 100%) !important;
+  box-shadow: 0 4px 30px rgba(255, 215, 0, 0.5),
+              0 0 50px rgba(255, 215, 0, 0.4);
+  position: relative;
+  overflow: hidden;
 }
 
-/* Ramadan Theme */
+[data-holiday-theme="eid"] header::before {
+  content: '✨';
+  position: absolute;
+  font-size: 1.5rem;
+  animation: sparkleFloat 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes sparkleFloat {
+  0%, 100% { opacity: 0.3; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-10px); }
+}
+
+[data-holiday-theme="eid"] .bg-blue-600,
+[data-holiday-theme="eid"] .bg-blue-500 {
+  background: linear-gradient(135deg, var(--holiday-primary) 0%, #FFC107 100%) !important;
+  color: #000 !important;
+  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.6),
+              0 0 30px rgba(255, 215, 0, 0.4);
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+[data-holiday-theme="eid"] .bg-blue-700:hover {
+  background: linear-gradient(135deg, #FFC107 0%, var(--holiday-primary) 100%) !important;
+  box-shadow: 0 6px 30px rgba(255, 215, 0, 0.8),
+              0 0 40px rgba(255, 215, 0, 0.6);
+  transform: scale(1.05);
+}
+
+[data-holiday-theme="eid"] .bg-white {
+  border: 3px solid var(--holiday-primary);
+  box-shadow: 0 4px 25px rgba(255, 215, 0, 0.3),
+              inset 0 0 20px rgba(255, 215, 0, 0.1);
+  transition: all 0.4s ease;
+}
+
+[data-holiday-theme="eid"] .bg-white:hover {
+  transform: translateY(-10px) rotate(1deg);
+  box-shadow: 0 8px 35px rgba(255, 215, 0, 0.5),
+              0 0 50px rgba(255, 215, 0, 0.3);
+  border-color: var(--holiday-accent);
+}
+
+/* ============================================
+   RAMADAN THEME - روحاني وهادئ
+   ============================================ */
 [data-holiday-theme="ramadan"] {
   --holiday-primary: #4A90E2; /* Sky Blue */
   --holiday-secondary: #2E7D32; /* Green */
   --holiday-accent: #FFD700; /* Gold */
+  --holiday-glow: rgba(74, 144, 226, 0.5);
 }
 
-[data-holiday-theme="ramadan"] .bg-blue-600,
-[data-holiday-theme="ramadan"] .bg-blue-500 {
-  background-color: var(--holiday-primary) !important;
+[data-holiday-theme="ramadan"] body {
+  background: linear-gradient(180deg, #1e3c72 0%, #2a5298 50%, #4A90E2 100%);
+  position: relative;
 }
 
-[data-holiday-theme="ramadan"] .bg-blue-700:hover {
-  background-color: #357ABD !important;
+/* Animated Stars */
+[data-holiday-theme="ramadan"] body::before {
+  content: '⭐✨🌟';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 1.5rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  animation: twinkle 4s ease-in-out infinite;
+  opacity: 0.8;
+  pointer-events: none;
+  z-index: 1;
 }
 
-[data-holiday-theme="ramadan"] .text-blue-600,
-[data-holiday-theme="ramadan"] .text-blue-500 {
-  color: var(--holiday-primary) !important;
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
 }
 
-[data-holiday-theme="ramadan"]::before {
+[data-holiday-theme="ramadan"] body::after {
   content: '🌙';
   position: fixed;
-  top: 10px;
-  right: 10px;
-  font-size: 2rem;
+  top: 20px;
+  right: 20px;
+  font-size: 3.5rem;
   z-index: 1000;
   pointer-events: none;
-  animation: float 3s ease-in-out infinite;
+  animation: moonGlow 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 30px var(--holiday-accent));
+}
+
+@keyframes moonGlow {
+  0%, 100% { 
+    filter: drop-shadow(0 0 20px var(--holiday-accent)) brightness(1);
+    transform: scale(1);
+  }
+  50% { 
+    filter: drop-shadow(0 0 40px var(--holiday-accent)) brightness(1.3);
+    transform: scale(1.1);
+  }
 }
 
 [data-holiday-theme="ramadan"] header,
 [data-holiday-theme="ramadan"] .bg-gradient-to-br {
-  background: linear-gradient(135deg, var(--holiday-primary) 0%, #1A5F9F 100%) !important;
+  background: linear-gradient(135deg, var(--holiday-primary) 0%, #1A5F9F 50%, var(--holiday-secondary) 100%) !important;
+  background-size: 200% 200%;
+  animation: gradientFlow 6s ease infinite;
+  box-shadow: 0 4px 30px rgba(74, 144, 226, 0.5),
+              0 0 40px rgba(255, 215, 0, 0.3);
 }
 
-/* Valentine Theme */
+@keyframes gradientFlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+[data-holiday-theme="ramadan"] .bg-blue-600,
+[data-holiday-theme="ramadan"] .bg-blue-500 {
+  background: linear-gradient(135deg, var(--holiday-primary) 0%, #357ABD 100%) !important;
+  box-shadow: 0 4px 20px rgba(74, 144, 226, 0.5),
+              0 0 25px rgba(74, 144, 226, 0.3);
+  transition: all 0.3s ease;
+}
+
+[data-holiday-theme="ramadan"] .bg-blue-700:hover {
+  background: linear-gradient(135deg, #357ABD 0%, var(--holiday-primary) 100%) !important;
+  box-shadow: 0 6px 30px rgba(74, 144, 226, 0.7),
+              0 0 40px rgba(255, 215, 0, 0.4);
+  transform: translateY(-3px);
+}
+
+[data-holiday-theme="ramadan"] .bg-white {
+  border: 2px solid var(--holiday-primary);
+  box-shadow: 0 4px 20px rgba(74, 144, 226, 0.2),
+              inset 0 0 15px rgba(74, 144, 226, 0.1);
+  transition: all 0.4s ease;
+}
+
+[data-holiday-theme="ramadan"] .bg-white:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 35px rgba(74, 144, 226, 0.4),
+              0 0 50px rgba(255, 215, 0, 0.2);
+  border-color: var(--holiday-accent);
+}
+
+/* ============================================
+   VALENTINE THEME - رومانسي وحالم
+   ============================================ */
 [data-holiday-theme="valentine"] {
   --holiday-primary: #E91E63; /* Pink */
   --holiday-secondary: #F06292; /* Light Pink */
   --holiday-accent: #FF4081; /* Accent Pink */
+  --holiday-glow: rgba(233, 30, 99, 0.5);
 }
 
-[data-holiday-theme="valentine"] .bg-blue-600,
-[data-holiday-theme="valentine"] .bg-blue-500 {
-  background-color: var(--holiday-primary) !important;
+[data-holiday-theme="valentine"] body {
+  background: linear-gradient(135deg, #ffeef7 0%, #ffd6e8 50%, #ffc1dc 100%);
+  position: relative;
 }
 
-[data-holiday-theme="valentine"] .bg-blue-700:hover {
-  background-color: #C2185B !important;
+/* Floating Hearts */
+[data-holiday-theme="valentine"] body::before {
+  content: '💕💖💝💗💓';
+  position: fixed;
+  top: -50px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 1.8rem;
+  display: flex;
+  justify-content: space-around;
+  animation: hearts 10s linear infinite;
+  opacity: 0.6;
+  pointer-events: none;
+  z-index: 1;
 }
 
-[data-holiday-theme="valentine"] .text-blue-600,
-[data-holiday-theme="valentine"] .text-blue-500 {
-  color: var(--holiday-primary) !important;
+@keyframes hearts {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
 }
 
-[data-holiday-theme="valentine"]::before {
+[data-holiday-theme="valentine"] body::after {
   content: '❤️';
   position: fixed;
-  top: 10px;
-  right: 10px;
-  font-size: 2rem;
+  top: 20px;
+  right: 20px;
+  font-size: 3rem;
   z-index: 1000;
   pointer-events: none;
-  animation: float 3s ease-in-out infinite;
+  animation: heartbeat 1.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 25px var(--holiday-glow));
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  25%, 75% { transform: scale(1.1); }
+  50% { transform: scale(1.2); }
 }
 
 [data-holiday-theme="valentine"] header,
 [data-holiday-theme="valentine"] .bg-gradient-to-br {
   background: linear-gradient(135deg, var(--holiday-primary) 0%, var(--holiday-secondary) 100%) !important;
+  box-shadow: 0 4px 30px rgba(233, 30, 99, 0.5),
+              0 0 40px rgba(255, 64, 129, 0.4);
+  position: relative;
+  overflow: hidden;
 }
 
-/* New Year Theme */
+[data-holiday-theme="valentine"] .bg-blue-600,
+[data-holiday-theme="valentine"] .bg-blue-500 {
+  background: linear-gradient(135deg, var(--holiday-primary) 0%, var(--holiday-accent) 100%) !important;
+  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.6),
+              0 0 30px rgba(255, 64, 129, 0.4);
+  transition: all 0.3s ease;
+}
+
+[data-holiday-theme="valentine"] .bg-blue-700:hover {
+  background: linear-gradient(135deg, var(--holiday-accent) 0%, var(--holiday-primary) 100%) !important;
+  box-shadow: 0 6px 30px rgba(233, 30, 99, 0.8),
+              0 0 40px rgba(255, 64, 129, 0.6);
+  transform: scale(1.05);
+}
+
+[data-holiday-theme="valentine"] .bg-white {
+  border: 3px solid var(--holiday-secondary);
+  box-shadow: 0 4px 25px rgba(233, 30, 99, 0.3),
+              inset 0 0 20px rgba(255, 64, 129, 0.1);
+  transition: all 0.4s ease;
+}
+
+[data-holiday-theme="valentine"] .bg-white:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 35px rgba(233, 30, 99, 0.5),
+              0 0 50px rgba(255, 64, 129, 0.3);
+  border-color: var(--holiday-primary);
+}
+
+[data-holiday-theme="valentine"] .bg-white::before {
+  content: '💝';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  opacity: 0.7;
+  animation: sparkle 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ============================================
+   NEW YEAR THEME - احتفالي ومتوهج
+   ============================================ */
 [data-holiday-theme="newyear"] {
   --holiday-primary: #FF6B6B; /* Coral Red */
   --holiday-secondary: #4ECDC4; /* Turquoise */
   --holiday-accent: #FFE66D; /* Yellow */
+  --holiday-glow: rgba(255, 107, 107, 0.6);
+}
+
+[data-holiday-theme="newyear"] body {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Fireworks Effect */
+[data-holiday-theme="newyear"] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 25% 25%, #FF6B6B 2px, transparent 2px),
+    radial-gradient(circle at 75% 75%, #4ECDC4 2px, transparent 2px),
+    radial-gradient(circle at 50% 50%, #FFE66D 2px, transparent 2px),
+    radial-gradient(circle at 10% 90%, #FF6B6B 1px, transparent 1px),
+    radial-gradient(circle at 90% 10%, #4ECDC4 1px, transparent 1px);
+  background-size: 300px 300px, 250px 250px, 200px 200px, 350px 350px, 280px 280px;
+  animation: fireworks 4s ease-in-out infinite;
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes fireworks {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+[data-holiday-theme="newyear"] body::after {
+  content: '🎊';
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  font-size: 3.5rem;
+  z-index: 1000;
+  pointer-events: none;
+  animation: confettiBurst 2s ease-in-out infinite, rotate 5s linear infinite;
+  filter: drop-shadow(0 0 30px var(--holiday-accent));
+}
+
+@keyframes confettiBurst {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.2) rotate(180deg); }
+}
+
+[data-holiday-theme="newyear"] header,
+[data-holiday-theme="newyear"] .bg-gradient-to-br {
+  background: linear-gradient(135deg, var(--holiday-primary) 0%, var(--holiday-secondary) 50%, var(--holiday-accent) 100%) !important;
+  background-size: 200% 200%;
+  animation: rainbowFlow 5s ease infinite;
+  box-shadow: 0 4px 30px rgba(255, 107, 107, 0.5),
+              0 0 50px rgba(78, 205, 196, 0.4),
+              0 0 70px rgba(255, 230, 109, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes rainbowFlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+[data-holiday-theme="newyear"] header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
 }
 
 [data-holiday-theme="newyear"] .bg-blue-600,
 [data-holiday-theme="newyear"] .bg-blue-500 {
   background: linear-gradient(135deg, var(--holiday-primary) 0%, var(--holiday-secondary) 100%) !important;
+  box-shadow: 0 4px 20px rgba(255, 107, 107, 0.6),
+              0 0 30px rgba(78, 205, 196, 0.5);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
 [data-holiday-theme="newyear"] .bg-blue-700:hover {
-  background: linear-gradient(135deg, #FF5252 0%, #26A69A 100%) !important;
+  background: linear-gradient(135deg, var(--holiday-secondary) 0%, var(--holiday-primary) 100%) !important;
+  box-shadow: 0 6px 30px rgba(255, 107, 107, 0.8),
+              0 0 50px rgba(255, 230, 109, 0.6);
+  transform: translateY(-3px) scale(1.02);
 }
 
-[data-holiday-theme="newyear"] .text-blue-600,
-[data-holiday-theme="newyear"] .text-blue-500 {
-  background: linear-gradient(135deg, var(--holiday-primary) 0%, var(--holiday-secondary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+[data-holiday-theme="newyear"] .bg-white {
+  border: 3px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              linear-gradient(135deg, var(--holiday-primary), var(--holiday-secondary), var(--holiday-accent)) border-box;
+  background-size: 200% 200%;
+  animation: borderGradient 3s ease infinite;
+  box-shadow: 0 4px 25px rgba(255, 107, 107, 0.3),
+              0 0 40px rgba(78, 205, 196, 0.2);
+  transition: all 0.4s ease;
 }
 
-[data-holiday-theme="newyear"]::before {
-  content: '🎊';
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  font-size: 2rem;
-  z-index: 1000;
-  pointer-events: none;
-  animation: float 3s ease-in-out infinite;
+@keyframes borderGradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
-[data-holiday-theme="newyear"] header,
-[data-holiday-theme="newyear"] .bg-gradient-to-br {
-  background: linear-gradient(135deg, var(--holiday-primary) 0%, var(--holiday-secondary) 100%) !important;
+[data-holiday-theme="newyear"] .bg-white:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 8px 40px rgba(255, 107, 107, 0.5),
+              0 0 60px rgba(255, 230, 109, 0.4);
 }
 
-/* Animation */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-/* Holiday decorations */
-[data-holiday-theme]:not([data-holiday-theme="none"]) .product-card,
-[data-holiday-theme]:not([data-holiday-theme="none"]) .bg-white {
-  position: relative;
-}
-
-[data-holiday-theme]:not([data-holiday-theme="none"]) .product-card::before,
-[data-holiday-theme]:not([data-holiday-theme="none"]) .product-card::after {
-  content: '';
+[data-holiday-theme="newyear"] .bg-white::before {
+  content: '✨';
   position: absolute;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--holiday-accent, #FFD700);
-  opacity: 0.3;
-  animation: sparkle 2s ease-in-out infinite;
-}
-
-[data-holiday-theme]:not([data-holiday-theme="none"]) .product-card::before {
   top: 10px;
   right: 10px;
+  font-size: 1.8rem;
+  opacity: 0.8;
+  animation: sparkle 1.5s ease-in-out infinite;
+  pointer-events: none;
 }
 
-[data-holiday-theme]:not([data-holiday-theme="none"]) .product-card::after {
-  bottom: 10px;
-  left: 10px;
-  animation-delay: 1s;
-}
-
+/* ============================================
+   COMMON ANIMATIONS
+   ============================================ */
 @keyframes sparkle {
   0%, 100% {
     opacity: 0.3;
-    transform: scale(1);
+    transform: scale(1) rotate(0deg);
   }
   50% {
     opacity: 1;
-    transform: scale(1.2);
+    transform: scale(1.3) rotate(180deg);
   }
 }
 
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Text Effects */
+[data-holiday-theme]:not([data-holiday-theme="none"]) .text-blue-600,
+[data-holiday-theme]:not([data-holiday-theme="none"]) .text-blue-500 {
+  position: relative;
+  display: inline-block;
+}
+
+/* Enhanced Product Cards */
+[data-holiday-theme]:not([data-holiday-theme="none"]) .product-card,
+[data-holiday-theme]:not([data-holiday-theme="none"]) .bg-white[class*="rounded"] {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  backface-visibility: hidden;
+}
+
+[data-holiday-theme]:not([data-holiday-theme="none"]) .product-card:hover,
+[data-holiday-theme]:not([data-holiday-theme="none"]) .bg-white[class*="rounded"]:hover {
+  transform: translateY(-10px) scale(1.02);
+}
+
+/* Glow Effects on Images */
+[data-holiday-theme]:not([data-holiday-theme="none"]) img {
+  transition: all 0.3s ease;
+}
+
+[data-holiday-theme]:not([data-holiday-theme="none"]) img:hover {
+  filter: brightness(1.1) saturate(1.2);
+}
+
+/* Smooth Scroll */
+[data-holiday-theme]:not([data-holiday-theme="none"]) {
+  scroll-behavior: smooth;
+}
