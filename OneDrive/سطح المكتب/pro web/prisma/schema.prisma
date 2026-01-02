@@ -1,0 +1,181 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  STORE_OWNER
+  SUPER_ADMIN
+}
+
+enum StoreStatus {
+  ACTIVE
+  SUSPENDED
+  PENDING
+}
+
+enum ProductVisibility {
+  VISIBLE
+  HIDDEN
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  name          String?
+  role          UserRole  @default(STORE_OWNER)
+  storeId       String?   @unique
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  store         Store?    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  
+  @@index([email])
+  @@index([storeId])
+}
+
+model Store {
+  id              String        @id @default(cuid())
+  name            String
+  slug            String        @unique
+  description     String?
+  logo            String?
+  contactEmail    String?
+  contactPhone    String?
+  address         String?
+  status          StoreStatus   @default(ACTIVE)
+  themeColor      String?       @default("#000000")
+  currency        String?       @default("USD")
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  owner           User?
+  products        Product[]
+  categories      Category[]
+  settings        StoreSettings?
+  inquiries       Inquiry[]        @relation("StoreInquiries")
+  
+  @@index([slug])
+  @@index([status])
+}
+
+model StoreSettings {
+  id              String    @id @default(cuid())
+  storeId         String    @unique
+  allowInquiries  Boolean   @default(true)
+  allowOrders     Boolean   @default(false)
+  customDomain    String?
+  seoTitle        String?
+  seoDescription  String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  store           Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String
+  description String?
+  parentId    String?
+  storeId     String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  store       Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  parent      Category? @relation("CategoryTree", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryTree")
+  products    Product[]
+  
+  @@unique([storeId, slug])
+  @@index([storeId])
+  @@index([parentId])
+}
+
+model Product {
+  id              String            @id @default(cuid())
+  name            String
+  slug            String
+  description     String?
+  specifications  String?           // JSON string for specs
+  price           Float
+  salePrice       Float?
+  currency        String?           @default("USD")
+  sku             String?
+  stockQuantity   Int               @default(0)
+  visibility      ProductVisibility @default(VISIBLE)
+  tags            String[]          @default([])
+  storeId         String
+  categoryId      String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  
+  store           Store             @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  category        Category?         @relation(fields: [categoryId], references: [id])
+  images          ProductImage[]
+  variations      ProductVariation[]
+  inquiries       Inquiry[]
+  
+  @@unique([storeId, slug])
+  @@index([storeId])
+  @@index([categoryId])
+  @@index([visibility])
+  @@fulltext([name, description])
+}
+
+model ProductImage {
+  id          String   @id @default(cuid())
+  productId   String
+  url         String
+  alt         String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  @@index([productId])
+}
+
+model ProductVariation {
+  id          String   @id @default(cuid())
+  productId   String
+  name        String   // e.g., "Size", "Color"
+  value       String   // e.g., "Large", "Red"
+  priceModifier Float? @default(0) // Additional price for this variation
+  stockQuantity Int?   @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  @@index([productId])
+}
+
+model Inquiry {
+  id          String   @id @default(cuid())
+  productId   String?
+  storeId     String
+  name        String
+  email       String
+  phone       String?
+  message     String
+  status      String   @default("NEW") // NEW, READ, REPLIED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  store       Store    @relation("StoreInquiries", fields: [storeId], references: [id], onDelete: Cascade)
+  
+  @@index([storeId])
+  @@index([productId])
+}
+
