@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Multi-tenant SaaS e-commerce platform for store management",
   "private": true,
+  "prisma": {
+    "schema": "./prisma/schema.prisma"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate --schema=./prisma/schema.prisma && next build",
