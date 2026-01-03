@@ -14,7 +14,8 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
     price: '',
     discount_price: '',
     discount_percentage: '',
-    category_id: ''
+    category_id: '',
+    in_stock: 1
   })
   const [images, setImages] = useState([]) // Array of { file: File, preview: string } or { id: number, image_path: string }
   const [deletedImages, setDeletedImages] = useState([])
@@ -130,7 +131,8 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
         price: product.price || '',
         discount_price: product.discount_price || '',
         discount_percentage: product.discount_percentage || '',
-        category_id: product.category_id || ''
+        category_id: product.category_id || '',
+        in_stock: product.in_stock !== undefined ? product.in_stock : 1
       })
       
       // Load existing images
@@ -240,6 +242,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
       if (formData.discount_percentage) {
         formDataToSend.append('discount_percentage', formData.discount_percentage)
       }
+      formDataToSend.append('in_stock', formData.in_stock || 1)
       
       // Add new images
       images.forEach(img => {
@@ -433,6 +436,27 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
                   readOnly
                 />
               </div>
+            </div>
+
+            {/* Stock Status */}
+            <div>
+              <label className="flex items-center space-x-2 space-x-reverse rtl:space-x-reverse cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="in_stock"
+                  checked={formData.in_stock === 1}
+                  onChange={(e) => setFormData(prev => ({ ...prev, in_stock: e.target.checked ? 1 : 0 }))}
+                  className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500"
+                />
+                <span className="text-gray-700 font-medium">
+                  {language === 'ar' ? 'متوفر في المخزون' : 'In Stock'}
+                </span>
+              </label>
+              <p className="text-sm text-gray-500 mt-1">
+                {language === 'ar' 
+                  ? 'قم بإلغاء التحديد إذا كان المنتج غير متوفر'
+                  : 'Uncheck if product is out of stock'}
+              </p>
             </div>
 
             <div>

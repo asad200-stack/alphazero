@@ -37,6 +37,11 @@ db.serialize(() => {
     // Ignore error if column already exists
   });
 
+  // Add in_stock column if it doesn't exist (for existing databases)
+  db.run(`ALTER TABLE products ADD COLUMN in_stock INTEGER DEFAULT 1`, (err) => {
+    // Ignore error if column already exists
+  });
+
   // Product Images table (for multiple images)
   db.run(`CREATE TABLE IF NOT EXISTS product_images (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
