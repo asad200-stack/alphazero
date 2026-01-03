@@ -133,7 +133,7 @@ const BannerSlider = () => {
   console.log('Rendering banner with image URL:', fullImageUrl)
 
   return (
-    <div className="relative w-full h-48 md:h-64 lg:h-80 overflow-hidden bg-gray-200 banner-container">
+    <div className="theme-banner relative w-full h-48 md:h-64 lg:h-80 overflow-hidden bg-gray-200 banner-container">
       {/* Banner Image with Smooth Transition */}
       {banners.map((banner, index) => {
         const bannerImage = (() => {
@@ -199,7 +199,7 @@ const BannerSlider = () => {
               {buttonText && currentBanner.button_link && (
                 <Link
                   to={currentBanner.button_link}
-                  className="inline-block px-6 py-3 bg-white text-gray-900 rounded-lg font-bold text-base hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-center btn-ripple smooth-transition"
+                  className="theme-button-primary inline-block px-6 py-3 bg-white text-gray-900 rounded-lg font-bold text-base hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-center btn-ripple smooth-transition"
                 >
                   {buttonText}
                 </Link>

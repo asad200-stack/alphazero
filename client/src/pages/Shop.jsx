@@ -82,7 +82,7 @@ const Shop = () => {
             <p className="text-gray-500 text-lg">{t('noProducts')}</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="theme-products-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {products.map((product, index) => (
               <ScrollAnimation key={product.id} delay={index * 50}>
                 <ProductCard product={product} />

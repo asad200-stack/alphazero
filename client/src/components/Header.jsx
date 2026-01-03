@@ -19,7 +19,7 @@ const Header = () => {
   const [localSearchQuery, setLocalSearchQuery] = useState('')
 
   return (
-    <header className="bg-white sticky top-0 z-50 shadow-md border-b border-gray-200">
+    <header className="theme-header bg-white sticky top-0 z-50 shadow-md border-b border-gray-200">
       <div className="container mx-auto px-4">
         {/* Top Bar */}
         <div className="flex items-center justify-between py-4 gap-4">

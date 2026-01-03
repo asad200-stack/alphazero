@@ -98,10 +98,8 @@ const Home = () => {
               <div className="flex flex-wrap gap-3 mb-6">
                 <button
                   onClick={() => setSelectedCategory(null)}
-                  className={`px-6 py-3 rounded-lg font-semibold category-btn smooth-transition ${
-                    selectedCategory === null
-                      ? 'bg-blue-600 text-white shadow-lg'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover-lift'
+                  className={`theme-category-btn px-6 py-3 rounded-lg font-semibold category-btn smooth-transition ${
+                    selectedCategory === null ? 'active' : ''
                   }`}
                 >
                   {language === 'ar' ? 'جميع التصنيفات' : 'All Categories'}
@@ -110,10 +108,8 @@ const Home = () => {
                   <button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
-                    className={`px-6 py-3 rounded-lg font-semibold category-btn smooth-transition ${
-                      selectedCategory === category.id
-                        ? 'bg-blue-600 text-white shadow-lg'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover-lift'
+                    className={`theme-category-btn px-6 py-3 rounded-lg font-semibold category-btn smooth-transition ${
+                      selectedCategory === category.id ? 'active' : ''
                     }`}
                   >
                     {language === 'ar' ? (category.name_ar || category.name) : (category.name || category.name_ar)}
@@ -150,7 +146,7 @@ const Home = () => {
                   : (t('allProducts') || 'جميع المنتجات')
                 }
               </h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+              <div className="theme-products-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                 {products.map((product, index) => (
                   <ScrollAnimation key={product.id} delay={index * 100}>
                     <ProductCard product={product} />

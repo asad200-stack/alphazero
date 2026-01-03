@@ -54,7 +54,7 @@ const ProductCard = ({ product }) => {
   }
 
   return (
-    <div className="bg-white luxury-rounded-lg luxury-shadow overflow-hidden product-card relative group gpu-accelerated">
+    <div className="theme-product-card bg-white luxury-rounded-lg luxury-shadow overflow-hidden product-card relative group gpu-accelerated">
       {/* Like Button */}
       <button
         onClick={(e) => {
@@ -133,7 +133,7 @@ const ProductCard = ({ product }) => {
             <button
               onClick={handleAddToCart}
               disabled={isAdding}
-              className="flex-1 bg-gradient-to-r from-gray-900 to-black text-white py-3 rounded-xl font-semibold hover:from-black hover:to-gray-800 transition-all duration-300 text-sm md:text-base luxury-btn luxury-shadow hover:shadow-xl add-to-cart-btn smooth-transition relative"
+              className="theme-button-primary flex-1 bg-gradient-to-r from-gray-900 to-black text-white py-3 rounded-xl font-semibold hover:from-black hover:to-gray-800 transition-all duration-300 text-sm md:text-base luxury-btn luxury-shadow hover:shadow-xl add-to-cart-btn smooth-transition relative"
             >
               {isAdding ? (
                 <span className="flex items-center justify-center">
