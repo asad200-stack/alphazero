@@ -120,7 +120,9 @@ export const ThemeProvider = ({ children }) => {
       // Refresh themes
       await fetchThemes()
       if (activeTheme && activeTheme.id === themeId) {
-        await fetchActiveTheme()
+        const updatedTheme = await axios.get('/api/themes/active')
+        setActiveTheme(updatedTheme.data)
+        applyTheme(updatedTheme.data) // Re-apply theme with new colors
       }
       
       if (window.showToast) {
