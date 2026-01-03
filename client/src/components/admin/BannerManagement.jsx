@@ -193,23 +193,42 @@ const BannerManagement = () => {
 
   const handleToggleEnabled = async (banner) => {
     try {
-      const newEnabled = (banner.enabled === 1 || banner.enabled === '1' || banner.enabled === true) ? 0 : 1
-      const formDataToSend = new FormData()
+      const currentEnabled = banner.enabled === 1 || banner.enabled === '1' || banner.enabled === true
+      const newEnabled = currentEnabled ? 0 : 1
       
-      // Add all banner fields
-      Object.keys(banner).forEach(key => {
-        if (key !== 'id' && key !== 'created_at' && key !== 'updated_at') {
-          if (key === 'enabled') {
-            formDataToSend.append(key, newEnabled)
-          } else {
-            formDataToSend.append(key, banner[key] || '')
-          }
+      console.log('Toggling banner:', {
+        id: banner.id,
+        currentEnabled,
+        newEnabled,
+        hasImages: {
+          desktop: !!banner.image_desktop,
+          tablet: !!banner.image_tablet,
+          mobile: !!banner.image_mobile
         }
       })
       
-      await api.put(`/banners/${banner.id}`, formDataToSend, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })
+      // Use JSON instead of FormData for simple updates
+      const updateData = {
+        title: banner.title,
+        title_ar: banner.title_ar,
+        subtitle: banner.subtitle,
+        subtitle_ar: banner.subtitle_ar,
+        button_text: banner.button_text,
+        button_text_ar: banner.button_text_ar,
+        button_link: banner.button_link,
+        button_text_2: banner.button_text_2,
+        button_text_2_ar: banner.button_text_2_ar,
+        button_link_2: banner.button_link_2,
+        image_desktop: banner.image_desktop,
+        image_tablet: banner.image_tablet,
+        image_mobile: banner.image_mobile,
+        display_order: banner.display_order,
+        enabled: newEnabled
+      }
+      
+      const response = await api.put(`/banners/${banner.id}`, updateData)
+      console.log('Banner update response:', response.data)
+      
       await fetchBanners()
       
       if (window.showToast) {

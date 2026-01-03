@@ -142,6 +142,12 @@ router.put('/:id', verifyToken, upload.fields([
   { name: 'image_tablet', maxCount: 1 },
   { name: 'image_mobile', maxCount: 1 }
 ]), (req, res) => {
+  // Log request for debugging
+  console.log('Banner update request:', {
+    id: req.params.id,
+    body: req.body,
+    files: req.files
+  })
   const {
     title,
     title_ar,
@@ -231,14 +237,22 @@ router.put('/:id', verifyToken, upload.fields([
         imageTablet,
         imageMobile,
         display_order !== undefined ? display_order : existingBanner.display_order,
-        enabled !== undefined ? enabled : existingBanner.enabled,
+        enabled !== undefined ? (enabled === '1' || enabled === 1 || enabled === true ? 1 : 0) : existingBanner.enabled,
         req.params.id
       ],
       function(err) {
         if (err) {
+          console.error('Database error updating banner:', err)
           return res.status(500).json({ error: err.message });
         }
-        res.json({ message: 'Banner updated successfully' });
+        console.log('Banner updated successfully:', req.params.id)
+        // Return updated banner
+        db.get('SELECT * FROM banners WHERE id = ?', [req.params.id], (err, updatedBanner) => {
+          if (err) {
+            return res.json({ message: 'Banner updated successfully' });
+          }
+          res.json({ message: 'Banner updated successfully', banner: updatedBanner });
+        });
       }
     );
   });

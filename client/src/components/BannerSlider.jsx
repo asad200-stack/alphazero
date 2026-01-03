@@ -44,12 +44,19 @@ const BannerSlider = () => {
   const fetchBanners = async () => {
     try {
       const response = await api.get('/banners')
-      // Filter enabled banners - handle both integer and string values
+      console.log('Banners API Response:', response.data)
+      
+      // The API already filters enabled banners, but we'll double-check
       const enabledBanners = response.data.filter(b => {
         const enabled = b.enabled
-        return enabled === 1 || enabled === '1' || enabled === true
+        const isEnabled = enabled === 1 || enabled === '1' || enabled === true
+        console.log(`Banner ${b.id}: enabled=${enabled}, isEnabled=${isEnabled}, hasImage=${!!(b.image_desktop || b.image_tablet || b.image_mobile)}`)
+        return isEnabled
       })
+      
+      console.log('Enabled Banners:', enabledBanners)
       setBanners(enabledBanners)
+      
       // Reset index if current banner is no longer available
       if (enabledBanners.length > 0 && currentIndex >= enabledBanners.length) {
         setCurrentIndex(0)
@@ -80,6 +87,7 @@ const BannerSlider = () => {
   }
 
   if (banners.length === 0) {
+    console.log('No enabled banners found')
     return null
   }
 
@@ -101,8 +109,13 @@ const BannerSlider = () => {
 
   const imageUrl = getImage()
   
+  console.log('Current Banner:', currentBanner)
+  console.log('Image URL:', imageUrl)
+  console.log('Full Image URL:', imageUrl ? getImageUrl(imageUrl) : null)
+  
   // If no image URL, don't render
   if (!imageUrl) {
+    console.warn('No image URL found for banner:', currentBanner)
     return null
   }
   
