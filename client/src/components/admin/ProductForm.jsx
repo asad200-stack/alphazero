@@ -521,6 +521,82 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
           </form>
         </div>
       </div>
+
+      {/* Add Category Modal */}
+      {showCategoryModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-gray-800">
+                  {language === 'ar' ? 'إضافة تصنيف جديد' : 'Add New Category'}
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowCategoryModal(false)
+                    setNewCategory({ name: '', name_ar: '', enabled: 1 })
+                  }}
+                  className="text-gray-500 hover:text-gray-700 text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+
+              <form onSubmit={handleAddCategory} className="space-y-4">
+                <div>
+                  <label className="block text-gray-700 font-medium mb-2">
+                    {language === 'ar' ? 'الاسم (إنجليزي) *' : 'Name (English) *'}
+                  </label>
+                  <input
+                    type="text"
+                    value={newCategory.name}
+                    onChange={(e) => setNewCategory(prev => ({ ...prev, name: e.target.value }))}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    placeholder={language === 'ar' ? 'مثال: Electronics' : 'e.g., Electronics'}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-gray-700 font-medium mb-2">
+                    {language === 'ar' ? 'الاسم (عربي)' : 'Name (Arabic)'}
+                  </label>
+                  <input
+                    type="text"
+                    value={newCategory.name_ar}
+                    onChange={(e) => setNewCategory(prev => ({ ...prev, name_ar: e.target.value }))}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    placeholder={language === 'ar' ? 'مثال: إلكترونيات' : 'e.g., إلكترونيات'}
+                  />
+                </div>
+
+                <div className="flex space-x-4 space-x-reverse pt-4">
+                  <button
+                    type="submit"
+                    disabled={addingCategory}
+                    className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50"
+                  >
+                    {addingCategory 
+                      ? (language === 'ar' ? 'جاري الإضافة...' : 'Adding...')
+                      : (language === 'ar' ? 'إضافة' : 'Add')
+                    }
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowCategoryModal(false)
+                      setNewCategory({ name: '', name_ar: '', enabled: 1 })
+                    }}
+                    className="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-400 transition"
+                  >
+                    {language === 'ar' ? 'إلغاء' : 'Cancel'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
