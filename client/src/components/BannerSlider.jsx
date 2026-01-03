@@ -124,15 +124,24 @@ const BannerSlider = () => {
   const buttonText = language === 'ar' ? (currentBanner.button_text_ar || currentBanner.button_text) : (currentBanner.button_text || currentBanner.button_text_ar)
   const buttonText2 = language === 'ar' ? (currentBanner.button_text_2_ar || currentBanner.button_text_2) : (currentBanner.button_text_2 || currentBanner.button_text_2_ar)
 
+  const fullImageUrl = getImageUrl(imageUrl)
+  console.log('Rendering banner with image URL:', fullImageUrl)
+
   return (
-    <div className="relative w-full h-64 md:h-96 lg:h-[500px] overflow-hidden">
+    <div className="relative w-full h-64 md:h-96 lg:h-[500px] overflow-hidden bg-gray-200">
       {/* Banner Image */}
-      <LazyImage
-        src={getImageUrl(imageUrl)}
-        alt={title || 'Banner'}
-        className="w-full h-full object-cover"
-        key={imageUrl} // Force re-render when image changes
-      />
+      {fullImageUrl ? (
+        <LazyImage
+          src={fullImageUrl}
+          alt={title || 'Banner'}
+          className="w-full h-full object-cover"
+          key={imageUrl} // Force re-render when image changes
+        />
+      ) : (
+        <div className="w-full h-full bg-gray-300 flex items-center justify-center">
+          <span className="text-gray-500">No image available</span>
+        </div>
+      )}
 
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black bg-opacity-40"></div>
