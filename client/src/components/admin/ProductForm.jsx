@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import api from '../../utils/api'
 import { getImageUrl } from '../../utils/config'
+import { useLanguage } from '../../context/LanguageContext'
 import ShareStoreLink from './ShareStoreLink'
 
 const ProductForm = ({ product, onClose, onSuccess }) => {
+  const { language, t } = useLanguage()
   const [formData, setFormData] = useState({
     name: '',
     name_ar: '',
@@ -93,7 +95,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
     const imageFiles = files.filter(file => file.type.startsWith('image/'))
     
     if (imageFiles.length === 0) {
-      alert('الرجاء اختيار ملفات صورة')
+      alert(language === 'ar' ? 'الرجاء اختيار ملفات صورة' : 'Please select image files')
       return
     }
     
@@ -161,14 +163,22 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
       onSuccess()
       // Show success message if toast is available
       if (window.showToast) {
-        window.showToast(product ? 'تم تحديث المنتج بنجاح' : 'تم إضافة المنتج بنجاح', 'success')
+        window.showToast(
+          product 
+            ? (language === 'ar' ? 'تم تحديث المنتج بنجاح' : 'Product updated successfully')
+            : (language === 'ar' ? 'تم إضافة المنتج بنجاح' : 'Product added successfully'),
+          'success'
+        )
       }
     } catch (error) {
       console.error('Error saving product:', error)
       if (window.showToast) {
-        window.showToast('حدث خطأ أثناء حفظ المنتج', 'error')
+        window.showToast(
+          language === 'ar' ? 'حدث خطأ أثناء حفظ المنتج' : 'Error saving product',
+          'error'
+        )
       } else {
-        alert('حدث خطأ أثناء حفظ المنتج')
+        alert(language === 'ar' ? 'حدث خطأ أثناء حفظ المنتج' : 'Error saving product')
       }
     } finally {
       setLoading(false)
@@ -181,7 +191,10 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-800">
-              {product ? 'تعديل منتج' : 'إضافة منتج جديد'}
+              {product 
+                ? (language === 'ar' ? 'تعديل منتج' : 'Edit Product')
+                : (language === 'ar' ? 'إضافة منتج جديد' : 'Add New Product')
+              }
             </h2>
             <button
               onClick={onClose}
@@ -195,7 +208,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-gray-700 font-medium mb-2">
-                  اسم المنتج (إنجليزي)
+                  {language === 'ar' ? 'اسم المنتج (إنجليزي)' : 'Product Name (English)'}
                 </label>
                 <input
                   type="text"
@@ -209,7 +222,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
 
               <div>
                 <label className="block text-gray-700 font-medium mb-2">
-                  اسم المنتج (عربي)
+                  {language === 'ar' ? 'اسم المنتج (عربي)' : 'Product Name (Arabic)'}
                 </label>
                 <input
                   type="text"
@@ -224,7 +237,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-gray-700 font-medium mb-2">
-                  الوصف (إنجليزي)
+                  {language === 'ar' ? 'الوصف (إنجليزي)' : 'Description (English)'}
                 </label>
                 <textarea
                   name="description"
@@ -237,7 +250,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
 
               <div>
                 <label className="block text-gray-700 font-medium mb-2">
-                  الوصف (عربي)
+                  {language === 'ar' ? 'الوصف (عربي)' : 'Description (Arabic)'}
                 </label>
                 <textarea
                   name="description_ar"
@@ -252,7 +265,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-gray-700 font-medium mb-2">
-                  السعر الأصلي (د.أ)
+                  {language === 'ar' ? 'السعر الأصلي (د.أ)' : 'Original Price'}
                 </label>
                 <input
                   type="number"
@@ -267,7 +280,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
 
               <div>
                 <label className="block text-gray-700 font-medium mb-2">
-                  السعر بعد الخصم (د.أ)
+                  {language === 'ar' ? 'السعر بعد الخصم (د.أ)' : 'Discount Price'}
                 </label>
                 <input
                   type="number"
@@ -281,7 +294,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
 
               <div>
                 <label className="block text-gray-700 font-medium mb-2">
-                  نسبة الخصم (%)
+                  {language === 'ar' ? 'نسبة الخصم (%)' : 'Discount Percentage (%)'}
                 </label>
                 <input
                   type="number"
@@ -297,7 +310,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
 
             <div>
               <label className="block text-gray-700 font-medium mb-2">
-                صور المنتج (يمكن رفع أكثر من صورة)
+                {language === 'ar' ? 'صور المنتج (يمكن رفع أكثر من صورة)' : 'Product Images (can upload multiple images)'}
               </label>
               
               {/* Existing and new images */}
@@ -355,10 +368,13 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
                     />
                   </svg>
                   <p className="mt-2 text-gray-600">
-                    اسحب الصور هنا أو انقر للاختيار
+                    {language === 'ar' ? 'اسحب الصور هنا أو انقر للاختيار' : 'Drag images here or click to select'}
                   </p>
                   <p className="text-sm text-gray-500 mt-1">
-                    PNG, JPG, GIF حتى 5MB - يمكن رفع حتى 10 صور
+                    {language === 'ar' 
+                      ? 'PNG, JPG, GIF حتى 5MB - يمكن رفع حتى 10 صور'
+                      : 'PNG, JPG, GIF up to 5MB - Can upload up to 10 images'
+                    }
                   </p>
                 </div>
               </div>
@@ -371,18 +387,26 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
                   disabled={loading}
                   className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50"
                 >
-                  {loading ? 'جاري الحفظ...' : (product ? 'تحديث' : 'إضافة')}
+                  {loading 
+                    ? (language === 'ar' ? 'جاري الحفظ...' : 'Saving...')
+                    : (product 
+                        ? (language === 'ar' ? 'تحديث' : 'Update')
+                        : (language === 'ar' ? 'إضافة' : 'Add')
+                      )
+                  }
                 </button>
                 <button
                   type="button"
                   onClick={onClose}
                   className="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition"
                 >
-                  إلغاء
+                  {language === 'ar' ? 'إلغاء' : 'Cancel'}
                 </button>
               </div>
               <div className="pt-2 border-t border-gray-200">
-                <p className="text-sm text-gray-600 mb-2 text-center">بعد الحفظ، شارك رابط المتجر مع زبائنك:</p>
+                <p className="text-sm text-gray-600 mb-2 text-center">
+                  {language === 'ar' ? 'بعد الحفظ، شارك رابط المتجر مع زبائنك:' : 'After saving, share the store link with your customers:'}
+                </p>
                 <div className="flex justify-center">
                   <ShareStoreLink />
                 </div>
