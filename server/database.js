@@ -120,12 +120,31 @@ db.serialize(() => {
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
 
-  // Insert default themes
-  db.run(`INSERT OR IGNORE INTO themes (name, name_ar, description, description_ar, template_type, is_active, config) VALUES 
-    ('Clothing Store', 'متجر الملابس', 'Perfect for fashion and clothing stores', 'مثالي لمتاجر الأزياء والملابس', 'clothing', 1, '{"primaryColor":"#E91E63","secondaryColor":"#C2185B","fontFamily":"Inter","buttonStyle":"rounded","showBanner":true,"showFeatured":true,"showOffers":true,"showBestSellers":true}'),
-    ('Beauty & Cosmetics', 'مستحضرات التجميل', 'Designed for beauty and cosmetics stores', 'مصمم لمتاجر مستحضرات التجميل', 'beauty', 0, '{"primaryColor":"#9C27B0","secondaryColor":"#7B1FA2","fontFamily":"Poppins","buttonStyle":"rounded-full","showBanner":true,"showFeatured":true,"showOffers":true,"showBestSellers":true}'),
-    ('Electronics', 'الإلكترونيات', 'Perfect for electronics and tech stores', 'مثالي لمتاجر الإلكترونيات والتقنية', 'electronics', 0, '{"primaryColor":"#2196F3","secondaryColor":"#1976D2","fontFamily":"Roboto","buttonStyle":"square","showBanner":true,"showFeatured":true,"showOffers":true,"showBestSellers":true}'),
-    ('General Store', 'المتجر العام', 'Versatile theme for any store', 'ثيم متعدد الاستخدامات لأي متجر', 'general', 0, '{"primaryColor":"#3B82F6","secondaryColor":"#1E40AF","fontFamily":"Inter","buttonStyle":"rounded","showBanner":true,"showFeatured":true,"showOffers":true,"showBestSellers":true}')`);
+  // Insert default themes - Check if themes exist first
+  db.get('SELECT COUNT(*) as count FROM themes', (err, row) => {
+    if (err) {
+      console.error('Error checking themes:', err);
+      return;
+    }
+    
+    // Only insert if table is empty
+    if (row && row.count === 0) {
+      console.log('Inserting default themes...');
+      db.run(`INSERT INTO themes (name, name_ar, description, description_ar, template_type, is_active, config) VALUES 
+        ('Clothing Store', 'متجر الملابس', 'Perfect for fashion and clothing stores', 'مثالي لمتاجر الأزياء والملابس', 'clothing', 1, '{"primaryColor":"#E91E63","secondaryColor":"#C2185B","fontFamily":"Inter","buttonStyle":"rounded","showBanner":true,"showFeatured":true,"showOffers":true,"showBestSellers":true}'),
+        ('Beauty & Cosmetics', 'مستحضرات التجميل', 'Designed for beauty and cosmetics stores', 'مصمم لمتاجر مستحضرات التجميل', 'beauty', 0, '{"primaryColor":"#9C27B0","secondaryColor":"#7B1FA2","fontFamily":"Poppins","buttonStyle":"rounded-full","showBanner":true,"showFeatured":true,"showOffers":true,"showBestSellers":true}'),
+        ('Electronics', 'الإلكترونيات', 'Perfect for electronics and tech stores', 'مثالي لمتاجر الإلكترونيات والتقنية', 'electronics', 0, '{"primaryColor":"#2196F3","secondaryColor":"#1976D2","fontFamily":"Roboto","buttonStyle":"square","showBanner":true,"showFeatured":true,"showOffers":true,"showBestSellers":true}'),
+        ('General Store', 'المتجر العام', 'Versatile theme for any store', 'ثيم متعدد الاستخدامات لأي متجر', 'general', 0, '{"primaryColor":"#3B82F6","secondaryColor":"#1E40AF","fontFamily":"Inter","buttonStyle":"rounded","showBanner":true,"showFeatured":true,"showOffers":true,"showBestSellers":true}')`, (err) => {
+        if (err) {
+          console.error('Error inserting default themes:', err);
+        } else {
+          console.log('Default themes inserted successfully');
+        }
+      });
+    } else {
+      console.log('Themes already exist, skipping insertion');
+    }
+  });
 
   // Default settings
   db.run(`INSERT OR IGNORE INTO settings (key, value) VALUES 
