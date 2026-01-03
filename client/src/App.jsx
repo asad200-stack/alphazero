@@ -16,6 +16,7 @@ import { ToastProvider } from './context/ToastContext'
 import { CartProvider } from './context/CartContext'
 import { WishlistProvider } from './context/WishlistContext'
 import { RecentlyViewedProvider } from './context/RecentlyViewedContext'
+import { SearchProvider } from './context/SearchContext'
 import './App.css'
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
             <CartProvider>
               <WishlistProvider>
                 <RecentlyViewedProvider>
+                  <SearchProvider>
             <Router
               future={{
                 v7_startTransition: true,
@@ -59,6 +61,7 @@ function App() {
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Router>
+                  </SearchProvider>
                 </RecentlyViewedProvider>
               </WishlistProvider>
             </CartProvider>

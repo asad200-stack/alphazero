@@ -1,19 +1,22 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useSettings } from '../context/SettingsContext'
 import { useLanguage } from '../context/LanguageContext'
 import { useCart } from '../context/CartContext'
 import { useWishlist } from '../context/WishlistContext'
+import { useSearch } from '../context/SearchContext'
 import { getImageUrl } from '../utils/config'
-import SearchModal from './SearchModal'
 
 const Header = () => {
   const { settings } = useSettings()
   const { language, changeLanguage, t } = useLanguage()
   const { getCartCount } = useCart()
   const { wishlist } = useWishlist()
+  const { searchQuery, setSearchQuery } = useSearch()
+  const navigate = useNavigate()
+  const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
-  const [searchOpen, setSearchOpen] = useState(false)
+  const [localSearchQuery, setLocalSearchQuery] = useState('')
 
   return (
     <header className="bg-white sticky top-0 z-50 shadow-md border-b border-gray-200">
@@ -57,8 +60,20 @@ const Header = () => {
               <input
                 type="text"
                 placeholder={t('searchProducts') || 'ابحث عن منتج...'}
-                onClick={() => setSearchOpen(true)}
-                readOnly
+                value={localSearchQuery}
+                onChange={(e) => {
+                  setLocalSearchQuery(e.target.value)
+                  setSearchQuery(e.target.value)
+                  // Navigate to shop if not already there
+                  if (e.target.value.trim() && location.pathname !== '/shop') {
+                    navigate('/shop')
+                  }
+                }}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && localSearchQuery.trim()) {
+                    navigate('/shop')
+                  }
+                }}
                 className="w-full px-4 py-2 pl-10 pr-4 bg-gray-100 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
               <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -72,14 +87,31 @@ const Header = () => {
           {/* Right Icons */}
           <div className="flex items-center space-x-3 space-x-reverse flex-shrink-0">
             {/* Mobile Search */}
-            <button 
-              onClick={() => setSearchOpen(true)}
-              className="md:hidden text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-all duration-300"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </button>
+            <div className="md:hidden relative">
+              <input
+                type="text"
+                placeholder={t('searchProducts') || 'ابحث...'}
+                value={localSearchQuery}
+                onChange={(e) => {
+                  setLocalSearchQuery(e.target.value)
+                  setSearchQuery(e.target.value)
+                  if (e.target.value.trim() && location.pathname !== '/shop') {
+                    navigate('/shop')
+                  }
+                }}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && localSearchQuery.trim()) {
+                    navigate('/shop')
+                  }
+                }}
+                className="w-32 px-3 py-2 pl-8 pr-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              />
+              <div className="absolute left-2 top-1/2 -translate-y-1/2">
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+            </div>
             
             {/* Wishlist */}
             <Link to="/account" className="relative text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-all duration-300">
@@ -171,8 +203,6 @@ const Header = () => {
           </button>
         </nav>
       </div>
-      
-      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   )
 }

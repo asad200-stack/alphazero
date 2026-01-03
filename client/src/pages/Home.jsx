@@ -12,12 +12,15 @@ import SkeletonLoader from '../components/SkeletonLoader'
 import api from '../utils/api'
 import { useSettings } from '../context/SettingsContext'
 import { useLanguage } from '../context/LanguageContext'
+import { useSearch } from '../context/SearchContext'
 
 const Home = () => {
+  const [allProducts, setAllProducts] = useState([])
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const { settings } = useSettings()
   const { t, language } = useLanguage()
+  const { searchQuery } = useSearch()
 
   useEffect(() => {
     fetchProducts()
@@ -26,6 +29,7 @@ const Home = () => {
   const fetchProducts = async () => {
     try {
       const response = await api.get('/products')
+      setAllProducts(response.data)
       setProducts(response.data)
     } catch (error) {
       console.error('Error fetching products:', error)
@@ -33,6 +37,25 @@ const Home = () => {
       setLoading(false)
     }
   }
+
+  // Filter products by search query
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      const filtered = allProducts.filter(product => {
+        const name = language === 'ar' 
+          ? (product.name_ar || product.name || '').toLowerCase()
+          : (product.name || product.name_ar || '').toLowerCase()
+        const description = language === 'ar'
+          ? (product.description_ar || product.description || '').toLowerCase()
+          : (product.description || product.description_ar || '').toLowerCase()
+        const query = searchQuery.toLowerCase()
+        return name.includes(query) || description.includes(query)
+      })
+      setProducts(filtered)
+    } else {
+      setProducts(allProducts)
+    }
+  }, [searchQuery, allProducts, language])
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50 pb-20 md:pb-0">
