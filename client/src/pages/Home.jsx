@@ -16,7 +16,7 @@ const Home = () => {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const { settings } = useSettings()
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
 
   useEffect(() => {
     fetchProducts()

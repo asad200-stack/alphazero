@@ -1,6 +1,5 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useLanguage } from '../context/LanguageContext'
 
 class ErrorBoundaryClass extends React.Component {
   constructor(props) {
@@ -26,8 +25,7 @@ class ErrorBoundaryClass extends React.Component {
 }
 
 const ErrorFallback = ({ onReset }) => {
-  const { t } = useLanguage()
-  
+  // Don't use useLanguage here to avoid provider issues
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <div className="text-center max-w-md">
@@ -37,23 +35,23 @@ const ErrorFallback = ({ onReset }) => {
           </svg>
         </div>
         <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          {t('errorOccurred') || 'حدث خطأ'}
+          حدث خطأ
         </h1>
         <p className="text-gray-600 mb-8">
-          {t('errorMessage') || 'عذراً، حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.'}
+          عذراً، حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
             onClick={onReset}
             className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
           >
-            {t('tryAgain') || 'حاول مرة أخرى'}
+            حاول مرة أخرى
           </button>
           <Link
             to="/"
             className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
           >
-            {t('backToHome') || 'العودة للصفحة الرئيسية'}
+            العودة للصفحة الرئيسية
           </Link>
         </div>
       </div>
