@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from 'react'
 import { useSettings } from '../../context/SettingsContext'
+import { useTheme } from '../../context/ThemeContext'
 import api from '../../utils/api'
 import { getImageUrl } from '../../utils/config'
 import { useLanguage } from '../../context/LanguageContext'
 
 const SettingsManagement = () => {
   const { settings, updateSettings, fetchSettings } = useSettings()
-  const { t } = useLanguage()
+  const { themes, activeTheme, activateTheme, updateThemeConfig } = useTheme()
+  const { t, language } = useLanguage()
   const [formData, setFormData] = useState({
     store_name: '',
     store_name_en: '',
@@ -386,6 +388,99 @@ const SettingsManagement = () => {
               <p className="text-sm text-gray-500 mt-2">
                 {t('holidayThemeDescription')}
               </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Themes Section */}
+        <div>
+          <h3 className="text-lg font-semibold mb-4 text-gray-700">
+            {language === 'ar' ? 'الثيمات' : 'Themes & Appearance'}
+          </h3>
+          <div className="space-y-4">
+            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+              <p className="text-sm text-gray-600 mb-4">
+                {language === 'ar' 
+                  ? 'اختر ثيم احترافي لمتجرك. كل ثيم مصمم خصيصاً لنوع معين من المتاجر.'
+                  : 'Choose a professional theme for your store. Each theme is designed specifically for a certain type of store.'}
+              </p>
+              
+              {activeTheme && (
+                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm font-semibold text-blue-800 mb-1">
+                    {language === 'ar' ? 'الثيم النشط:' : 'Active Theme:'}
+                  </p>
+                  <p className="text-lg font-bold text-blue-900">
+                    {language === 'ar' ? (activeTheme.name_ar || activeTheme.name) : (activeTheme.name || activeTheme.name_ar)}
+                  </p>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {themes.map((theme) => {
+                  const themeIcons = {
+                    clothing: '👕',
+                    beauty: '💄',
+                    electronics: '📱',
+                    general: '🛒'
+                  }
+                  const isActive = theme.is_active === 1
+                  
+                  return (
+                    <div
+                      key={theme.id}
+                      className={`p-4 border-2 rounded-lg transition-all ${
+                        isActive 
+                          ? 'border-blue-500 bg-blue-50' 
+                          : 'border-gray-200 bg-white hover:border-gray-300'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl">{themeIcons[theme.template_type] || '🛒'}</span>
+                          <h4 className="font-bold text-gray-800">
+                            {language === 'ar' ? (theme.name_ar || theme.name) : (theme.name || theme.name_ar)}
+                          </h4>
+                        </div>
+                        {isActive && (
+                          <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-bold">
+                            {language === 'ar' ? 'نشط' : 'Active'}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-gray-600 mb-3">
+                        {language === 'ar' ? (theme.description_ar || theme.description) : (theme.description || theme.description_ar)}
+                      </p>
+                      {!isActive && (
+                        <button
+                          onClick={async () => {
+                            if (window.confirm(language === 'ar' 
+                              ? `هل تريد تفعيل ثيم "${theme.name_ar || theme.name}"؟`
+                              : `Do you want to activate theme "${theme.name}"?`)) {
+                              await activateTheme(theme.id)
+                            }
+                          }}
+                          className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-semibold text-sm"
+                        >
+                          {language === 'ar' ? 'تفعيل' : 'Activate'}
+                        </button>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <a
+                  href="/admin/themes"
+                  className="text-blue-600 hover:text-blue-800 font-semibold text-sm inline-flex items-center gap-1"
+                >
+                  {language === 'ar' ? 'إدارة الثيمات المتقدمة' : 'Advanced Theme Management'}
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
+              </div>
             </div>
           </div>
         </div>
