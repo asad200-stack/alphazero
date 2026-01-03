@@ -25,7 +25,9 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'banner-' + uniqueSuffix + path.extname(file.originalname));
+    const filename = 'banner-' + uniqueSuffix + path.extname(file.originalname);
+    console.log('Saving banner image:', filename, 'to', bannersDir);
+    cb(null, filename);
   }
 });
 
@@ -108,6 +110,13 @@ router.post('/', verifyToken, upload.fields([
   const imageDesktop = req.files?.image_desktop?.[0] ? `/uploads/banners/${req.files.image_desktop[0].filename}` : null;
   const imageTablet = req.files?.image_tablet?.[0] ? `/uploads/banners/${req.files.image_tablet[0].filename}` : null;
   const imageMobile = req.files?.image_mobile?.[0] ? `/uploads/banners/${req.files.image_mobile[0].filename}` : null;
+  
+  console.log('Creating banner with images:', {
+    desktop: imageDesktop,
+    tablet: imageTablet,
+    mobile: imageMobile,
+    files: req.files
+  });
 
   db.run(
     `INSERT INTO banners (

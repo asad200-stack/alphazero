@@ -110,13 +110,18 @@ const BannerSlider = () => {
   const imageUrl = getImage()
   
   console.log('Current Banner:', currentBanner)
-  console.log('Image URL:', imageUrl)
+  console.log('Image URL (raw):', imageUrl)
   console.log('Full Image URL:', imageUrl ? getImageUrl(imageUrl) : null)
+  console.log('Banner images:', {
+    desktop: currentBanner.image_desktop,
+    tablet: currentBanner.image_tablet,
+    mobile: currentBanner.image_mobile
+  })
   
-  // If no image URL, don't render
+  // If no image URL, show placeholder but still render banner
   if (!imageUrl) {
     console.warn('No image URL found for banner:', currentBanner)
-    return null
+    // Don't return null, show banner with text only
   }
   
   const title = language === 'ar' ? (currentBanner.title_ar || currentBanner.title) : (currentBanner.title || currentBanner.title_ar)
@@ -127,6 +132,9 @@ const BannerSlider = () => {
   const fullImageUrl = getImageUrl(imageUrl)
   console.log('Rendering banner with image URL:', fullImageUrl)
 
+  const fullImageUrl = imageUrl ? getImageUrl(imageUrl) : null
+  console.log('Rendering banner with image URL:', fullImageUrl)
+
   return (
     <div className="relative w-full h-64 md:h-96 lg:h-[500px] overflow-hidden bg-gray-200">
       {/* Banner Image */}
@@ -135,11 +143,11 @@ const BannerSlider = () => {
           src={fullImageUrl}
           alt={title || 'Banner'}
           className="w-full h-full object-cover"
-          key={imageUrl} // Force re-render when image changes
+          key={`${currentBanner.id}-${imageUrl}`} // Force re-render when image changes
         />
       ) : (
-        <div className="w-full h-full bg-gray-300 flex items-center justify-center">
-          <span className="text-gray-500">No image available</span>
+        <div className="w-full h-full bg-gradient-to-r from-gray-300 to-gray-400 flex items-center justify-center">
+          <span className="text-gray-600 text-sm">{language === 'ar' ? 'لا توجد صورة' : 'No image available'}</span>
         </div>
       )}
 
