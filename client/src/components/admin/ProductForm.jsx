@@ -339,25 +339,13 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
 
             {/* Category Selection */}
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="block text-gray-700 font-medium">
-                  {language === 'ar' ? 'التصنيف *' : 'Category *'}
-                </label>
-                <button
-                  type="button"
-                  onClick={() => setShowCategoryModal(true)}
-                  className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                  {language === 'ar' ? 'إضافة تصنيف جديد' : 'Add New Category'}
-                </button>
-              </div>
+              <label className="block text-gray-700 font-medium mb-2">
+                {language === 'ar' ? 'التصنيف *' : 'Category *'}
+              </label>
               <select
                 name="category_id"
                 value={formData.category_id}
-                onChange={handleChange}
+                onChange={handleCategoryChange}
                 required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
@@ -367,6 +355,9 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
                     {language === 'ar' ? (category.name_ar || category.name) : (category.name || category.name_ar)}
                   </option>
                 ))}
+                <option value="add_new" className="text-blue-600 font-semibold bg-blue-50">
+                  {language === 'ar' ? '+ إضافة تصنيف جديد' : '+ Add New Category'}
+                </option>
               </select>
             </div>
 
