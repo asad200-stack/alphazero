@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Header from '../components/Header'
-import Banner from '../components/Banner'
+import BannerSlider from '../components/BannerSlider'
 import TrustElements from '../components/TrustElements'
 import ProductCard from '../components/ProductCard'
 import ProductCarousel from '../components/ProductCarousel'
@@ -41,7 +41,7 @@ const Home = () => {
         description={language === 'ar' ? 'اكتشف مجموعتنا المميزة من المنتجات' : 'Discover our amazing product collection'}
       />
       <Header />
-      <Banner />
+      <BannerSlider />
       <TrustElements />
       
       <main className="container mx-auto px-4 py-8 md:py-12">

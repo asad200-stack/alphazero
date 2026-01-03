@@ -48,6 +48,28 @@ db.serialize(() => {
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
 
+  // Banners table
+  db.run(`CREATE TABLE IF NOT EXISTS banners (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT,
+    title_ar TEXT,
+    subtitle TEXT,
+    subtitle_ar TEXT,
+    button_text TEXT,
+    button_text_ar TEXT,
+    button_link TEXT,
+    button_text_2 TEXT,
+    button_text_2_ar TEXT,
+    button_link_2 TEXT,
+    image_desktop TEXT,
+    image_tablet TEXT,
+    image_mobile TEXT,
+    display_order INTEGER DEFAULT 0,
+    enabled INTEGER DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`);
+
   // Users table (for admin)
   db.run(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Routes, Route, Navigate, useNavigate, Link } from 'react-router-dom'
 import ProductsManagement from '../components/admin/ProductsManagement'
 import SettingsManagement from '../components/admin/SettingsManagement'
+import BannerManagement from '../components/admin/BannerManagement'
 import api from '../utils/api'
 import { useLanguage } from '../context/LanguageContext'
 
@@ -90,7 +91,7 @@ const AdminDashboard = () => {
 
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <div className="flex space-x-4 space-x-reverse rtl:space-x-reverse">
+          <div className="flex space-x-4 space-x-reverse rtl:space-x-reverse flex-wrap">
             <Link
               to="/admin/dashboard"
               className="px-6 py-3 rounded-lg font-medium transition"
@@ -100,6 +101,12 @@ const AdminDashboard = () => {
               }}
             >
               {t('products')}
+            </Link>
+            <Link
+              to="/admin/banners"
+              className="px-6 py-3 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
+            >
+              {language === 'ar' ? 'البانرات' : 'Banners'}
             </Link>
             <Link
               to="/admin/settings"
@@ -112,6 +119,7 @@ const AdminDashboard = () => {
 
         <Routes>
           <Route path="dashboard" element={<ProductsManagement />} />
+          <Route path="banners" element={<BannerManagement />} />
           <Route path="settings" element={<SettingsManagement />} />
           <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
         </Routes>

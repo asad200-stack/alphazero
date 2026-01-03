@@ -32,11 +32,13 @@ app.use('/uploads', express.static(uploadsDir));
 const productsRoutes = require('./routes/products');
 const settingsRoutes = require('./routes/settings');
 const authRoutes = require('./routes/auth');
+const bannersRoutes = require('./routes/banners');
 
 // Routes
 app.use('/api/products', productsRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/banners', bannersRoutes);
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
