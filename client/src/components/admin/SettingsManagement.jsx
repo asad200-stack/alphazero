@@ -383,37 +383,41 @@ const SettingsManagement = () => {
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold mb-4 text-gray-700">{t('holidayTheme')}</h3>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">
-                {t('selectHolidayTheme')}
-              </label>
-              <select
-                name="holiday_theme"
-                value={formData.holiday_theme}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="none">{t('noTheme')}</option>
-                <option value="christmas">{t('christmasTheme')}</option>
-                <option value="eid">{t('eidTheme')}</option>
-                <option value="ramadan">{t('ramadanTheme')}</option>
-                <option value="valentine">{t('valentineTheme')}</option>
-                <option value="newyear">{t('newYearTheme')}</option>
-              </select>
-              <p className="text-sm text-gray-500 mt-2">
-                {t('holidayThemeDescription')}
-              </p>
+          <h3 className="text-lg font-semibold mb-4 text-gray-700">{t('appearance') || (language === 'ar' ? 'المظهر والثيمات' : 'Appearance & Themes')}</h3>
+          
+          {/* Holiday Theme */}
+          <div className="mb-6">
+            <h4 className="text-md font-semibold mb-3 text-gray-700">{t('holidayTheme')}</h4>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">
+                  {t('selectHolidayTheme')}
+                </label>
+                <select
+                  name="holiday_theme"
+                  value={formData.holiday_theme}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="none">{t('noTheme')}</option>
+                  <option value="christmas">{t('christmasTheme')}</option>
+                  <option value="eid">{t('eidTheme')}</option>
+                  <option value="ramadan">{t('ramadanTheme')}</option>
+                  <option value="valentine">{t('valentineTheme')}</option>
+                  <option value="newyear">{t('newYearTheme')}</option>
+                </select>
+                <p className="text-sm text-gray-500 mt-2">
+                  {t('holidayThemeDescription')}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Themes Section - Always visible */}
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          <h3 className="text-xl font-bold mb-4 text-gray-800">
-            {language === 'ar' ? '🎨 الثيمات' : '🎨 Themes & Appearance'}
-          </h3>
+          {/* Store Themes Section */}
+          <div className="pt-4 border-t border-gray-200">
+          <h4 className="text-md font-semibold mb-3 text-gray-700">
+            {language === 'ar' ? '🎨 ثيمات المتجر' : '🎨 Store Themes'}
+          </h4>
           <div className="space-y-4">
             <div className="bg-gradient-to-br from-gray-50 to-blue-50 p-6 rounded-lg border-2 border-gray-200 shadow-sm">
               <p className="text-sm text-gray-700 mb-4 font-medium">
