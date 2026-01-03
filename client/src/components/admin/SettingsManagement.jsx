@@ -13,14 +13,18 @@ const SettingsManagement = () => {
   let themes = []
   let activeTheme = null
   let activateThemeFn = null
+  let themeError = false
   
   try {
     const themeContext = useTheme()
-    themes = themeContext.themes || []
-    activeTheme = themeContext.activeTheme
-    activateThemeFn = themeContext.activateTheme
+    if (themeContext) {
+      themes = themeContext.themes || []
+      activeTheme = themeContext.activeTheme
+      activateThemeFn = themeContext.activateTheme
+    }
   } catch (error) {
     console.error('Theme context error:', error)
+    themeError = true
   }
   const [formData, setFormData] = useState({
     store_name: '',
@@ -406,20 +410,29 @@ const SettingsManagement = () => {
         </div>
 
         {/* Themes Section - Always visible */}
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-4 text-gray-700">
-            {language === 'ar' ? 'الثيمات' : 'Themes & Appearance'}
+        <div className="mt-6 pt-6 border-t border-gray-200">
+          <h3 className="text-xl font-bold mb-4 text-gray-800">
+            {language === 'ar' ? '🎨 الثيمات' : '🎨 Themes & Appearance'}
           </h3>
           <div className="space-y-4">
-            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-              <p className="text-sm text-gray-600 mb-4">
+            <div className="bg-gradient-to-br from-gray-50 to-blue-50 p-6 rounded-lg border-2 border-gray-200 shadow-sm">
+              <p className="text-sm text-gray-700 mb-4 font-medium">
                 {language === 'ar' 
                   ? 'اختر ثيم احترافي لمتجرك. كل ثيم مصمم خصيصاً لنوع معين من المتاجر.'
                   : 'Choose a professional theme for your store. Each theme is designed specifically for a certain type of store.'}
               </p>
               
+              {themeError && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm text-red-800">
+                    {language === 'ar' 
+                      ? '⚠️ حدث خطأ في تحميل الثيمات. يرجى تحديث الصفحة.'
+                      : '⚠️ Error loading themes. Please refresh the page.'}
+                  </p>
+                </div>
+              )}
               
-              {activeTheme && (
+              {activeTheme && !themeError && (
                 <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                   <p className="text-sm font-semibold text-blue-800 mb-1">
                     {language === 'ar' ? 'الثيم النشط:' : 'Active Theme:'}
