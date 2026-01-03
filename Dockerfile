@@ -4,9 +4,8 @@ FROM node:18-alpine
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-COPY client/package*.json ./client/
+# Copy all files first
+COPY . .
 
 # Install root dependencies
 RUN npm ci --omit=dev
@@ -15,12 +14,7 @@ RUN npm ci --omit=dev
 WORKDIR /app/client
 RUN npm ci
 
-# Copy all files
-WORKDIR /app
-COPY . .
-
 # Build client
-WORKDIR /app/client
 RUN npm run build
 
 # Back to root
@@ -31,4 +25,6 @@ EXPOSE 3000
 
 # Start server
 CMD ["npm", "start"]
+
+
 
