@@ -4,6 +4,7 @@ import ProductsManagement from '../components/admin/ProductsManagement'
 import SettingsManagement from '../components/admin/SettingsManagement'
 import BannerManagement from '../components/admin/BannerManagement'
 import CategoryManagement from '../components/admin/CategoryManagement'
+import ThemeManagement from '../components/admin/ThemeManagement'
 import api from '../utils/api'
 import { useLanguage } from '../context/LanguageContext'
 
@@ -121,6 +122,12 @@ const AdminDashboard = () => {
             >
               {t('settings')}
             </Link>
+            <Link
+              to="/admin/themes"
+              className="px-6 py-3 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
+            >
+              {language === 'ar' ? 'الثيمات' : 'Themes'}
+            </Link>
           </div>
         </div>
 
@@ -129,6 +136,7 @@ const AdminDashboard = () => {
           <Route path="categories" element={<CategoryManagement />} />
           <Route path="banners" element={<BannerManagement />} />
           <Route path="settings" element={<SettingsManagement />} />
+          <Route path="themes" element={<ThemeManagement />} />
           <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
         </Routes>
       </div>

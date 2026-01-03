@@ -34,6 +34,7 @@ const settingsRoutes = require('./routes/settings');
 const authRoutes = require('./routes/auth');
 const bannersRoutes = require('./routes/banners');
 const categoriesRoutes = require('./routes/categories');
+const themesRoutes = require('./routes/themes');
 
 // Routes
 app.use('/api/products', productsRoutes);
@@ -41,6 +42,7 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/banners', bannersRoutes);
 app.use('/api/categories', categoriesRoutes);
+app.use('/api/themes', themesRoutes);
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {

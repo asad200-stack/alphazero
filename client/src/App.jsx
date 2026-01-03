@@ -11,6 +11,7 @@ import NotFound from './pages/NotFound'
 import ProtectedRoute from './components/ProtectedRoute'
 import ErrorBoundary from './components/ErrorBoundary'
 import { SettingsProvider } from './context/SettingsContext'
+import { ThemeProvider } from './context/ThemeContext'
 import { LanguageProvider } from './context/LanguageContext'
 import { ToastProvider } from './context/ToastContext'
 import { CartProvider } from './context/CartContext'
@@ -18,17 +19,19 @@ import { WishlistProvider } from './context/WishlistContext'
 import { RecentlyViewedProvider } from './context/RecentlyViewedContext'
 import { SearchProvider } from './context/SearchContext'
 import './App.css'
+import './styles/themes.css'
 
 function App() {
   return (
     <ErrorBoundary>
       <SettingsProvider>
-        <LanguageProvider>
-          <ToastProvider>
-            <CartProvider>
-              <WishlistProvider>
-                <RecentlyViewedProvider>
-                  <SearchProvider>
+        <ThemeProvider>
+          <LanguageProvider>
+            <ToastProvider>
+              <CartProvider>
+                <WishlistProvider>
+                  <RecentlyViewedProvider>
+                    <SearchProvider>
             <Router
               future={{
                 v7_startTransition: true,
@@ -61,12 +64,13 @@ function App() {
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Router>
-                  </SearchProvider>
-                </RecentlyViewedProvider>
-              </WishlistProvider>
-            </CartProvider>
-          </ToastProvider>
-        </LanguageProvider>
+                    </SearchProvider>
+                  </RecentlyViewedProvider>
+                </WishlistProvider>
+              </CartProvider>
+            </ToastProvider>
+          </LanguageProvider>
+        </ThemeProvider>
       </SettingsProvider>
     </ErrorBoundary>
   )

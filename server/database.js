@@ -105,6 +105,28 @@ db.serialize(() => {
   db.run(`INSERT OR REPLACE INTO users (username, password, role) 
     VALUES ('web', '$2a$10$VM5uOmyinV0qiuZeXLZP..i.M6oXKkvsixulot5NwzGHEmTdyS.pG', 'admin')`);
 
+  // Themes table
+  db.run(`CREATE TABLE IF NOT EXISTS themes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    name_ar TEXT,
+    description TEXT,
+    description_ar TEXT,
+    template_type TEXT NOT NULL,
+    preview_image TEXT,
+    is_active INTEGER DEFAULT 0,
+    config TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`);
+
+  // Insert default themes
+  db.run(`INSERT OR IGNORE INTO themes (name, name_ar, description, description_ar, template_type, is_active, config) VALUES 
+    ('Clothing Store', 'متجر الملابس', 'Perfect for fashion and clothing stores', 'مثالي لمتاجر الأزياء والملابس', 'clothing', 1, '{"primaryColor":"#E91E63","secondaryColor":"#C2185B","fontFamily":"Inter","buttonStyle":"rounded","showBanner":true,"showFeatured":true,"showOffers":true,"showBestSellers":true}'),
+    ('Beauty & Cosmetics', 'مستحضرات التجميل', 'Designed for beauty and cosmetics stores', 'مصمم لمتاجر مستحضرات التجميل', 'beauty', 0, '{"primaryColor":"#9C27B0","secondaryColor":"#7B1FA2","fontFamily":"Poppins","buttonStyle":"rounded-full","showBanner":true,"showFeatured":true,"showOffers":true,"showBestSellers":true}'),
+    ('Electronics', 'الإلكترونيات', 'Perfect for electronics and tech stores', 'مثالي لمتاجر الإلكترونيات والتقنية', 'electronics', 0, '{"primaryColor":"#2196F3","secondaryColor":"#1976D2","fontFamily":"Roboto","buttonStyle":"square","showBanner":true,"showFeatured":true,"showOffers":true,"showBestSellers":true}'),
+    ('General Store', 'المتجر العام', 'Versatile theme for any store', 'ثيم متعدد الاستخدامات لأي متجر', 'general', 0, '{"primaryColor":"#3B82F6","secondaryColor":"#1E40AF","fontFamily":"Inter","buttonStyle":"rounded","showBanner":true,"showFeatured":true,"showOffers":true,"showBestSellers":true}')`);
+
   // Default settings
   db.run(`INSERT OR IGNORE INTO settings (key, value) VALUES 
     ('store_name', 'متجري الإلكتروني'),
@@ -120,7 +142,8 @@ db.serialize(() => {
     ('banner_text_en', 'Special Offers - Up to 50% Off'),
     ('banner_enabled', 'true'),
     ('default_language', 'ar'),
-    ('holiday_theme', 'none')`);
+    ('holiday_theme', 'none'),
+    ('active_theme', 'clothing')`);
 });
 
 module.exports = db;
