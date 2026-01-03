@@ -7,8 +7,21 @@ import { useLanguage } from '../../context/LanguageContext'
 
 const SettingsManagement = () => {
   const { settings, updateSettings, fetchSettings } = useSettings()
-  const { themes, activeTheme, activateTheme, updateThemeConfig } = useTheme()
   const { t, language } = useLanguage()
+  
+  // Get theme context with error handling
+  let themes = []
+  let activeTheme = null
+  let activateThemeFn = null
+  
+  try {
+    const themeContext = useTheme()
+    themes = themeContext.themes || []
+    activeTheme = themeContext.activeTheme
+    activateThemeFn = themeContext.activateTheme
+  } catch (error) {
+    console.error('Theme context error:', error)
+  }
   const [formData, setFormData] = useState({
     store_name: '',
     store_name_en: '',
@@ -392,8 +405,8 @@ const SettingsManagement = () => {
           </div>
         </div>
 
-        {/* Themes Section */}
-        <div>
+        {/* Themes Section - Always visible */}
+        <div className="mt-6">
           <h3 className="text-lg font-semibold mb-4 text-gray-700">
             {language === 'ar' ? 'الثيمات' : 'Themes & Appearance'}
           </h3>
@@ -404,6 +417,8 @@ const SettingsManagement = () => {
                   ? 'اختر ثيم احترافي لمتجرك. كل ثيم مصمم خصيصاً لنوع معين من المتاجر.'
                   : 'Choose a professional theme for your store. Each theme is designed specifically for a certain type of store.'}
               </p>
+              
+              {console.log('Themes data:', { themes, activeTheme, themesLength: themes.length })}
               
               {activeTheme && (
                 <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
@@ -416,6 +431,15 @@ const SettingsManagement = () => {
                 </div>
               )}
 
+              {themes.length === 0 ? (
+                <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <p className="text-sm text-yellow-800">
+                    {language === 'ar' 
+                      ? 'جاري تحميل الثيمات...' 
+                      : 'Loading themes...'}
+                  </p>
+                </div>
+              ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {themes.map((theme) => {
                   const themeIcons = {
@@ -451,13 +475,15 @@ const SettingsManagement = () => {
                       <p className="text-sm text-gray-600 mb-3">
                         {language === 'ar' ? (theme.description_ar || theme.description) : (theme.description || theme.description_ar)}
                       </p>
-                      {!isActive && (
+                      {!isActive && activateThemeFn && (
                         <button
                           onClick={async () => {
                             if (window.confirm(language === 'ar' 
                               ? `هل تريد تفعيل ثيم "${theme.name_ar || theme.name}"؟`
                               : `Do you want to activate theme "${theme.name}"?`)) {
-                              await activateTheme(theme.id)
+                              await activateThemeFn(theme.id)
+                              // Refresh page to show updated theme
+                              window.location.reload()
                             }
                           }}
                           className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-semibold text-sm"
@@ -469,6 +495,7 @@ const SettingsManagement = () => {
                   )
                 })}
               </div>
+              )}
 
               <div className="mt-4 pt-4 border-t border-gray-200">
                 <a
