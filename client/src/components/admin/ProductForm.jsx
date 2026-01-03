@@ -21,6 +21,13 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
   const [dragActive, setDragActive] = useState(false)
   const [loading, setLoading] = useState(false)
   const [categories, setCategories] = useState([])
+  const [showCategoryModal, setShowCategoryModal] = useState(false)
+  const [newCategory, setNewCategory] = useState({
+    name: '',
+    name_ar: '',
+    enabled: 1
+  })
+  const [addingCategory, setAddingCategory] = useState(false)
   const fileInputRef = useRef(null)
 
   useEffect(() => {
@@ -33,6 +40,53 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
       setCategories(response.data.filter(c => c.enabled === 1))
     } catch (error) {
       console.error('Error fetching categories:', error)
+    }
+  }
+
+  const handleAddCategory = async (e) => {
+    e.preventDefault()
+    if (!newCategory.name.trim()) {
+      alert(language === 'ar' ? 'الرجاء إدخال اسم التصنيف' : 'Please enter category name')
+      return
+    }
+
+    setAddingCategory(true)
+    try {
+      const formDataToSend = new FormData()
+      formDataToSend.append('name', newCategory.name)
+      formDataToSend.append('name_ar', newCategory.name_ar || newCategory.name)
+      formDataToSend.append('enabled', newCategory.enabled)
+
+      const response = await api.post('/categories', formDataToSend, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+
+      // Refresh categories list
+      await fetchCategories()
+      
+      // Set the newly created category as selected
+      setFormData(prev => ({ ...prev, category_id: response.data.id }))
+      
+      // Close modal and reset form
+      setShowCategoryModal(false)
+      setNewCategory({ name: '', name_ar: '', enabled: 1 })
+      
+      if (window.showToast) {
+        window.showToast(
+          language === 'ar' ? 'تم إضافة التصنيف بنجاح' : 'Category added successfully',
+          'success'
+        )
+      }
+    } catch (error) {
+      console.error('Error adding category:', error)
+      if (window.showToast) {
+        window.showToast(
+          language === 'ar' ? 'حدث خطأ أثناء إضافة التصنيف' : 'Error adding category',
+          'error'
+        )
+      }
+    } finally {
+      setAddingCategory(false)
     }
   }
 
@@ -255,9 +309,21 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
 
             {/* Category Selection */}
             <div>
-              <label className="block text-gray-700 font-medium mb-2">
-                {language === 'ar' ? 'التصنيف *' : 'Category *'}
-              </label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-gray-700 font-medium">
+                  {language === 'ar' ? 'التصنيف *' : 'Category *'}
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setShowCategoryModal(true)}
+                  className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  {language === 'ar' ? 'إضافة تصنيف جديد' : 'Add New Category'}
+                </button>
+              </div>
               <select
                 name="category_id"
                 value={formData.category_id}
