@@ -222,20 +222,64 @@ const BannerManagement = () => {
       </div>
 
       {/* Image Size Guidelines */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-        <h3 className="font-bold text-blue-900 mb-2">
-          {language === 'ar' ? 'أحجام الصور المطلوبة:' : 'Required Image Sizes:'}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-lg p-6 mb-6 shadow-md">
+        <h3 className="font-bold text-blue-900 mb-4 text-lg">
+          {language === 'ar' ? '📐 أحجام الصور المطلوبة:' : '📐 Required Image Sizes:'}
         </h3>
-        <ul className="text-sm text-blue-800 space-y-1">
-          <li>• <strong>Desktop:</strong> 1920 × 600 px (or 1600 × 500 px)</li>
-          <li>• <strong>Tablet:</strong> 1024 × 500 px</li>
-          <li>• <strong>Mobile:</strong> 768 × 900 px</li>
-        </ul>
-        <p className="text-xs text-blue-700 mt-2">
-          {language === 'ar' 
-            ? 'يمكنك استخدام صورة واحدة فقط (Desktop) وسيتم استخدامها لجميع الأحجام'
-            : 'You can use only one image (Desktop) and it will be used for all sizes'}
-        </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div className="bg-white rounded-lg p-4 border border-blue-200">
+            <div className="flex items-center mb-2">
+              <span className="text-2xl mr-2">🖥️</span>
+              <strong className="text-blue-900">{language === 'ar' ? 'Desktop' : 'Desktop'}</strong>
+            </div>
+            <p className="text-sm text-gray-700 font-semibold mb-1">
+              {language === 'ar' ? 'المقاس الموصى به:' : 'Recommended Size:'}
+            </p>
+            <p className="text-lg font-bold text-blue-600">1920 × 600 px</p>
+            <p className="text-xs text-gray-600 mt-1">
+              {language === 'ar' ? 'أو' : 'or'} 1600 × 500 px
+            </p>
+            <p className="text-xs text-gray-500 mt-2">
+              {language === 'ar' ? 'Full width' : 'Full width'}
+            </p>
+          </div>
+          
+          <div className="bg-white rounded-lg p-4 border border-blue-200">
+            <div className="flex items-center mb-2">
+              <span className="text-2xl mr-2">📱</span>
+              <strong className="text-blue-900">{language === 'ar' ? 'Tablet' : 'Tablet'}</strong>
+            </div>
+            <p className="text-sm text-gray-700 font-semibold mb-1">
+              {language === 'ar' ? 'المقاس الموصى به:' : 'Recommended Size:'}
+            </p>
+            <p className="text-lg font-bold text-blue-600">1024 × 500 px</p>
+            <p className="text-xs text-gray-500 mt-2">
+              {language === 'ar' ? 'للشاشات المتوسطة' : 'For medium screens'}
+            </p>
+          </div>
+          
+          <div className="bg-white rounded-lg p-4 border border-blue-200">
+            <div className="flex items-center mb-2">
+              <span className="text-2xl mr-2">📲</span>
+              <strong className="text-blue-900">{language === 'ar' ? 'Mobile' : 'Mobile'}</strong>
+            </div>
+            <p className="text-sm text-gray-700 font-semibold mb-1">
+              {language === 'ar' ? 'المقاس الموصى به:' : 'Recommended Size:'}
+            </p>
+            <p className="text-lg font-bold text-blue-600">768 × 900 px</p>
+            <p className="text-xs text-gray-500 mt-2">
+              {language === 'ar' ? 'للشاشات الصغيرة' : 'For small screens'}
+            </p>
+          </div>
+        </div>
+        
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-4">
+          <p className="text-sm text-yellow-800">
+            <strong>💡 {language === 'ar' ? 'ملاحظة:' : 'Note:'}</strong> {language === 'ar' 
+              ? 'يمكنك استخدام صورة واحدة فقط (Desktop) وسيتم استخدامها تلقائياً لجميع الأحجام إذا لم تقم برفع صور منفصلة.'
+              : 'You can use only one image (Desktop) and it will be used for all sizes if you don\'t upload separate images.'}
+          </p>
+        </div>
       </div>
 
       {/* Form Modal */}
@@ -399,13 +443,24 @@ const BannerManagement = () => {
                     {language === 'ar' ? 'صور البانر' : 'Banner Images'}
                   </h4>
                   
-                  {['desktop', 'tablet', 'mobile'].map((type) => (
-                    <div key={type}>
-                      <label className="block text-gray-700 font-medium mb-2 capitalize">
-                        {language === 'ar' 
-                          ? `صورة ${type === 'desktop' ? 'Desktop' : type === 'tablet' ? 'Tablet' : 'Mobile'}`
-                          : `${type === 'desktop' ? 'Desktop' : type === 'tablet' ? 'Tablet' : 'Mobile'} Image`
-                        }
+                  {['desktop', 'tablet', 'mobile'].map((type) => {
+                    const sizes = {
+                      desktop: '1920 × 600 px',
+                      tablet: '1024 × 500 px',
+                      mobile: '768 × 900 px'
+                    }
+                    return (
+                    <div key={type} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <label className="block text-gray-700 font-medium mb-2">
+                        <span className="capitalize">
+                          {language === 'ar' 
+                            ? `صورة ${type === 'desktop' ? 'Desktop' : type === 'tablet' ? 'Tablet' : 'Mobile'}`
+                            : `${type === 'desktop' ? 'Desktop' : type === 'tablet' ? 'Tablet' : 'Mobile'} Image`
+                          }
+                        </span>
+                        <span className="ml-2 text-sm font-normal text-blue-600">
+                          ({sizes[type]})
+                        </span>
                       </label>
                       {imagePreviews[type] && (
                         <div className="mb-2">
@@ -434,7 +489,8 @@ const BannerManagement = () => {
                         }
                       </button>
                     </div>
-                  ))}
+                    )
+                  })}
                 </div>
 
                 {/* Display Order & Enabled */}
