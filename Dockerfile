@@ -14,8 +14,8 @@ RUN npm ci --omit=dev
 WORKDIR /app/client
 RUN npm ci
 
-# Build client
-RUN npm run build
+# Build client (use vite directly to avoid infinite loop)
+RUN npx vite build
 
 # Back to root
 WORKDIR /app
