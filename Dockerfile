@@ -1,0 +1,36 @@
+# Use Node.js 18
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY client/package*.json ./client/
+
+# Install root dependencies
+RUN npm ci --omit=dev
+
+# Install client dependencies
+WORKDIR /app/client
+RUN npm ci
+
+# Copy all files
+WORKDIR /app
+COPY . .
+
+# Build client
+WORKDIR /app/client
+RUN npm run build
+
+# Back to root
+WORKDIR /app
+
+# Expose port
+EXPOSE 3000
+
+# Start server
+CMD ["npm", "start"]
+
+
+
