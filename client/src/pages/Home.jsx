@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Header from '../components/Header'
 import Banner from '../components/Banner'
+import TrustElements from '../components/TrustElements'
 import ProductCard from '../components/ProductCard'
 import ProductCarousel from '../components/ProductCarousel'
 import ContactButtons from '../components/ContactButtons'
@@ -41,6 +42,7 @@ const Home = () => {
       />
       <Header />
       <Banner />
+      <TrustElements />
       
       <main className="container mx-auto px-4 py-8 md:py-12">
         {loading ? (
