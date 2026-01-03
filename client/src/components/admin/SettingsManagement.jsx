@@ -418,7 +418,6 @@ const SettingsManagement = () => {
                   : 'Choose a professional theme for your store. Each theme is designed specifically for a certain type of store.'}
               </p>
               
-              {console.log('Themes data:', { themes, activeTheme, themesLength: themes.length })}
               
               {activeTheme && (
                 <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
