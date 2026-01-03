@@ -13,13 +13,28 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
     description_ar: '',
     price: '',
     discount_price: '',
-    discount_percentage: ''
+    discount_percentage: '',
+    category_id: ''
   })
   const [images, setImages] = useState([]) // Array of { file: File, preview: string } or { id: number, image_path: string }
   const [deletedImages, setDeletedImages] = useState([])
   const [dragActive, setDragActive] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [categories, setCategories] = useState([])
   const fileInputRef = useRef(null)
+
+  useEffect(() => {
+    fetchCategories()
+  }, [])
+
+  const fetchCategories = async () => {
+    try {
+      const response = await api.get('/categories/admin')
+      setCategories(response.data.filter(c => c.enabled === 1))
+    } catch (error) {
+      console.error('Error fetching categories:', error)
+    }
+  }
 
   useEffect(() => {
     if (product) {
@@ -30,7 +45,8 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
         description_ar: product.description_ar || '',
         price: product.price || '',
         discount_price: product.discount_price || '',
-        discount_percentage: product.discount_percentage || ''
+        discount_percentage: product.discount_percentage || '',
+        category_id: product.category_id || ''
       })
       
       // Load existing images
@@ -131,6 +147,9 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
       formDataToSend.append('description', formData.description)
       formDataToSend.append('description_ar', formData.description_ar || formData.description)
       formDataToSend.append('price', formData.price)
+      if (formData.category_id) {
+        formDataToSend.append('category_id', formData.category_id)
+      }
       if (formData.discount_price) {
         formDataToSend.append('discount_price', formData.discount_price)
       }
@@ -232,6 +251,27 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
+            </div>
+
+            {/* Category Selection */}
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">
+                {language === 'ar' ? 'التصنيف *' : 'Category *'}
+              </label>
+              <select
+                name="category_id"
+                value={formData.category_id}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">{language === 'ar' ? '-- اختر التصنيف --' : '-- Select Category --'}</option>
+                {categories.map(category => (
+                  <option key={category.id} value={category.id}>
+                    {language === 'ar' ? (category.name_ar || category.name) : (category.name || category.name_ar)}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -87,7 +87,7 @@ router.post('/', verifyToken, (req, res, next) => {
     next()
   })
 }, (req, res) => {
-  const { name, name_ar, description, description_ar, price, discount_price, discount_percentage } = req.body;
+  const { name, name_ar, description, description_ar, price, discount_price, discount_percentage, category_id } = req.body;
   
   let imagePath = '';
   if (req.files && req.files.length > 0) {
@@ -106,9 +106,9 @@ router.post('/', verifyToken, (req, res, next) => {
   const finalDiscountPercentage = discount_percentage ? parseFloat(discount_percentage) : null;
 
   db.run(
-    `INSERT INTO products (name, name_ar, description, description_ar, price, discount_price, discount_percentage, image)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-    [name, name_ar || name, description, description_ar || description, finalPrice, finalDiscountPrice, finalDiscountPercentage, imagePath],
+    `INSERT INTO products (name, name_ar, description, description_ar, price, discount_price, discount_percentage, image, category_id)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [name, name_ar || name, description, description_ar || description, finalPrice, finalDiscountPrice, finalDiscountPercentage, imagePath, category_id || null],
     function(err) {
       if (err) {
         return res.status(500).json({ error: err.message });
@@ -152,7 +152,7 @@ router.put('/:id', verifyToken, (req, res, next) => {
     next()
   })
 }, (req, res) => {
-  const { name, name_ar, description, description_ar, price, discount_price, discount_percentage, deleted_images } = req.body;
+  const { name, name_ar, description, description_ar, price, discount_price, discount_percentage, category_id, deleted_images } = req.body;
   
   // Get existing product
   db.get('SELECT image FROM products WHERE id = ?', [req.params.id], (err, product) => {
@@ -183,10 +183,10 @@ router.put('/:id', verifyToken, (req, res, next) => {
       `UPDATE products 
        SET name = ?, name_ar = ?, description = ?, description_ar = ?, 
            price = ?, discount_price = ?, discount_percentage = ?, 
-           image = ?, updated_at = CURRENT_TIMESTAMP
+           image = ?, category_id = ?, updated_at = CURRENT_TIMESTAMP
        WHERE id = ?`,
       [name, name_ar || name, description, description_ar || description, 
-       finalPrice, finalDiscountPrice, finalDiscountPercentage, imagePath, req.params.id],
+       finalPrice, finalDiscountPrice, finalDiscountPercentage, imagePath, category_id || null, req.params.id],
       function(err) {
         if (err) {
           return res.status(500).json({ error: err.message });

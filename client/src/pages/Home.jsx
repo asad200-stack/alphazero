@@ -17,6 +17,8 @@ import { useSearch } from '../context/SearchContext'
 const Home = () => {
   const [allProducts, setAllProducts] = useState([])
   const [products, setProducts] = useState([])
+  const [categories, setCategories] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState(null)
   const [loading, setLoading] = useState(true)
   const { settings } = useSettings()
   const { t, language } = useLanguage()
@@ -24,7 +26,17 @@ const Home = () => {
 
   useEffect(() => {
     fetchProducts()
+    fetchCategories()
   }, [])
+  
+  const fetchCategories = async () => {
+    try {
+      const response = await api.get('/categories')
+      setCategories(response.data)
+    } catch (error) {
+      console.error('Error fetching categories:', error)
+    }
+  }
 
   const fetchProducts = async () => {
     try {
@@ -38,10 +50,18 @@ const Home = () => {
     }
   }
 
-  // Filter products by search query
+  // Filter products by search query and category
   useEffect(() => {
+    let filtered = allProducts
+    
+    // Filter by category
+    if (selectedCategory) {
+      filtered = filtered.filter(product => product.category_id === selectedCategory)
+    }
+    
+    // Filter by search query
     if (searchQuery.trim()) {
-      const filtered = allProducts.filter(product => {
+      filtered = filtered.filter(product => {
         const name = language === 'ar' 
           ? (product.name_ar || product.name || '').toLowerCase()
           : (product.name || product.name_ar || '').toLowerCase()
@@ -51,11 +71,10 @@ const Home = () => {
         const query = searchQuery.toLowerCase()
         return name.includes(query) || description.includes(query)
       })
-      setProducts(filtered)
-    } else {
-      setProducts(allProducts)
     }
-  }, [searchQuery, allProducts, language])
+    
+    setProducts(filtered)
+  }, [searchQuery, selectedCategory, allProducts, language])
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50 pb-20 md:pb-0">
@@ -68,6 +87,40 @@ const Home = () => {
       <TrustElements />
       
       <main className="container mx-auto px-4 py-8 md:py-12">
+        {/* Categories Section */}
+        {categories.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-2xl md:text-3xl font-black mb-6" style={{ color: settings.primary_color || '#3B82F6' }}>
+              {language === 'ar' ? 'التصنيفات' : 'Categories'}
+            </h2>
+            <div className="flex flex-wrap gap-3 mb-6">
+              <button
+                onClick={() => setSelectedCategory(null)}
+                className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                  selectedCategory === null
+                    ? 'bg-blue-600 text-white shadow-lg'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                {language === 'ar' ? 'جميع التصنيفات' : 'All Categories'}
+              </button>
+              {categories.map(category => (
+                <button
+                  key={category.id}
+                  onClick={() => setSelectedCategory(category.id)}
+                  className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                    selectedCategory === category.id
+                      ? 'bg-blue-600 text-white shadow-lg'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  {language === 'ar' ? (category.name_ar || category.name) : (category.name || category.name_ar)}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             <SkeletonLoader count={8} />
@@ -87,7 +140,12 @@ const Home = () => {
             {/* All Products Grid */}
             <div className="mb-8">
               <h2 className="text-2xl md:text-3xl font-black mb-6" style={{ color: settings.primary_color || '#DC2626' }}>
-                {t('allProducts') || 'جميع المنتجات'}
+                {selectedCategory 
+                  ? (language === 'ar' 
+                      ? (categories.find(c => c.id === selectedCategory)?.name_ar || categories.find(c => c.id === selectedCategory)?.name || 'المنتجات')
+                      : (categories.find(c => c.id === selectedCategory)?.name || categories.find(c => c.id === selectedCategory)?.name_ar || 'Products'))
+                  : (t('allProducts') || 'جميع المنتجات')
+                }
               </h2>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                 {products.map((product) => (

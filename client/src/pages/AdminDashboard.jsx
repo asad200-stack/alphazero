@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useNavigate, Link } from 'react-router-dom'
 import ProductsManagement from '../components/admin/ProductsManagement'
 import SettingsManagement from '../components/admin/SettingsManagement'
 import BannerManagement from '../components/admin/BannerManagement'
+import CategoryManagement from '../components/admin/CategoryManagement'
 import api from '../utils/api'
 import { useLanguage } from '../context/LanguageContext'
 
@@ -103,6 +104,12 @@ const AdminDashboard = () => {
               {t('products')}
             </Link>
             <Link
+              to="/admin/categories"
+              className="px-6 py-3 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
+            >
+              {language === 'ar' ? 'التصنيفات' : 'Categories'}
+            </Link>
+            <Link
               to="/admin/banners"
               className="px-6 py-3 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
             >
@@ -119,6 +126,7 @@ const AdminDashboard = () => {
 
         <Routes>
           <Route path="dashboard" element={<ProductsManagement />} />
+          <Route path="categories" element={<CategoryManagement />} />
           <Route path="banners" element={<BannerManagement />} />
           <Route path="settings" element={<SettingsManagement />} />
           <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />

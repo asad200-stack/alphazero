@@ -26,9 +26,16 @@ db.serialize(() => {
     discount_price REAL,
     discount_percentage REAL,
     image TEXT,
+    category_id INTEGER,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
   )`);
+  
+  // Add category_id column if it doesn't exist (for existing databases)
+  db.run(`ALTER TABLE products ADD COLUMN category_id INTEGER`, (err) => {
+    // Ignore error if column already exists
+  });
 
   // Product Images table (for multiple images)
   db.run(`CREATE TABLE IF NOT EXISTS product_images (
@@ -45,6 +52,20 @@ db.serialize(() => {
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     key TEXT UNIQUE NOT NULL,
     value TEXT,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`);
+
+  // Categories table
+  db.run(`CREATE TABLE IF NOT EXISTS categories (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    name_ar TEXT,
+    description TEXT,
+    description_ar TEXT,
+    image TEXT,
+    display_order INTEGER DEFAULT 0,
+    enabled INTEGER DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
 
