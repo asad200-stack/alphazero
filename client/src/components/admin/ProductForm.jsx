@@ -27,8 +27,11 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
     name_ar: '',
     enabled: 1
   })
+  const [categoryImage, setCategoryImage] = useState(null)
+  const [categoryImagePreview, setCategoryImagePreview] = useState(null)
   const [addingCategory, setAddingCategory] = useState(false)
   const fileInputRef = useRef(null)
+  const categoryImageInputRef = useRef(null)
 
   useEffect(() => {
     fetchCategories()
@@ -40,6 +43,27 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
       setCategories(response.data.filter(c => c.enabled === 1))
     } catch (error) {
       console.error('Error fetching categories:', error)
+    }
+  }
+
+  const handleCategoryChange = (e) => {
+    const value = e.target.value
+    if (value === 'add_new') {
+      setShowCategoryModal(true)
+    } else {
+      handleChange(e)
+    }
+  }
+
+  const handleCategoryImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0]
+      setCategoryImage(file)
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setCategoryImagePreview(e.target.result)
+      }
+      reader.readAsDataURL(file)
     }
   }
 
@@ -56,6 +80,10 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
       formDataToSend.append('name', newCategory.name)
       formDataToSend.append('name_ar', newCategory.name_ar || newCategory.name)
       formDataToSend.append('enabled', newCategory.enabled)
+      
+      if (categoryImage) {
+        formDataToSend.append('image', categoryImage)
+      }
 
       const response = await api.post('/categories', formDataToSend, {
         headers: { 'Content-Type': 'multipart/form-data' }
@@ -70,6 +98,8 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
       // Close modal and reset form
       setShowCategoryModal(false)
       setNewCategory({ name: '', name_ar: '', enabled: 1 })
+      setCategoryImage(null)
+      setCategoryImagePreview(null)
       
       if (window.showToast) {
         window.showToast(
@@ -535,6 +565,8 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
                   onClick={() => {
                     setShowCategoryModal(false)
                     setNewCategory({ name: '', name_ar: '', enabled: 1 })
+                    setCategoryImage(null)
+                    setCategoryImagePreview(null)
                   }}
                   className="text-gray-500 hover:text-gray-700 text-2xl"
                 >
@@ -586,6 +618,8 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
                     onClick={() => {
                       setShowCategoryModal(false)
                       setNewCategory({ name: '', name_ar: '', enabled: 1 })
+                      setCategoryImage(null)
+                      setCategoryImagePreview(null)
                     }}
                     className="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-400 transition"
                   >
