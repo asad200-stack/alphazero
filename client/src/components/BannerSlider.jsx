@@ -129,23 +129,25 @@ const BannerSlider = () => {
   const buttonText = language === 'ar' ? (currentBanner.button_text_ar || currentBanner.button_text) : (currentBanner.button_text || currentBanner.button_text_ar)
   const buttonText2 = language === 'ar' ? (currentBanner.button_text_2_ar || currentBanner.button_text_2) : (currentBanner.button_text_2 || currentBanner.button_text_2_ar)
 
-  const fullImageUrl = getImageUrl(imageUrl)
-  console.log('Rendering banner with image URL:', fullImageUrl)
-
   const fullImageUrl = imageUrl ? getImageUrl(imageUrl) : null
   console.log('Rendering banner with image URL:', fullImageUrl)
 
   return (
-    <div className="relative w-full h-64 md:h-96 lg:h-[500px] overflow-hidden bg-gray-200">
+    <div className="relative w-full h-48 md:h-64 lg:h-80 overflow-hidden bg-gray-200">
       {/* Banner Image */}
       {fullImageUrl ? (
-        <LazyImage
+        <img
           src={fullImageUrl}
           alt={title || 'Banner'}
           className="w-full h-full object-cover"
-          key={`${currentBanner.id}-${imageUrl}`} // Force re-render when image changes
+          onError={(e) => {
+            console.error('Error loading banner image:', fullImageUrl)
+            e.target.style.display = 'none'
+            e.target.nextElementSibling.style.display = 'flex'
+          }}
         />
-      ) : (
+      ) : null}
+      {!fullImageUrl && (
         <div className="w-full h-full bg-gradient-to-r from-gray-300 to-gray-400 flex items-center justify-center">
           <span className="text-gray-600 text-sm">{language === 'ar' ? 'لا توجد صورة' : 'No image available'}</span>
         </div>
@@ -159,12 +161,12 @@ const BannerSlider = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-2xl text-white">
             {subtitle && (
-              <p className="text-lg md:text-xl mb-3 font-semibold opacity-90">
+              <p className="text-sm md:text-base mb-3 font-semibold opacity-90">
                 {subtitle}
               </p>
             )}
             {title && (
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-black mb-6 leading-tight drop-shadow-lg">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-black mb-4 leading-tight drop-shadow-lg">
                 {title}
               </h1>
             )}
@@ -174,7 +176,7 @@ const BannerSlider = () => {
               {buttonText && currentBanner.button_link && (
                 <Link
                   to={currentBanner.button_link}
-                  className="inline-block px-8 py-4 bg-white text-gray-900 rounded-xl font-bold text-lg hover:bg-gray-100 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105 text-center"
+                  className="inline-block px-6 py-3 bg-white text-gray-900 rounded-lg font-bold text-base hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-center"
                 >
                   {buttonText}
                 </Link>
@@ -182,7 +184,7 @@ const BannerSlider = () => {
               {buttonText2 && currentBanner.button_link_2 && (
                 <Link
                   to={currentBanner.button_link_2}
-                  className="inline-block px-8 py-4 bg-white/20 backdrop-blur-sm text-white border-2 border-white rounded-xl font-bold text-lg hover:bg-white/30 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105 text-center"
+                  className="inline-block px-6 py-3 bg-white/20 backdrop-blur-sm text-white border-2 border-white rounded-lg font-bold text-base hover:bg-white/30 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-center"
                 >
                   {buttonText2}
                 </Link>
