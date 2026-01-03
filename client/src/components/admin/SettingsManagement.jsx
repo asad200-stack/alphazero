@@ -413,49 +413,54 @@ const SettingsManagement = () => {
             </div>
           </div>
 
-          {/* Store Themes Section */}
+          {/* Store Themes Section - Always visible */}
           <div className="pt-4 border-t border-gray-200">
-          <h4 className="text-md font-semibold mb-3 text-gray-700">
-            {language === 'ar' ? '🎨 ثيمات المتجر' : '🎨 Store Themes'}
-          </h4>
-          <div className="space-y-4">
-            <div className="bg-gradient-to-br from-gray-50 to-blue-50 p-6 rounded-lg border-2 border-gray-200 shadow-sm">
-              <p className="text-sm text-gray-700 mb-4 font-medium">
-                {language === 'ar' 
-                  ? 'اختر ثيم احترافي لمتجرك. كل ثيم مصمم خصيصاً لنوع معين من المتاجر.'
-                  : 'Choose a professional theme for your store. Each theme is designed specifically for a certain type of store.'}
-              </p>
-              
-              {themeError && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm text-red-800">
-                    {language === 'ar' 
-                      ? '⚠️ حدث خطأ في تحميل الثيمات. يرجى تحديث الصفحة.'
-                      : '⚠️ Error loading themes. Please refresh the page.'}
-                  </p>
-                </div>
-              )}
-              
-              {activeTheme && !themeError && (
-                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                  <p className="text-sm font-semibold text-blue-800 mb-1">
-                    {language === 'ar' ? 'الثيم النشط:' : 'Active Theme:'}
-                  </p>
-                  <p className="text-lg font-bold text-blue-900">
-                    {language === 'ar' ? (activeTheme.name_ar || activeTheme.name) : (activeTheme.name || activeTheme.name_ar)}
-                  </p>
-                </div>
-              )}
+            <h4 className="text-md font-semibold mb-3 text-gray-700">
+              {language === 'ar' ? '🎨 ثيمات المتجر' : '🎨 Store Themes'}
+            </h4>
+            <div className="space-y-4">
+              <div className="bg-gradient-to-br from-gray-50 to-blue-50 p-6 rounded-lg border-2 border-gray-200 shadow-sm">
+                <p className="text-sm text-gray-700 mb-4 font-medium">
+                  {language === 'ar' 
+                    ? 'اختر ثيم احترافي لمتجرك. كل ثيم مصمم خصيصاً لنوع معين من المتاجر.'
+                    : 'Choose a professional theme for your store. Each theme is designed specifically for a certain type of store.'}
+                </p>
+                
+                {themeError && (
+                  <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-sm text-red-800">
+                      {language === 'ar' 
+                        ? '⚠️ حدث خطأ في تحميل الثيمات. يرجى تحديث الصفحة.'
+                        : '⚠️ Error loading themes. Please refresh the page.'}
+                    </p>
+                  </div>
+                )}
+                
+                {activeTheme && !themeError && (
+                  <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-sm font-semibold text-blue-800 mb-1">
+                      {language === 'ar' ? 'الثيم النشط:' : 'Active Theme:'}
+                    </p>
+                    <p className="text-lg font-bold text-blue-900">
+                      {language === 'ar' ? (activeTheme.name_ar || activeTheme.name) : (activeTheme.name || activeTheme.name_ar)}
+                    </p>
+                  </div>
+                )}
 
-              {themes.length === 0 ? (
-                <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <p className="text-sm text-yellow-800">
-                    {language === 'ar' 
-                      ? 'جاري تحميل الثيمات...' 
-                      : 'Loading themes...'}
-                  </p>
-                </div>
-              ) : (
+                {themes.length === 0 && !themeError ? (
+                  <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p className="text-sm text-yellow-800 mb-2">
+                      {language === 'ar' 
+                        ? 'جاري تحميل الثيمات...' 
+                        : 'Loading themes...'}
+                    </p>
+                    <p className="text-xs text-yellow-700">
+                      {language === 'ar' 
+                        ? 'إذا لم تظهر الثيمات، اضغط على "إدارة الثيمات المتقدمة" أدناه.'
+                        : 'If themes don\'t appear, click "Advanced Theme Management" below.'}
+                    </p>
+                  </div>
+                ) : themes.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {themes.map((theme) => {
                   const themeIcons = {
@@ -510,19 +515,20 @@ const SettingsManagement = () => {
                     </div>
                   )
                 })}
-              </div>
-              )}
+                </div>
+                ) : null}
 
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <a
-                  href="/admin/themes"
-                  className="text-blue-600 hover:text-blue-800 font-semibold text-sm inline-flex items-center gap-1"
-                >
-                  {language === 'ar' ? 'إدارة الثيمات المتقدمة' : 'Advanced Theme Management'}
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </a>
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <a
+                    href="/admin/themes"
+                    className="text-blue-600 hover:text-blue-800 font-semibold text-sm inline-flex items-center gap-1"
+                  >
+                    {language === 'ar' ? 'إدارة الثيمات المتقدمة' : 'Advanced Theme Management'}
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
