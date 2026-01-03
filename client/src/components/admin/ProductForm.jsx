@@ -593,6 +593,39 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
                   />
                 </div>
 
+                {/* Category Image/Icon */}
+                <div>
+                  <label className="block text-gray-700 font-medium mb-2">
+                    {language === 'ar' ? 'صورة/أيقونة التصنيف (اختياري)' : 'Category Icon/Image (Optional)'}
+                  </label>
+                  {categoryImagePreview && (
+                    <div className="mb-2">
+                      <img
+                        src={categoryImagePreview}
+                        alt="Preview"
+                        className="w-24 h-24 object-cover rounded-lg border border-gray-300"
+                      />
+                    </div>
+                  )}
+                  <input
+                    ref={categoryImageInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleCategoryImageChange}
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => categoryImageInputRef.current?.click()}
+                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition text-sm"
+                  >
+                    {categoryImagePreview 
+                      ? (language === 'ar' ? 'تغيير الصورة' : 'Change Image')
+                      : (language === 'ar' ? 'رفع صورة/أيقونة' : 'Upload Icon/Image')
+                    }
+                  </button>
+                </div>
+
                 <div className="flex space-x-4 space-x-reverse pt-4">
                   <button
                     type="submit"
