@@ -16,13 +16,6 @@ const ProductCard = ({ product }) => {
   const { isInWishlist, toggleWishlist } = useWishlist()
   const isLiked = isInWishlist(product.id)
   
-  const handleAddToCart = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    addToCart(product, 1)
-    showToast(t('productAddedToCart') || 'تم إضافة المنتج للسلة', 'success')
-  }
-  
   // Get product prices using helper function for discount percentage
   const { discountPercentage } = getProductPrices(product)
   
