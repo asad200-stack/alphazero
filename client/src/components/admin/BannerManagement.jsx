@@ -193,13 +193,41 @@ const BannerManagement = () => {
 
   const handleToggleEnabled = async (banner) => {
     try {
-      await api.put(`/banners/${banner.id}`, {
-        ...banner,
-        enabled: banner.enabled === 1 ? 0 : 1
+      const newEnabled = (banner.enabled === 1 || banner.enabled === '1' || banner.enabled === true) ? 0 : 1
+      const formDataToSend = new FormData()
+      
+      // Add all banner fields
+      Object.keys(banner).forEach(key => {
+        if (key !== 'id' && key !== 'created_at' && key !== 'updated_at') {
+          if (key === 'enabled') {
+            formDataToSend.append(key, newEnabled)
+          } else {
+            formDataToSend.append(key, banner[key] || '')
+          }
+        }
+      })
+      
+      await api.put(`/banners/${banner.id}`, formDataToSend, {
+        headers: { 'Content-Type': 'multipart/form-data' }
       })
       await fetchBanners()
+      
+      if (window.showToast) {
+        window.showToast(
+          newEnabled === 1
+            ? (language === 'ar' ? 'تم تفعيل البانر' : 'Banner enabled')
+            : (language === 'ar' ? 'تم إلغاء تفعيل البانر' : 'Banner disabled'),
+          'success'
+        )
+      }
     } catch (error) {
       console.error('Error toggling banner:', error)
+      if (window.showToast) {
+        window.showToast(
+          language === 'ar' ? 'حدث خطأ أثناء تحديث البانر' : 'Error updating banner',
+          'error'
+        )
+      }
     }
   }
 

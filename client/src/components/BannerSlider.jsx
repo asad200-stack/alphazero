@@ -13,6 +13,22 @@ const BannerSlider = () => {
 
   useEffect(() => {
     fetchBanners()
+    
+    // Refresh banners every 30 seconds to catch updates
+    const refreshInterval = setInterval(() => {
+      fetchBanners()
+    }, 30000)
+    
+    // Also refresh when window gains focus (user comes back to tab)
+    const handleFocus = () => {
+      fetchBanners()
+    }
+    window.addEventListener('focus', handleFocus)
+    
+    return () => {
+      clearInterval(refreshInterval)
+      window.removeEventListener('focus', handleFocus)
+    }
   }, [])
 
   useEffect(() => {
@@ -28,7 +44,16 @@ const BannerSlider = () => {
   const fetchBanners = async () => {
     try {
       const response = await api.get('/banners')
-      setBanners(response.data.filter(b => b.enabled === 1))
+      // Filter enabled banners - handle both integer and string values
+      const enabledBanners = response.data.filter(b => {
+        const enabled = b.enabled
+        return enabled === 1 || enabled === '1' || enabled === true
+      })
+      setBanners(enabledBanners)
+      // Reset index if current banner is no longer available
+      if (enabledBanners.length > 0 && currentIndex >= enabledBanners.length) {
+        setCurrentIndex(0)
+      }
     } catch (error) {
       console.error('Error fetching banners:', error)
     } finally {
@@ -75,6 +100,12 @@ const BannerSlider = () => {
   }
 
   const imageUrl = getImage()
+  
+  // If no image URL, don't render
+  if (!imageUrl) {
+    return null
+  }
+  
   const title = language === 'ar' ? (currentBanner.title_ar || currentBanner.title) : (currentBanner.title || currentBanner.title_ar)
   const subtitle = language === 'ar' ? (currentBanner.subtitle_ar || currentBanner.subtitle) : (currentBanner.subtitle || currentBanner.subtitle_ar)
   const buttonText = language === 'ar' ? (currentBanner.button_text_ar || currentBanner.button_text) : (currentBanner.button_text || currentBanner.button_text_ar)
@@ -83,13 +114,12 @@ const BannerSlider = () => {
   return (
     <div className="relative w-full h-64 md:h-96 lg:h-[500px] overflow-hidden">
       {/* Banner Image */}
-      {imageUrl && (
-        <LazyImage
-          src={getImageUrl(imageUrl)}
-          alt={title || 'Banner'}
-          className="w-full h-full object-cover"
-        />
-      )}
+      <LazyImage
+        src={getImageUrl(imageUrl)}
+        alt={title || 'Banner'}
+        className="w-full h-full object-cover"
+        key={imageUrl} // Force re-render when image changes
+      />
 
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black bg-opacity-40"></div>
