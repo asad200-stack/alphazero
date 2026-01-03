@@ -133,50 +133,73 @@ const BannerSlider = () => {
   console.log('Rendering banner with image URL:', fullImageUrl)
 
   return (
-    <div className="relative w-full h-48 md:h-64 lg:h-80 overflow-hidden bg-gray-200">
-      {/* Banner Image */}
-      {fullImageUrl ? (
-        <img
-          src={fullImageUrl}
-          alt={title || 'Banner'}
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            console.error('Error loading banner image:', fullImageUrl)
-            e.target.style.display = 'none'
-            e.target.nextElementSibling.style.display = 'flex'
-          }}
-        />
-      ) : null}
-      {!fullImageUrl && (
-        <div className="w-full h-full bg-gradient-to-r from-gray-300 to-gray-400 flex items-center justify-center">
-          <span className="text-gray-600 text-sm">{language === 'ar' ? 'لا توجد صورة' : 'No image available'}</span>
-        </div>
-      )}
+    <div className="relative w-full h-48 md:h-64 lg:h-80 overflow-hidden bg-gray-200 banner-container">
+      {/* Banner Image with Smooth Transition */}
+      {banners.map((banner, index) => {
+        const bannerImage = (() => {
+          if (typeof window !== 'undefined') {
+            const width = window.innerWidth
+            if (width < 768) {
+              return banner.image_mobile || banner.image_tablet || banner.image_desktop
+            } else if (width < 1024) {
+              return banner.image_tablet || banner.image_desktop
+            }
+          }
+          return banner.image_desktop || banner.image_tablet || banner.image_mobile
+        })()
+        
+        const bannerImageUrl = bannerImage ? getImageUrl(bannerImage) : null
+        
+        return (
+          <div
+            key={banner.id}
+            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+              index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
+            }`}
+          >
+            {bannerImageUrl ? (
+              <img
+                src={bannerImageUrl}
+                alt={title || 'Banner'}
+                className="w-full h-full object-cover banner-image"
+                onError={(e) => {
+                  console.error('Error loading banner image:', bannerImageUrl)
+                  e.target.style.display = 'none'
+                }}
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-r from-gray-300 to-gray-400 flex items-center justify-center">
+                <span className="text-gray-600 text-sm">{language === 'ar' ? 'لا توجد صورة' : 'No image available'}</span>
+              </div>
+            )}
+          </div>
+        )
+      })}
 
       {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+      <div className="absolute inset-0 bg-black bg-opacity-40 z-10"></div>
 
-      {/* Content */}
-      <div className="absolute inset-0 flex items-center">
-        <div className="container mx-auto px-4 relative z-10">
+      {/* Content with Hero Animations */}
+      <div className="absolute inset-0 flex items-center z-20">
+        <div className="container mx-auto px-4 relative">
           <div className="max-w-2xl text-white">
             {subtitle && (
-              <p className="text-sm md:text-base mb-3 font-semibold opacity-90">
+              <p className="text-sm md:text-base mb-3 font-semibold opacity-90 hero-subtitle">
                 {subtitle}
               </p>
             )}
             {title && (
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-black mb-4 leading-tight drop-shadow-lg">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-black mb-4 leading-tight drop-shadow-lg hero-title">
                 {title}
               </h1>
             )}
             
-            {/* Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            {/* Buttons with Animation */}
+            <div className="flex flex-col sm:flex-row gap-4 hero-buttons">
               {buttonText && currentBanner.button_link && (
                 <Link
                   to={currentBanner.button_link}
-                  className="inline-block px-6 py-3 bg-white text-gray-900 rounded-lg font-bold text-base hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-center"
+                  className="inline-block px-6 py-3 bg-white text-gray-900 rounded-lg font-bold text-base hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-center btn-ripple smooth-transition"
                 >
                   {buttonText}
                 </Link>
@@ -184,7 +207,7 @@ const BannerSlider = () => {
               {buttonText2 && currentBanner.button_link_2 && (
                 <Link
                   to={currentBanner.button_link_2}
-                  className="inline-block px-6 py-3 bg-white/20 backdrop-blur-sm text-white border-2 border-white rounded-lg font-bold text-base hover:bg-white/30 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-center"
+                  className="inline-block px-6 py-3 bg-white/20 backdrop-blur-sm text-white border-2 border-white rounded-lg font-bold text-base hover:bg-white/30 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-center btn-ripple smooth-transition"
                 >
                   {buttonText2}
                 </Link>

@@ -1,4 +1,5 @@
 import { useLanguage } from '../context/LanguageContext'
+import ScrollAnimation from './ScrollAnimation'
 
 const TrustElements = () => {
   const { language, t } = useLanguage()
@@ -38,22 +39,23 @@ const TrustElements = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {elements.map((element, index) => (
-            <div 
-              key={index}
-              className="flex items-center space-x-4 space-x-reverse text-center md:text-right"
-            >
-              <div className="flex-shrink-0 text-blue-600">
-                {element.icon}
+            <ScrollAnimation key={index} delay={index * 150}>
+              <div 
+                className="flex items-center space-x-4 space-x-reverse text-center md:text-right hover-lift smooth-transition p-4 rounded-lg"
+              >
+                <div className="flex-shrink-0 text-blue-600 smooth-transition group-hover:scale-110">
+                  {element.icon}
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-lg mb-1">
+                    {element.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    {element.description}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-bold text-gray-900 text-lg mb-1">
-                  {element.title}
-                </h3>
-                <p className="text-gray-600 text-sm">
-                  {element.description}
-                </p>
-              </div>
-            </div>
+            </ScrollAnimation>
           ))}
         </div>
       </div>

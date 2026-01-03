@@ -4,6 +4,7 @@ import ProductCard from '../components/ProductCard'
 import BottomNavigation from '../components/BottomNavigation'
 import SkeletonLoader from '../components/SkeletonLoader'
 import ProductFilters from '../components/ProductFilters'
+import ScrollAnimation from '../components/ScrollAnimation'
 import api from '../utils/api'
 import { useSettings } from '../context/SettingsContext'
 import { useLanguage } from '../context/LanguageContext'
@@ -82,8 +83,10 @@ const Shop = () => {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+            {products.map((product, index) => (
+              <ScrollAnimation key={product.id} delay={index * 50}>
+                <ProductCard product={product} />
+              </ScrollAnimation>
             ))}
           </div>
         )}

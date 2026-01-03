@@ -9,6 +9,7 @@ import BottomNavigation from '../components/BottomNavigation'
 import Footer from '../components/Footer'
 import SEOHead from '../components/SEOHead'
 import SkeletonLoader from '../components/SkeletonLoader'
+import ScrollAnimation from '../components/ScrollAnimation'
 import api from '../utils/api'
 import { useSettings } from '../context/SettingsContext'
 import { useLanguage } from '../context/LanguageContext'
@@ -87,38 +88,40 @@ const Home = () => {
       <TrustElements />
       
       <main className="container mx-auto px-4 py-8 md:py-12">
-        {/* Categories Section */}
+        {/* Categories Section with Scroll Animation */}
         {categories.length > 0 && (
-          <div className="mb-8">
-            <h2 className="text-2xl md:text-3xl font-black mb-6" style={{ color: settings.primary_color || '#3B82F6' }}>
-              {language === 'ar' ? 'التصنيفات' : 'Categories'}
-            </h2>
-            <div className="flex flex-wrap gap-3 mb-6">
-              <button
-                onClick={() => setSelectedCategory(null)}
-                className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-                  selectedCategory === null
-                    ? 'bg-blue-600 text-white shadow-lg'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-              >
-                {language === 'ar' ? 'جميع التصنيفات' : 'All Categories'}
-              </button>
-              {categories.map(category => (
+          <ScrollAnimation>
+            <div className="mb-8">
+              <h2 className="text-2xl md:text-3xl font-black mb-6" style={{ color: settings.primary_color || '#3B82F6' }}>
+                {language === 'ar' ? 'التصنيفات' : 'Categories'}
+              </h2>
+              <div className="flex flex-wrap gap-3 mb-6">
                 <button
-                  key={category.id}
-                  onClick={() => setSelectedCategory(category.id)}
-                  className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-                    selectedCategory === category.id
+                  onClick={() => setSelectedCategory(null)}
+                  className={`px-6 py-3 rounded-lg font-semibold category-btn smooth-transition ${
+                    selectedCategory === null
                       ? 'bg-blue-600 text-white shadow-lg'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover-lift'
                   }`}
                 >
-                  {language === 'ar' ? (category.name_ar || category.name) : (category.name || category.name_ar)}
+                  {language === 'ar' ? 'جميع التصنيفات' : 'All Categories'}
                 </button>
-              ))}
+                {categories.map(category => (
+                  <button
+                    key={category.id}
+                    onClick={() => setSelectedCategory(category.id)}
+                    className={`px-6 py-3 rounded-lg font-semibold category-btn smooth-transition ${
+                      selectedCategory === category.id
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover-lift'
+                    }`}
+                  >
+                    {language === 'ar' ? (category.name_ar || category.name) : (category.name || category.name_ar)}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          </ScrollAnimation>
         )}
         
         {loading ? (
@@ -148,8 +151,10 @@ const Home = () => {
                 }
               </h2>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                {products.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                {products.map((product, index) => (
+                  <ScrollAnimation key={product.id} delay={index * 100}>
+                    <ProductCard product={product} />
+                  </ScrollAnimation>
                 ))}
               </div>
             </div>

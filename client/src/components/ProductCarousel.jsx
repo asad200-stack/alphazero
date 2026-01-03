@@ -65,7 +65,7 @@ const ProductCarousel = ({ products, title }) => {
           <>
             <button
               onClick={prevSlide}
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-xl hover:bg-white transition-all duration-300 hover:scale-110 -translate-x-4"
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-xl hover:bg-white transition-all duration-300 hover:scale-110 -translate-x-4 smooth-transition gpu-accelerated"
               aria-label="Previous"
             >
               <svg className="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,7 +74,7 @@ const ProductCarousel = ({ products, title }) => {
             </button>
             <button
               onClick={nextSlide}
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-xl hover:bg-white transition-all duration-300 hover:scale-110 translate-x-4"
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-xl hover:bg-white transition-all duration-300 hover:scale-110 translate-x-4 smooth-transition gpu-accelerated"
               aria-label="Next"
             >
               <svg className="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,16 +87,18 @@ const ProductCarousel = ({ products, title }) => {
         {/* Carousel Container */}
         <div className="overflow-hidden">
           <div
-            className="flex transition-transform duration-500 ease-in-out"
+            className="flex transition-transform duration-700 ease-in-out gpu-accelerated"
             style={{ transform: `translateX(-${currentIndex * (100 / itemsToShow)}%)` }}
           >
-            {products.map((product) => (
+            {products.map((product, index) => (
               <div
                 key={product.id}
                 className="flex-shrink-0 px-2"
                 style={{ width: `${100 / itemsToShow}%` }}
               >
-                <ProductCard product={product} />
+                <div className="scroll-fade-in visible" style={{ transitionDelay: `${index * 50}ms` }}>
+                  <ProductCard product={product} />
+                </div>
               </div>
             ))}
           </div>
