@@ -4,7 +4,7 @@ import { useLanguage } from '../context/LanguageContext'
 
 const Banner = () => {
   const { settings } = useSettings()
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
 
   if (settings.banner_enabled !== 'true') {
     return null
@@ -58,13 +58,6 @@ const Banner = () => {
             <h2 className="text-5xl md:text-7xl font-black mb-3 drop-shadow-2xl tracking-tight">
               {t('blackFriday')}
             </h2>
-            <div className="flex items-baseline space-x-3 mb-4">
-              <span className="text-3xl md:text-5xl font-black">{t('upTo')}</span>
-              <span className="text-6xl md:text-8xl font-black bg-white/95 backdrop-blur-sm text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-pink-600 px-5 py-3 rounded-2xl luxury-shadow-lg">
-                90%
-              </span>
-              <span className="text-2xl md:text-3xl font-bold opacity-90">OFF</span>
-            </div>
             <p className="text-xl md:text-2xl mt-5 font-bold drop-shadow-lg">
               {settings.banner_text_en || t('specialOffers')}
             </p>
