@@ -15,11 +15,19 @@ app.use(cors({
 }));
 
 // Add error handling for JSON parsing
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ 
+  limit: '10mb',
+  strict: false, // Allow non-array/object JSON
+  type: 'application/json' // Only parse application/json
+}));
+
+// Error handler for JSON parsing
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
-    console.error('JSON parsing error:', err.message);
-    return res.status(400).json({ error: 'Invalid JSON in request body' });
+    console.error('❌ JSON parsing error:', err.message);
+    console.error('Request URL:', req.url);
+    console.error('Content-Type:', req.headers['content-type']);
+    return res.status(400).json({ error: 'Invalid JSON in request body: ' + err.message });
   }
   next();
 });

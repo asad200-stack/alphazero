@@ -69,17 +69,23 @@ router.get('/:key', (req, res) => {
 router.put('/', verifyToken, (req, res, next) => {
   // Check content type
   const contentType = req.headers['content-type'] || '';
-  console.log('Settings PUT request - Content-Type:', contentType);
-  console.log('Settings PUT request - Body type:', typeof req.body);
-  console.log('Settings PUT request - Body keys:', Object.keys(req.body || {}));
-  console.log('Settings PUT request - Body:', JSON.stringify(req.body).substring(0, 200));
-  console.log('Settings PUT request - Method:', req.method);
-  console.log('Settings PUT request - URL:', req.url);
+  console.log('=== Settings PUT Request ===');
+  console.log('Content-Type:', contentType);
+  console.log('Body type:', typeof req.body);
+  console.log('Body keys:', Object.keys(req.body || {}));
+  console.log('Body:', JSON.stringify(req.body).substring(0, 500));
+  console.log('Method:', req.method);
+  console.log('URL:', req.url);
+  console.log('Headers:', JSON.stringify(req.headers).substring(0, 300));
   
-  // If body is empty and it's not multipart, it might be a parsing issue
-  if (!contentType.includes('multipart/form-data') && (!req.body || Object.keys(req.body).length === 0)) {
-    console.warn('Empty body detected for non-multipart request - this might be a parsing issue');
-    // Don't return error yet - let's see if it's just empty data
+  // If body is empty and it's not multipart, log warning but continue
+  if (!contentType.includes('multipart/form-data')) {
+    if (!req.body || Object.keys(req.body).length === 0) {
+      console.warn('⚠️ Empty body detected for JSON request');
+      console.warn('This might indicate a parsing issue with express.json() middleware');
+    } else {
+      console.log('✅ Body received successfully with', Object.keys(req.body).length, 'keys');
+    }
   }
   
   if (contentType.includes('multipart/form-data')) {
@@ -112,13 +118,24 @@ router.put('/', verifyToken, (req, res, next) => {
 }, (req, res) => {
   const updates = req.body || {};
   
-  console.log('Processing updates - Raw body:', JSON.stringify(updates).substring(0, 300));
-  console.log('Processing updates - Keys:', Object.keys(updates));
+  console.log('=== Processing Updates ===');
+  console.log('Raw body:', JSON.stringify(updates).substring(0, 500));
+  console.log('Keys:', Object.keys(updates));
+  console.log('Keys count:', Object.keys(updates).length);
   
-  // Ensure updates is an object and has data
+  // Ensure updates is an object
   if (typeof updates !== 'object' || Array.isArray(updates)) {
-    console.error('Invalid updates type:', typeof updates, Array.isArray(updates));
+    console.error('❌ Invalid updates type:', typeof updates, Array.isArray(updates));
     return res.status(400).json({ error: 'Invalid request body' })
+  }
+  
+  // If body is completely empty, return error with more details
+  if (Object.keys(updates).length === 0 && !req.file) {
+    console.error('❌ No data in request body and no file');
+    console.error('Request headers:', JSON.stringify(req.headers).substring(0, 300));
+    return res.status(400).json({ 
+      error: 'No data provided to update. Please check that the request body is being sent correctly.' 
+    })
   }
   
   // Accept all values including empty strings (to allow clearing fields)
