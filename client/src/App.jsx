@@ -71,16 +71,16 @@ function App() {
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Router>
-                      </SearchProvider>
-                    </RecentlyViewedProvider>
-                  </WishlistProvider>
-                </CartProvider>
-              </CustomerProvider>
-            </ToastProvider>
-          </LanguageProvider>
-        </ThemeProvider>
-      </SettingsProvider>
-    </ErrorBoundary>
+                    </SearchProvider>
+                  </RecentlyViewedProvider>
+                </WishlistProvider>
+              </CartProvider>
+            </CustomerProvider>
+          </ToastProvider>
+        </LanguageProvider>
+      </ThemeProvider>
+    </SettingsProvider>
+  </ErrorBoundary>
   )
 }
 
