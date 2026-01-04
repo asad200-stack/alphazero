@@ -162,6 +162,13 @@ const AdminDashboard = () => {
           </div>
         </div>
 
+        {/* Debug: Show stats */}
+        {process.env.NODE_ENV === 'development' && stats && (
+          <div className="mb-4 p-2 bg-yellow-100 text-xs">
+            Debug: Stats loaded - Pending: {stats.pending_orders}
+          </div>
+        )}
+
         <Routes>
           <Route path="dashboard" element={<ProductsManagement />} />
           <Route path="categories" element={<CategoryManagement />} />
