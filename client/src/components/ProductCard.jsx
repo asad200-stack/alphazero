@@ -151,10 +151,18 @@ const ProductCard = ({ product }) => {
             </Link>
             <button
               onClick={handleAddToCart}
-              disabled={isAdding}
-              className="theme-button-primary flex-1 bg-gradient-to-r from-gray-900 to-black text-white py-2 rounded-lg font-semibold hover:from-black hover:to-gray-800 transition-all duration-300 text-xs md:text-sm luxury-btn luxury-shadow hover:shadow-xl add-to-cart-btn smooth-transition relative"
+              disabled={isAdding || !isInStock}
+              className={`theme-button-primary flex-1 text-white py-2 rounded-lg font-semibold transition-all duration-300 text-xs md:text-sm luxury-btn luxury-shadow smooth-transition relative ${
+                isInStock 
+                  ? 'bg-gradient-to-r from-gray-900 to-black hover:from-black hover:to-gray-800 hover:shadow-xl add-to-cart-btn' 
+                  : 'bg-gray-400 cursor-not-allowed opacity-60'
+              }`}
             >
-              {isAdding ? (
+              {!isInStock ? (
+                <span className="flex items-center justify-center">
+                  {language === 'ar' ? 'غير متوفر' : 'Out of Stock'}
+                </span>
+              ) : isAdding ? (
                 <span className="flex items-center justify-center">
                   <svg className="animate-spin h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
