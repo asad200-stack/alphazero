@@ -88,33 +88,47 @@ const ProductCard = ({ product }) => {
       <Link to={`/product/${product.id}`} className="block">
         <div className="relative overflow-hidden">
           {product.image ? (
-            <img
-              src={getImageUrl(product.image)}
-              alt={language === 'ar' ? (product.name_ar || product.name) : (product.name || product.name_ar)}
-              className="w-full h-40 md:h-56 object-cover product-image gpu-accelerated"
-            />
+            <>
+              <img
+                src={getImageUrl(product.image)}
+                alt={language === 'ar' ? (product.name_ar || product.name) : (product.name || product.name_ar)}
+                className={`w-full h-40 md:h-56 object-cover product-image gpu-accelerated ${
+                  !isInStock ? 'opacity-60 grayscale' : ''
+                }`}
+              />
+              {/* Out of Stock Overlay */}
+              {!isInStock && (
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-20">
+                  <div className="bg-gray-900/90 backdrop-blur-sm text-white px-4 py-2 rounded-lg font-bold text-sm md:text-base shadow-2xl border-2 border-white/20">
+                    {language === 'ar' ? 'غير متوفر' : 'Out of Stock'}
+                  </div>
+                </div>
+              )}
+            </>
           ) : (
             <div className="w-full h-40 md:h-56 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
               <span className="text-gray-400">{t('noImage') || 'No Image'}</span>
             </div>
           )}
+          {/* Badge for Out of Stock */}
           {!isInStock && (
             <div 
-              className="absolute top-2 left-2 bg-gradient-to-r from-gray-600 to-gray-800 text-white px-3 py-1 rounded-full text-xs font-bold shadow-xl backdrop-blur-sm z-10"
+              className="absolute top-2 left-2 bg-gradient-to-r from-gray-700 to-gray-900 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-xl backdrop-blur-sm z-30 border border-white/20"
             >
               {language === 'ar' ? 'غير متوفر' : 'Out of Stock'}
             </div>
           )}
+          {/* Discount Badge */}
           {hasDiscountPrice && isInStock && (
             <div 
-              className="absolute top-2 left-2 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-xl backdrop-blur-sm pulse-animation"
+              className="absolute top-2 left-2 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-xl backdrop-blur-sm pulse-animation z-10"
             >
               -{discountPercentage}%
             </div>
           )}
           {hasDiscountPrice && !isInStock && (
             <div 
-              className="absolute top-2 left-12 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-xl backdrop-blur-sm pulse-animation"
+              className="absolute top-2 right-2 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-xl backdrop-blur-sm pulse-animation z-30"
             >
               -{discountPercentage}%
             </div>

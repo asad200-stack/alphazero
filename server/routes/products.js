@@ -195,45 +195,42 @@ router.put('/:id', verifyToken, (req, res, next) => {
           return res.status(500).json({ error: err.message });
         }
         
-        // Delete removed images
+        // Delete removed images - MUST be done before adding new images
         if (deleted_images) {
-          console.log('Received deleted_images:', deleted_images);
           try {
             const deletedIds = typeof deleted_images === 'string' ? JSON.parse(deleted_images) : deleted_images;
-            console.log('Parsed deleted image IDs:', deletedIds);
             const dataDir = process.env.RAILWAY_VOLUME_MOUNT_PATH || process.env.DATA_DIR || path.join(__dirname, '..');
             
             if (Array.isArray(deletedIds) && deletedIds.length > 0) {
-              deletedIds.forEach(imageId => {
-                console.log('Deleting image with ID:', imageId);
-                db.get('SELECT image_path FROM product_images WHERE id = ?', [imageId], (err, img) => {
-                  if (err) {
-                    console.error('Error fetching image:', err);
-                  } else if (img) {
-                    const imgPath = path.join(dataDir, img.image_path);
-                    console.log('Deleting image file:', imgPath);
-                    if (fs.existsSync(imgPath)) {
-                      try {
-                        fs.unlinkSync(imgPath);
-                        console.log('Image file deleted successfully');
-                      } catch (unlinkErr) {
-                        console.error('Error deleting image file:', unlinkErr);
+              // Delete images synchronously to ensure they're removed before response
+              const deletePromises = deletedIds.map(imageId => {
+                return new Promise((resolve) => {
+                  db.get('SELECT image_path FROM product_images WHERE id = ?', [imageId], (err, img) => {
+                    if (!err && img && img.image_path) {
+                      const imgPath = path.join(dataDir, img.image_path);
+                      // Delete file if exists
+                      if (fs.existsSync(imgPath)) {
+                        try {
+                          fs.unlinkSync(imgPath);
+                        } catch (unlinkErr) {
+                          console.error('Error deleting image file:', unlinkErr);
+                        }
                       }
-                    } else {
-                      console.log('Image file not found:', imgPath);
                     }
-                  } else {
-                    console.log('Image not found in database for ID:', imageId);
-                  }
+                    // Delete from database
+                    db.run('DELETE FROM product_images WHERE id = ?', [imageId], (deleteErr) => {
+                      if (deleteErr) {
+                        console.error('Error deleting image from database:', deleteErr);
+                      }
+                      resolve();
+                    });
+                  });
                 });
-                
-                db.run('DELETE FROM product_images WHERE id = ?', [imageId], (err) => {
-                  if (err) {
-                    console.error('Error deleting image from database:', err);
-                  } else {
-                    console.log('Image deleted from database:', imageId);
-                  }
-                });
+              });
+              
+              // Wait for all deletions to complete
+              Promise.all(deletePromises).then(() => {
+                console.log(`Successfully deleted ${deletedIds.length} image(s) from product ${req.params.id}`);
               });
             }
           } catch (parseErr) {

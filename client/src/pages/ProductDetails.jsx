@@ -154,12 +154,22 @@ const ProductDetails = () => {
                     <img
                       src={getImageUrl(allImages[selectedImageIndex])}
                       alt={language === 'ar' ? (product.name_ar || product.name) : (product.name || product.name_ar)}
-                      className="w-full h-96 object-cover"
+                      className={`w-full h-96 object-cover ${
+                        !isInStock ? 'opacity-60 grayscale' : ''
+                      }`}
                     />
-                    <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white px-3 py-1 rounded text-sm">
+                    {/* Out of Stock Overlay */}
+                    {!isInStock && (
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10">
+                        <div className="bg-gray-900/95 backdrop-blur-md text-white px-6 py-4 rounded-xl font-bold text-xl shadow-2xl border-2 border-white/30">
+                          {language === 'ar' ? '⚠️ غير متوفر حالياً' : '⚠️ Out of Stock'}
+                        </div>
+                      </div>
+                    )}
+                    <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white px-3 py-1 rounded text-sm z-20">
                       {selectedImageIndex + 1} / {allImages.length}
                     </div>
-                    <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white px-3 py-1 rounded text-sm">
+                    <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white px-3 py-1 rounded text-sm z-20">
                       Click to zoom
                     </div>
                   </div>

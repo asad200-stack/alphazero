@@ -235,21 +235,23 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
 
   const removeImage = (index) => {
     const image = images[index]
-    console.log('Removing image at index:', index, 'Image:', image)
-    if (image && image.id) {
-      // Existing image - mark for deletion
-      console.log('Marking image for deletion:', image.id)
-      setDeletedImages(prev => {
-        const newDeleted = [...prev, image.id]
-        console.log('Deleted images:', newDeleted)
-        return newDeleted
-      })
-    }
+    
+    // Remove from images array immediately (visual removal)
     setImages(prev => {
       const newImages = prev.filter((_, i) => i !== index)
-      console.log('Images after removal:', newImages)
       return newImages
     })
+    
+    // If it's an existing image (has id), mark it for deletion from database
+    if (image && image.id) {
+      setDeletedImages(prev => {
+        // Avoid duplicates
+        if (!prev.includes(image.id)) {
+          return [...prev, image.id]
+        }
+        return prev
+      })
+    }
   }
 
   const handleSubmit = async (e) => {
