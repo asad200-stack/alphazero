@@ -107,10 +107,18 @@ router.put('/', verifyToken, (req, res, next) => {
     return res.status(400).json({ error: 'Invalid request body' })
   }
   
-  // Check if updates object is empty
-  if (Object.keys(updates).length === 0) {
-    console.error('Empty updates object');
-    return res.status(400).json({ error: 'No data provided to update' })
+  // Filter out empty values and undefined
+  const filteredUpdates = {};
+  Object.keys(updates).forEach(key => {
+    if (updates[key] !== undefined && updates[key] !== null && updates[key] !== '') {
+      filteredUpdates[key] = updates[key];
+    }
+  });
+  
+  // Check if filtered updates object is empty
+  if (Object.keys(filteredUpdates).length === 0) {
+    console.error('Empty filtered updates object');
+    return res.status(400).json({ error: 'No valid data provided to update' })
   }
   
   // Handle logo upload
@@ -126,15 +134,15 @@ router.put('/', verifyToken, (req, res, next) => {
       }
     });
     
-    updates.logo = `/uploads/${req.file.filename}`;
+    filteredUpdates.logo = `/uploads/${req.file.filename}`;
   }
 
   // Update each setting
-  const promises = Object.keys(updates).map(key => {
+  const promises = Object.keys(filteredUpdates).map(key => {
     return new Promise((resolve, reject) => {
       db.run(
         'INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP)',
-        [key, updates[key]],
+        [key, filteredUpdates[key]],
         (err) => {
           if (err) reject(err);
           else resolve();
