@@ -31,10 +31,21 @@ const ProductCard = ({ product }) => {
 
   const [isAdding, setIsAdding] = useState(false)
   const [showCheck, setShowCheck] = useState(false)
+  
+  // Check if product is in stock
+  const isInStock = product.in_stock === 1 || product.in_stock === true
 
   const handleAddToCart = async (e) => {
     e.preventDefault()
     e.stopPropagation()
+    
+    if (!isInStock) {
+      showToast(
+        language === 'ar' ? 'المنتج غير متوفر حالياً' : 'Product is currently out of stock',
+        'error'
+      )
+      return
+    }
     
     setIsAdding(true)
     addToCart(product, 1)
@@ -87,9 +98,23 @@ const ProductCard = ({ product }) => {
               <span className="text-gray-400">{t('noImage') || 'No Image'}</span>
             </div>
           )}
-          {hasDiscountPrice && (
+          {!isInStock && (
+            <div 
+              className="absolute top-2 left-2 bg-gradient-to-r from-gray-600 to-gray-800 text-white px-3 py-1 rounded-full text-xs font-bold shadow-xl backdrop-blur-sm z-10"
+            >
+              {language === 'ar' ? 'غير متوفر' : 'Out of Stock'}
+            </div>
+          )}
+          {hasDiscountPrice && isInStock && (
             <div 
               className="absolute top-2 left-2 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-xl backdrop-blur-sm pulse-animation"
+            >
+              -{discountPercentage}%
+            </div>
+          )}
+          {hasDiscountPrice && !isInStock && (
+            <div 
+              className="absolute top-2 left-12 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-xl backdrop-blur-sm pulse-animation"
             >
               -{discountPercentage}%
             </div>
