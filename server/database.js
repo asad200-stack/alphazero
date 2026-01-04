@@ -199,6 +199,86 @@ db.serialize(() => {
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL
   )`);
 
+  // Customers table (for customer accounts)
+  db.run(`CREATE TABLE IF NOT EXISTS customers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    first_name TEXT,
+    last_name TEXT,
+    phone TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`);
+
+  // Customer Addresses table
+  db.run(`CREATE TABLE IF NOT EXISTS customer_addresses (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    customer_id INTEGER NOT NULL,
+    address_type TEXT DEFAULT 'home',
+    full_name TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    address TEXT NOT NULL,
+    city TEXT,
+    postal_code TEXT,
+    is_default INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
+  )`);
+
+  // Shipping Zones table
+  db.run(`CREATE TABLE IF NOT EXISTS shipping_zones (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    name_ar TEXT,
+    description TEXT,
+    enabled INTEGER DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`);
+
+  // Shipping Rates table
+  db.run(`CREATE TABLE IF NOT EXISTS shipping_rates (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    zone_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    name_ar TEXT,
+    min_order_amount REAL DEFAULT 0,
+    shipping_cost REAL NOT NULL,
+    estimated_days INTEGER,
+    enabled INTEGER DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (zone_id) REFERENCES shipping_zones(id) ON DELETE CASCADE
+  )`);
+
+  // Flash Sales table
+  db.run(`CREATE TABLE IF NOT EXISTS flash_sales (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    title_ar TEXT,
+    description TEXT,
+    description_ar TEXT,
+    start_date DATETIME NOT NULL,
+    end_date DATETIME NOT NULL,
+    discount_percentage REAL,
+    enabled INTEGER DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`);
+
+  // Flash Sale Products table
+  db.run(`CREATE TABLE IF NOT EXISTS flash_sale_products (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    flash_sale_id INTEGER NOT NULL,
+    product_id INTEGER NOT NULL,
+    discount_price REAL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (flash_sale_id) REFERENCES flash_sales(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+  )`);
+
   // Default settings
   db.run(`INSERT OR IGNORE INTO settings (key, value) VALUES 
     ('store_name', 'My Store'),

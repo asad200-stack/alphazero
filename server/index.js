@@ -55,6 +55,8 @@ const categoriesRoutes = require('./routes/categories');
 const themesRoutes = require('./routes/themes');
 const reviewsRoutes = require('./routes/reviews');
 const ordersRoutes = require('./routes/orders');
+const customersRoutes = require('./routes/customers');
+const shippingRoutes = require('./routes/shipping');
 
 // Routes
 app.use('/api/products', productsRoutes);
@@ -65,6 +67,8 @@ app.use('/api/categories', categoriesRoutes);
 app.use('/api/themes', themesRoutes);
 app.use('/api/reviews', reviewsRoutes);
 app.use('/api/orders', ordersRoutes);
+app.use('/api/customers', customersRoutes);
+app.use('/api/shipping', shippingRoutes);
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {

@@ -20,6 +20,7 @@ import { CartProvider } from './context/CartContext'
 import { WishlistProvider } from './context/WishlistContext'
 import { RecentlyViewedProvider } from './context/RecentlyViewedContext'
 import { SearchProvider } from './context/SearchContext'
+import { CustomerProvider } from './context/CustomerContext'
 import './App.css'
 import './styles/themes.css'
 
@@ -68,10 +69,11 @@ function App() {
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Router>
-                    </SearchProvider>
-                  </RecentlyViewedProvider>
-                </WishlistProvider>
-              </CartProvider>
+                      </SearchProvider>
+                    </RecentlyViewedProvider>
+                  </WishlistProvider>
+                </CartProvider>
+              </CustomerProvider>
             </ToastProvider>
           </LanguageProvider>
         </ThemeProvider>
