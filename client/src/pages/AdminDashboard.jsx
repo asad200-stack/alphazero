@@ -5,6 +5,7 @@ import SettingsManagement from '../components/admin/SettingsManagement'
 import BannerManagement from '../components/admin/BannerManagement'
 import CategoryManagement from '../components/admin/CategoryManagement'
 import ThemeManagement from '../components/admin/ThemeManagement'
+import OrdersManagement from '../components/admin/OrdersManagement'
 import api from '../utils/api'
 import { useLanguage } from '../context/LanguageContext'
 
@@ -17,6 +18,24 @@ const AdminDashboard = () => {
   useEffect(() => {
     checkAuth()
   }, [])
+
+  useEffect(() => {
+    if (authenticated) {
+      fetchStats()
+      // Poll for new orders every 30 seconds
+      const interval = setInterval(fetchStats, 30000)
+      return () => clearInterval(interval)
+    }
+  }, [authenticated])
+
+  const fetchStats = async () => {
+    try {
+      const response = await api.get('/orders/stats/summary')
+      setStats(response.data)
+    } catch (error) {
+      console.error('Error fetching stats:', error)
+    }
+  }
 
   const checkAuth = async () => {
     const token = localStorage.getItem('token')
@@ -128,6 +147,17 @@ const AdminDashboard = () => {
             >
               {language === 'ar' ? 'الثيمات' : 'Themes'}
             </Link>
+            <Link
+              to="/admin/orders"
+              className="px-6 py-3 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition relative"
+            >
+              {language === 'ar' ? 'الطلبات' : 'Orders'}
+              {stats && stats.pending_orders > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {stats.pending_orders}
+                </span>
+              )}
+            </Link>
           </div>
         </div>
 
@@ -137,6 +167,7 @@ const AdminDashboard = () => {
           <Route path="banners" element={<BannerManagement />} />
           <Route path="settings" element={<SettingsManagement />} />
           <Route path="themes" element={<ThemeManagement />} />
+          <Route path="orders" element={<OrdersManagement />} />
           <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
         </Routes>
       </div>
