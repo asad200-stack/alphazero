@@ -33,7 +33,16 @@ const ProductDetails = () => {
   const { addToRecentlyViewed, getRelatedProducts } = useRecentlyViewed()
   const [relatedProducts, setRelatedProducts] = useState([])
   
+  const isInStock = product && (product.in_stock === 1 || product.in_stock === true)
+
   const handleAddToCart = () => {
+    if (!isInStock) {
+      showToast(
+        language === 'ar' ? 'المنتج غير متوفر حالياً' : 'Product is currently out of stock',
+        'error'
+      )
+      return
+    }
     addToCart(product, quantity)
     showToast(t('productAddedToCart') || 'تم إضافة المنتج للسلة', 'success')
   }
