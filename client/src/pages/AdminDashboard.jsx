@@ -12,6 +12,7 @@ import { useLanguage } from '../context/LanguageContext'
 const AdminDashboard = () => {
   const [authenticated, setAuthenticated] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [stats, setStats] = useState(null)
   const navigate = useNavigate()
   const { t, language, changeLanguage } = useLanguage()
 
