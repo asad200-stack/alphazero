@@ -37,7 +37,7 @@ const Header = () => {
               {settings.logo ? (
                 <img 
                   src={getImageUrl(settings.logo)} 
-                  alt={settings.store_name}
+                  alt={settings.store_name_en || settings.store_name || 'My Store'}
                   className="h-12 w-auto object-contain"
                 />
               ) : (

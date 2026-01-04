@@ -216,6 +216,15 @@ db.serialize(() => {
     ('default_language', 'ar'),
     ('holiday_theme', 'none'),
     ('active_theme', 'clothing')`);
+  
+  // Update existing store_name if it's still Arabic
+  db.run(`UPDATE settings SET value = 'My Store' WHERE key = 'store_name' AND value = 'متجري الإلكتروني'`, (err) => {
+    if (err) {
+      console.error('Error updating store_name:', err);
+    } else {
+      console.log('Updated store_name from Arabic to English');
+    }
+  });
 });
 
 module.exports = db;
