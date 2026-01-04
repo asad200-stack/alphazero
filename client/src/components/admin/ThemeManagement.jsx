@@ -80,6 +80,11 @@ const ThemeManagement = () => {
           root.style.setProperty('--theme-secondary', activeTheme.config.secondaryColor)
         }
       }
+    } else {
+      // If no active theme, reset to defaults
+      root.removeAttribute('data-theme')
+      root.style.removeProperty('--theme-primary')
+      root.style.removeProperty('--theme-secondary')
     }
   }
 
@@ -304,7 +309,7 @@ const ThemeManagement = () => {
       {/* Preview Modal */}
       {previewTheme && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-800">
@@ -318,29 +323,73 @@ const ThemeManagement = () => {
                 </button>
               </div>
 
-              <div className="bg-gray-100 rounded-lg p-4 mb-4">
-                <p className="text-sm text-gray-600 mb-4">
-                  {language === 'ar' 
-                    ? 'هذه معاينة مؤقتة للثيم. اضغط "تفعيل" لتطبيق الثيم على الموقع.'
-                    : 'This is a temporary preview. Click "Activate" to apply the theme to your store.'}
-                </p>
-                <button
-                  onClick={() => {
-                    handleActivateTheme(previewTheme)
-                    closePreview()
-                  }}
-                  className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-semibold"
-                >
-                  {language === 'ar' ? 'تفعيل هذا الثيم' : 'Activate This Theme'}
-                </button>
-              </div>
+              <div className="space-y-6">
+                {/* Theme Info */}
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border-2 border-blue-200">
+                  <div className="flex items-center gap-4 mb-4">
+                    <span className="text-5xl">{themeIcons[previewTheme.template_type] || '🛒'}</span>
+                    <div>
+                      <h3 className="font-bold text-2xl text-gray-800">
+                        {language === 'ar' ? (previewTheme.name_ar || previewTheme.name) : (previewTheme.name || previewTheme.name_ar)}
+                      </h3>
+                      <p className="text-sm text-gray-600 mt-1">
+                        {language === 'ar' ? (previewTheme.description_ar || previewTheme.description) : (previewTheme.description || previewTheme.description_ar)}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {previewTheme.config && (
+                    <div className="flex flex-wrap gap-4 mt-4">
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="w-8 h-8 rounded-full border-2 border-gray-300"
+                          style={{ backgroundColor: previewTheme.config.primaryColor || '#3B82F6' }}
+                        ></div>
+                        <span className="text-sm text-gray-700 font-medium">Primary Color</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="w-8 h-8 rounded-full border-2 border-gray-300"
+                          style={{ backgroundColor: previewTheme.config.secondaryColor || '#1E40AF' }}
+                        ></div>
+                        <span className="text-sm text-gray-700 font-medium">Secondary Color</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
 
-              <div className="border-2 border-gray-300 rounded-lg overflow-hidden">
-                <iframe
-                  src="/"
-                  className="w-full h-[600px] border-0"
-                  title="Theme Preview"
-                />
+                {/* Preview Message */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <p className="text-sm text-blue-800 mb-4">
+                    {language === 'ar' 
+                      ? '💡 لمعاينة الثيم على الموقع الفعلي، اضغط "تفعيل" وسيتم تطبيق الثيم على متجرك.'
+                      : '💡 To preview the theme on your actual store, click "Activate" and the theme will be applied to your store.'}
+                  </p>
+                  <p className="text-xs text-blue-600">
+                    {language === 'ar' 
+                      ? 'يمكنك دائماً تغيير الثيم لاحقاً من هذه الصفحة.'
+                      : 'You can always change the theme later from this page.'}
+                  </p>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => {
+                      handleActivateTheme(previewTheme)
+                      closePreview()
+                    }}
+                    className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-semibold"
+                  >
+                    {language === 'ar' ? 'تفعيل هذا الثيم' : 'Activate This Theme'}
+                  </button>
+                  <button
+                    onClick={closePreview}
+                    className="flex-1 bg-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-400 transition font-semibold"
+                  >
+                    {language === 'ar' ? 'إلغاء' : 'Cancel'}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
