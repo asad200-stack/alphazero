@@ -67,38 +67,33 @@ router.get('/:key', (req, res) => {
 
 // Update settings (protected - admin only)
 router.put('/', verifyToken, (req, res, next) => {
-  // Check if request has multipart/form-data (file upload)
-  const contentType = req.headers['content-type'] || '';
-  
-  if (contentType.includes('multipart/form-data')) {
-    // Use multer for file upload
-    upload.single('logo')(req, res, (err) => {
-      if (err) {
-        console.error('Multer error:', err)
-        // Only return error for real issues (file size, type)
-        if (err.code === 'LIMIT_FILE_SIZE') {
-          return res.status(400).json({ error: 'File size too large. Maximum 2MB allowed.' })
-        }
-        if (err.message && err.message.includes('Only image files')) {
-          return res.status(400).json({ error: err.message })
-        }
-        // For other errors, continue (file might be optional)
+  // Always use multer, but handle errors gracefully
+  upload.single('logo')(req, res, (err) => {
+    if (err) {
+      console.error('Multer error:', err)
+      // Only return error for real issues (file size, type)
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({ error: 'File size too large. Maximum 2MB allowed.' })
       }
-      next()
-    })
-  } else {
-    // No file upload, just JSON data
-    next()
-  }
-}, (req, res) => {
-  const updates = req.body;
-  
-  // If body is empty (multer didn't parse), try to get from query or parse manually
-  if (!updates || Object.keys(updates).length === 0) {
-    // Try to get from req.query or parse from raw body
-    if (req.query && Object.keys(req.query).length > 0) {
-      Object.assign(updates, req.query)
+      if (err.message && err.message.includes('Only image files')) {
+        return res.status(400).json({ error: err.message })
+      }
+      // For missing file (MULTER_ERROR or no file), continue - file is optional
+      if (err.code === 'LIMIT_UNEXPECTED_FILE' || err.message === 'Unexpected field') {
+        // This means a file field was sent but with wrong name, or no file - continue
+        return next()
+      }
+      // For other parsing errors, log but continue
+      console.warn('Multer parsing warning (continuing):', err.message)
     }
+    next()
+  })
+}, (req, res) => {
+  const updates = req.body || {};
+  
+  // Ensure updates is an object
+  if (typeof updates !== 'object' || Array.isArray(updates)) {
+    return res.status(400).json({ error: 'Invalid request body' })
   }
   
   // Handle logo upload
