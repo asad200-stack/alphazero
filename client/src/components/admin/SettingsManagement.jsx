@@ -143,10 +143,25 @@ const SettingsManagement = () => {
       }
     } catch (error) {
       console.error('Error saving settings:', error)
+      console.error('Error response:', error.response)
+      console.error('Error message:', error.message)
+      
+      // Extract error message from response
+      let errorMessage = t('error') || 'حدث خطأ'
+      if (error.response && error.response.data) {
+        if (error.response.data.error) {
+          errorMessage = error.response.data.error
+        } else if (typeof error.response.data === 'string') {
+          errorMessage = error.response.data
+        }
+      } else if (error.message) {
+        errorMessage = error.message
+      }
+      
       if (window.showToast) {
-        window.showToast(t('error') || 'حدث خطأ', 'error')
+        window.showToast(errorMessage, 'error')
       } else {
-        alert(t('error'))
+        alert(errorMessage)
       }
     } finally {
       setLoading(false)
