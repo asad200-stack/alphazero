@@ -63,7 +63,13 @@ const SettingsManagement = () => {
       holiday_theme: settings.holiday_theme || 'none'
       })
       if (settings.logo) {
-        setPreview(getImageUrl(settings.logo))
+        const logoUrl = getImageUrl(settings.logo)
+        console.log('Setting preview from settings.logo:', settings.logo, '→', logoUrl)
+        setPreview(logoUrl)
+      } else {
+        // Clear preview if no logo
+        console.log('No logo in settings, clearing preview')
+        setPreview(null)
       }
     }
   }, [settings])
@@ -150,7 +156,19 @@ const SettingsManagement = () => {
         }
       }
 
+      // Wait for settings to be fetched and updated
       await fetchSettings()
+      
+      // If logo was uploaded, ensure preview is updated
+      // fetchSettings will trigger useEffect which updates preview
+      // But we also need to clear the logoFile from formData
+      if (formData.logoFile) {
+        setFormData(prev => {
+          const { logoFile, ...rest } = prev
+          return rest
+        })
+      }
+      
       // Toast will be shown from useToast if available
       if (window.showToast) {
         window.showToast(t('settingsSaved'), 'success')
@@ -223,12 +241,38 @@ const SettingsManagement = () => {
         <div>
           <h3 className="text-lg font-semibold mb-4 text-gray-700">{t('logo')}</h3>
           <div className="flex items-center space-x-6 space-x-reverse rtl:space-x-reverse">
-            {preview && (
-              <img
-                src={preview}
-                alt="Logo preview"
-                className="h-24 w-auto object-contain border border-gray-300 rounded-lg p-2"
-              />
+            {preview ? (
+              <div className="relative">
+                <img
+                  src={preview}
+                  alt="Logo preview"
+                  className="h-24 w-auto max-w-xs object-contain border border-gray-300 rounded-lg p-2 bg-white"
+                  onError={(e) => {
+                    console.error('Error loading logo image:', preview)
+                    e.target.style.display = 'none'
+                    // Show placeholder if image fails to load
+                    const placeholder = e.target.nextSibling
+                    if (placeholder) placeholder.style.display = 'flex'
+                  }}
+                />
+                <div className="h-24 w-32 border border-gray-300 rounded-lg p-2 bg-gray-50 flex items-center justify-center text-gray-400 text-xs hidden">
+                  <div className="text-center">
+                    <svg className="w-8 h-8 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <div>Logo preview</div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="h-24 w-32 border border-gray-300 rounded-lg p-2 bg-gray-50 flex items-center justify-center text-gray-400 text-xs">
+                <div className="text-center">
+                  <svg className="w-8 h-8 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <div>Logo preview</div>
+                </div>
+              </div>
             )}
             <div>
               <input
