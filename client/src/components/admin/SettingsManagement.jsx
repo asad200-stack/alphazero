@@ -125,18 +125,29 @@ const SettingsManagement = () => {
           }
         })
         
-        console.log('Sending JSON data:', jsonData)
+        console.log('=== Client: Sending Settings ===')
+        console.log('JSON data:', jsonData)
         console.log('JSON data keys:', Object.keys(jsonData))
         console.log('JSON data size:', JSON.stringify(jsonData).length)
         console.log('JSON stringified:', JSON.stringify(jsonData))
+        console.log('Token exists:', !!localStorage.getItem('token'))
         
         // Ensure we have at least one field to update
         if (Object.keys(jsonData).length === 0) {
+          console.error('❌ No data to update')
           throw new Error('No data to update')
         }
         
-        // Don't explicitly set Content-Type - let axios handle it
-        await api.put('/settings', jsonData)
+        try {
+          // Don't explicitly set Content-Type - let axios handle it
+          const response = await api.put('/settings', jsonData)
+          console.log('✅ Settings saved successfully:', response.data)
+        } catch (error) {
+          console.error('❌ Error saving settings:', error)
+          console.error('Error response:', error.response?.data)
+          console.error('Error status:', error.response?.status)
+          throw error
+        }
       }
 
       await fetchSettings()
