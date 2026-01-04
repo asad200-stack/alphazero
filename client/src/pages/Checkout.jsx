@@ -380,9 +380,16 @@ const Checkout = () => {
                     className="mr-3"
                   />
                   <div className="flex-1">
-                    <div className="font-semibold">Wishmoney</div>
+                    <div className="font-semibold flex items-center gap-2">
+                      Wishmoney
+                      <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">
+                        {language === 'ar' ? 'قريباً' : 'Soon'}
+                      </span>
+                    </div>
                     <div className="text-sm text-gray-600">
-                      {language === 'ar' ? 'الدفع الإلكتروني عبر Wishmoney' : 'Pay online with Wishmoney'}
+                      {language === 'ar' 
+                        ? 'سيتم التواصل معك لإتمام الدفع الإلكتروني' 
+                        : 'We will contact you to complete online payment'}
                     </div>
                   </div>
                 </label>
