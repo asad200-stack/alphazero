@@ -13,7 +13,17 @@ app.use(cors({
   origin: process.env.FRONTEND_URL || '*',
   credentials: true
 }));
+
+// Add error handling for JSON parsing
 app.use(express.json({ limit: '10mb' }));
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    console.error('JSON parsing error:', err.message);
+    return res.status(400).json({ error: 'Invalid JSON in request body' });
+  }
+  next();
+});
+
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Use persistent data directory for uploads (Railway Volume), otherwise use local
