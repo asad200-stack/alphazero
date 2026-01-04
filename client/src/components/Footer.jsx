@@ -115,7 +115,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
-          <p>&copy; {new Date().getFullYear()} {settings.store_name || 'متجري الإلكتروني'}. {language === 'ar' ? 'جميع الحقوق محفوظة' : 'All rights reserved'}.</p>
+          <p>&copy; {new Date().getFullYear()} {settings.store_name_en || settings.store_name || 'My Store'}. {language === 'ar' ? 'جميع الحقوق محفوظة' : 'All rights reserved'}.</p>
         </div>
       </div>
     </footer>

@@ -13,7 +13,7 @@ export const useSettings = () => {
 
 export const SettingsProvider = ({ children }) => {
   const [settings, setSettings] = useState({
-    store_name: 'متجري الإلكتروني',
+    store_name: 'My Store',
     store_name_en: 'My Store',
     logo: '',
     primary_color: '#3B82F6',

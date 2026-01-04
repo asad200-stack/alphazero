@@ -201,7 +201,7 @@ db.serialize(() => {
 
   // Default settings
   db.run(`INSERT OR IGNORE INTO settings (key, value) VALUES 
-    ('store_name', 'متجري الإلكتروني'),
+    ('store_name', 'My Store'),
     ('store_name_en', 'My Store'),
     ('logo', ''),
     ('primary_color', '#3B82F6'),

@@ -48,7 +48,7 @@ const Header = () => {
                     color: settings.primary_color || '#3B82F6'
                   }}
                 >
-                  {settings.store_name || 'متجري الإلكتروني'}
+                  {settings.store_name_en || settings.store_name || 'My Store'}
                 </div>
               )}
             </Link>

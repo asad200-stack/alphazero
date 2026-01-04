@@ -7,9 +7,7 @@ const SEOHead = ({ title, description, image, url }) => {
   const { language } = useLanguage()
 
   useEffect(() => {
-    const siteName = language === 'ar' 
-      ? (settings.store_name || 'متجري الإلكتروني')
-      : (settings.store_name_en || 'My Store')
+    const siteName = settings.store_name_en || settings.store_name || 'My Store'
     
     const siteDescription = description || 
       (language === 'ar' 

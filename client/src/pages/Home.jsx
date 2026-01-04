@@ -80,7 +80,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50 pb-20 md:pb-0">
       <SEOHead 
-        title={settings.store_name || 'متجري الإلكتروني'}
+        title={settings.store_name_en || settings.store_name || 'My Store'}
         description={language === 'ar' ? 'اكتشف مجموعتنا المميزة من المنتجات' : 'Discover our amazing product collection'}
       />
       <Header />
