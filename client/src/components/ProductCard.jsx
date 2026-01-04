@@ -7,6 +7,7 @@ import { useToast } from '../context/ToastContext'
 import { useWishlist } from '../context/WishlistContext'
 import { getImageUrl } from '../utils/config'
 import { getProductPrices } from '../utils/productHelpers'
+import ProductRating from './ProductRating'
 
 const ProductCard = ({ product }) => {
   const { settings } = useSettings()

@@ -151,6 +151,54 @@ db.serialize(() => {
     }
   });
 
+  // Reviews table
+  db.run(`CREATE TABLE IF NOT EXISTS reviews (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_id INTEGER NOT NULL,
+    customer_name TEXT NOT NULL,
+    customer_email TEXT,
+    rating INTEGER NOT NULL CHECK(rating >= 1 AND rating <= 5),
+    review_text TEXT,
+    approved INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+  )`);
+
+  // Orders table
+  db.run(`CREATE TABLE IF NOT EXISTS orders (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_number TEXT UNIQUE NOT NULL,
+    customer_name TEXT NOT NULL,
+    customer_email TEXT,
+    customer_phone TEXT NOT NULL,
+    shipping_address TEXT NOT NULL,
+    shipping_city TEXT,
+    shipping_postal_code TEXT,
+    payment_method TEXT NOT NULL,
+    payment_status TEXT DEFAULT 'pending',
+    order_status TEXT DEFAULT 'pending',
+    total_amount REAL NOT NULL,
+    notes TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`);
+
+  // Order Items table
+  db.run(`CREATE TABLE IF NOT EXISTS order_items (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_id INTEGER NOT NULL,
+    product_id INTEGER NOT NULL,
+    product_name TEXT NOT NULL,
+    product_name_ar TEXT,
+    quantity INTEGER NOT NULL,
+    price REAL NOT NULL,
+    total REAL NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL
+  )`);
+
   // Default settings
   db.run(`INSERT OR IGNORE INTO settings (key, value) VALUES 
     ('store_name', 'متجري الإلكتروني'),

@@ -7,6 +7,8 @@ import ImageLightbox from '../components/ImageLightbox'
 import SEOHead from '../components/SEOHead'
 import ShareProduct from '../components/ShareProduct'
 import ProductCard from '../components/ProductCard'
+import ProductRating from '../components/ProductRating'
+import ProductReviews from '../components/ProductReviews'
 import api from '../utils/api'
 import { useSettings } from '../context/SettingsContext'
 import { useLanguage } from '../context/LanguageContext'
@@ -192,9 +194,13 @@ const ProductDetails = () => {
                 </div>
               )}
               
-              <h1 className="text-3xl md:text-4xl font-black mb-5 text-gray-900 leading-tight">
+              <h1 className="text-3xl md:text-4xl font-black mb-3 text-gray-900 leading-tight">
                 {language === 'ar' ? (product.name_ar || product.name) : (product.name || product.name_ar)}
               </h1>
+              
+              <div className="mb-5">
+                <ProductRating productId={product.id} size="md" />
+              </div>
               
               {(language === 'ar' ? (product.description_ar || product.description) : (product.description || product.description_ar)) ? (
                 <p className="text-gray-600 mb-8 leading-relaxed text-lg">
@@ -271,6 +277,11 @@ const ProductDetails = () => {
               </div>
             </div>
           </div>
+        </div>
+        
+        {/* Reviews Section */}
+        <div className="bg-white luxury-rounded-lg luxury-shadow-lg overflow-hidden mt-8 p-6">
+          <ProductReviews productId={product.id} />
         </div>
       </main>
 

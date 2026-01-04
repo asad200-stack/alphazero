@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import BottomNavigation from '../components/BottomNavigation'
 import { useLanguage } from '../context/LanguageContext'
@@ -107,13 +107,13 @@ const Cart = () => {
                   {getCartTotal().toFixed(2)} {t('currency')}
                 </span>
               </div>
-              <button
-                onClick={handleCheckout}
-                className="w-full py-3 rounded-lg text-white font-bold text-lg hover:opacity-90 transition"
+              <Link
+                to="/checkout"
+                className="block w-full py-3 rounded-lg text-white font-bold text-lg hover:opacity-90 transition text-center"
                 style={{ backgroundColor: settings.primary_color || '#3B82F6' }}
               >
                 {t('checkout')}
-              </button>
+              </Link>
             </div>
           </div>
         )}
