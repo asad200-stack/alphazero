@@ -5,6 +5,7 @@ import Shop from './pages/Shop'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
 import WishmoneyPayment from './pages/WishmoneyPayment'
+import OrderSuccess from './pages/OrderSuccess'
 import Account from './pages/Account'
 import ProductDetails from './pages/ProductDetails'
 import AdminLogin from './pages/AdminLogin'
@@ -48,6 +49,7 @@ function App() {
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/payment/wishmoney" element={<WishmoneyPayment />} />
+                <Route path="/order-success" element={<OrderSuccess />} />
                 <Route path="/account" element={<Account />} />
                 <Route path="/product/:id" element={<ProductDetails />} />
                 

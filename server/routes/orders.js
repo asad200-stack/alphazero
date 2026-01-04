@@ -156,6 +156,25 @@ router.get('/track/:orderNumber', (req, res) => {
   );
 });
 
+// Get order items by order ID (public - for order success page)
+router.get('/:id/items', (req, res) => {
+  const { id } = req.params;
+  
+  db.all(
+    `SELECT oi.*, p.image as product_image
+     FROM order_items oi
+     LEFT JOIN products p ON oi.product_id = p.id
+     WHERE oi.order_id = ?`,
+    [id],
+    (err, items) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      res.json(items);
+    }
+  );
+});
+
 // Update order status (admin only)
 router.put('/:id/status', verifyToken, (req, res) => {
   const { id } = req.params;
