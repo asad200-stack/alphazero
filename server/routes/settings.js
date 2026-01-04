@@ -67,33 +67,41 @@ router.get('/:key', (req, res) => {
 
 // Update settings (protected - admin only)
 router.put('/', verifyToken, (req, res, next) => {
-  // Always use multer, but handle errors gracefully
-  upload.single('logo')(req, res, (err) => {
-    if (err) {
-      console.error('Multer error:', err)
-      // Only return error for real issues (file size, type)
-      if (err.code === 'LIMIT_FILE_SIZE') {
-        return res.status(400).json({ error: 'File size too large. Maximum 2MB allowed.' })
+  // Check content type
+  const contentType = req.headers['content-type'] || '';
+  
+  if (contentType.includes('multipart/form-data')) {
+    // Use multer for multipart requests
+    upload.single('logo')(req, res, (err) => {
+      if (err) {
+        console.error('Multer error:', err)
+        // Only return error for real issues (file size, type)
+        if (err.code === 'LIMIT_FILE_SIZE') {
+          return res.status(400).json({ error: 'File size too large. Maximum 2MB allowed.' })
+        }
+        if (err.message && err.message.includes('Only image files')) {
+          return res.status(400).json({ error: err.message })
+        }
+        // For missing file, continue - file is optional
+        // Multer will parse other fields even without file
       }
-      if (err.message && err.message.includes('Only image files')) {
-        return res.status(400).json({ error: err.message })
-      }
-      // For missing file (MULTER_ERROR or no file), continue - file is optional
-      if (err.code === 'LIMIT_UNEXPECTED_FILE' || err.message === 'Unexpected field') {
-        // This means a file field was sent but with wrong name, or no file - continue
-        return next()
-      }
-      // For other parsing errors, log but continue
-      console.warn('Multer parsing warning (continuing):', err.message)
-    }
+      next()
+    })
+  } else {
+    // JSON request, skip multer
     next()
-  })
+  }
 }, (req, res) => {
   const updates = req.body || {};
   
-  // Ensure updates is an object
+  // Ensure updates is an object and has data
   if (typeof updates !== 'object' || Array.isArray(updates)) {
     return res.status(400).json({ error: 'Invalid request body' })
+  }
+  
+  // Check if updates object is empty
+  if (Object.keys(updates).length === 0) {
+    return res.status(400).json({ error: 'No data provided to update' })
   }
   
   // Handle logo upload
