@@ -95,9 +95,16 @@ const SettingsManagement = () => {
         return
       }
       
+      console.log('📁 File selected:', file.name, file.type, file.size)
+      
       const reader = new FileReader()
       reader.onload = (e) => {
+        console.log('📷 Preview set from FileReader (base64)')
         setPreview(e.target.result)
+      }
+      reader.onerror = (error) => {
+        console.error('❌ FileReader error:', error)
+        alert('Error reading file')
       }
       reader.readAsDataURL(file)
       
@@ -113,6 +120,7 @@ const SettingsManagement = () => {
     try {
       // If there's a logo file, use FormData, otherwise use JSON
       if (formData.logoFile) {
+        console.log('📤 Uploading logo file:', formData.logoFile.name, formData.logoFile.size)
         const formDataToSend = new FormData()
         Object.keys(formData).forEach(key => {
           if (key !== 'logoFile') {
@@ -123,9 +131,13 @@ const SettingsManagement = () => {
           }
         })
         formDataToSend.append('logo', formData.logoFile)
+        
+        console.log('📤 FormData keys:', Array.from(formDataToSend.keys()))
+        console.log('📤 FormData has logo:', formDataToSend.has('logo'))
 
         // Let axios handle FormData automatically
-        await api.put('/settings', formDataToSend)
+        const response = await api.put('/settings', formDataToSend)
+        console.log('✅ Logo uploaded successfully:', response.data)
       } else {
         // No file, send as JSON
         const jsonData = {}
