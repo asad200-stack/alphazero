@@ -73,6 +73,14 @@ router.put('/', verifyToken, (req, res, next) => {
   console.log('Settings PUT request - Body type:', typeof req.body);
   console.log('Settings PUT request - Body keys:', Object.keys(req.body || {}));
   console.log('Settings PUT request - Body:', JSON.stringify(req.body).substring(0, 200));
+  console.log('Settings PUT request - Method:', req.method);
+  console.log('Settings PUT request - URL:', req.url);
+  
+  // If body is empty and it's not multipart, it might be a parsing issue
+  if (!contentType.includes('multipart/form-data') && (!req.body || Object.keys(req.body).length === 0)) {
+    console.warn('Empty body detected for non-multipart request - this might be a parsing issue');
+    // Don't return error yet - let's see if it's just empty data
+  }
   
   if (contentType.includes('multipart/form-data')) {
     // Use multer for multipart requests
@@ -133,14 +141,24 @@ router.put('/', verifyToken, (req, res, next) => {
     console.error('Original updates:', JSON.stringify(updates));
     console.error('Original updates keys:', Object.keys(updates));
     console.error('Has file:', !!req.file);
-    // Don't return error if updates is empty - maybe user just wants to update logo
-    // Only return error if there's no file and no updates
-    if (!req.file && Object.keys(updates).length === 0) {
-      return res.status(400).json({ error: 'No data provided to update' })
-    }
-    // If we have a file but no other updates, that's fine - just update logo
+    console.error('Content-Type:', req.headers['content-type']);
+    
+    // If we have a file, add it to filteredUpdates
     if (req.file) {
       filteredUpdates.logo = `/uploads/${req.file.filename}`;
+      console.log('Added logo to filteredUpdates:', filteredUpdates.logo);
+    }
+    
+    // Only return error if there's no file and no updates at all
+    if (!req.file && Object.keys(updates).length === 0) {
+      console.error('No file and no updates - returning 400');
+      return res.status(400).json({ error: 'No data provided to update' })
+    }
+    
+    // If we still have no updates after adding logo, return error
+    if (Object.keys(filteredUpdates).length === 0) {
+      console.error('Still no updates after processing - returning 400');
+      return res.status(400).json({ error: 'No valid data provided to update' })
     }
   }
   

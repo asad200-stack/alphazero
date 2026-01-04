@@ -128,6 +128,12 @@ const SettingsManagement = () => {
         console.log('Sending JSON data:', jsonData)
         console.log('JSON data keys:', Object.keys(jsonData))
         console.log('JSON data size:', JSON.stringify(jsonData).length)
+        console.log('JSON stringified:', JSON.stringify(jsonData))
+        
+        // Ensure we have at least one field to update
+        if (Object.keys(jsonData).length === 0) {
+          throw new Error('No data to update')
+        }
         
         // Don't explicitly set Content-Type - let axios handle it
         await api.put('/settings', jsonData)
