@@ -135,6 +135,9 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
         in_stock: product.in_stock !== undefined ? product.in_stock : 1
       })
       
+      // Reset deleted images when loading product
+      setDeletedImages([])
+      
       // Load existing images
       if (product.images && product.images.length > 0) {
         setImages(product.images.map(img => ({
@@ -148,7 +151,24 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
           image_path: product.image,
           preview: getImageUrl(product.image)
         }])
+      } else {
+        setImages([])
       }
+    } else {
+      // Reset form for new product
+      setFormData({
+        name: '',
+        name_ar: '',
+        description: '',
+        description_ar: '',
+        price: '',
+        discount_price: '',
+        discount_percentage: '',
+        category_id: '',
+        in_stock: 1
+      })
+      setImages([])
+      setDeletedImages([])
     }
   }, [product])
 
