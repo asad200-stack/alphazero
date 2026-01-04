@@ -162,21 +162,6 @@ router.put('/', verifyToken, (req, res, next) => {
     }
   }
   
-  // Handle logo upload
-  if (req.file) {
-    // Delete old logo if exists
-    const dataDir = process.env.RAILWAY_VOLUME_MOUNT_PATH || process.env.DATA_DIR || path.join(__dirname, '..');
-    db.get('SELECT value FROM settings WHERE key = ?', ['logo'], (err, row) => {
-      if (row && row.value) {
-        const oldLogoPath = path.join(dataDir, row.value);
-        if (fs.existsSync(oldLogoPath)) {
-          fs.unlinkSync(oldLogoPath);
-        }
-      }
-    });
-    
-    filteredUpdates.logo = `/uploads/${req.file.filename}`;
-  }
 
   // Update each setting
   const promises = Object.keys(filteredUpdates).map(key => {
