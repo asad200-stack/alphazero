@@ -118,7 +118,8 @@ const SettingsManagement = () => {
         Object.keys(formData).forEach(key => {
           if (key !== 'logoFile') {
             const value = formData[key]
-            if (value !== undefined && value !== null && value !== '') {
+            // Include all values, even empty strings, but not undefined/null
+            if (value !== undefined && value !== null) {
               jsonData[key] = value
             }
           }
@@ -126,12 +127,10 @@ const SettingsManagement = () => {
         
         console.log('Sending JSON data:', jsonData)
         console.log('JSON data keys:', Object.keys(jsonData))
+        console.log('JSON data size:', JSON.stringify(jsonData).length)
         
-        await api.put('/settings', jsonData, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
+        // Don't explicitly set Content-Type - let axios handle it
+        await api.put('/settings', jsonData)
       }
 
       await fetchSettings()

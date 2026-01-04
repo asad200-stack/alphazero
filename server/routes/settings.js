@@ -66,22 +66,7 @@ router.get('/:key', (req, res) => {
 });
 
 // Update settings (protected - admin only)
-router.put('/', (req, res, next) => {
-  // Log before verifyToken
-  console.log('Settings PUT - Before verifyToken');
-  console.log('Settings PUT - Headers:', {
-    'content-type': req.headers['content-type'],
-    'authorization': req.headers['authorization'] ? 'present' : 'missing'
-  });
-  console.log('Settings PUT - Body type:', typeof req.body);
-  console.log('Settings PUT - Body keys:', Object.keys(req.body || {}));
-  
-  // Call verifyToken manually to see if it passes
-  verifyToken(req, res, () => {
-    console.log('Settings PUT - verifyToken passed');
-    next()
-  })
-}, (req, res, next) => {
+router.put('/', verifyToken, (req, res, next) => {
   // Check content type
   const contentType = req.headers['content-type'] || '';
   console.log('Settings PUT request - Content-Type:', contentType);
