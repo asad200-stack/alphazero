@@ -90,22 +90,19 @@ const Checkout = () => {
 
       const response = await api.post('/orders', orderData)
       
-      // Show success message and redirect to order success page
-      // Note: Wishmoney integration requires API credentials and proper setup
-      // For now, we'll mark the order as pending and show success message
-      showToast(
-        language === 'ar' 
-          ? `تم إنشاء الطلب بنجاح! رقم الطلب: ${response.data.order_number}. سيتم التواصل معك لإتمام الدفع.`
-          : `Order created successfully! Order number: ${response.data.order_number}. We will contact you to complete the payment.`,
-        'success'
-      )
+      // Redirect to Wishmoney payment page
+      // Note: Replace with actual Wishmoney payment URL when you have API credentials
+      const orderNumber = response.data.order_number
+      const amount = getCartTotal()
+      const callbackUrl = encodeURIComponent(`${window.location.origin}/order-success?order=${orderNumber}`)
       
-      clearCart()
-      navigate(`/order-success?order=${response.data.order_number}`)
-      
-      // TODO: When Wishmoney API is configured, uncomment and use the following:
-      // const wishmoneyUrl = `YOUR_WISHMONEY_PAYMENT_URL?order_id=${response.data.order_number}&amount=${getCartTotal()}&callback=${encodeURIComponent(window.location.origin + '/order-success')}`
+      // Wishmoney payment URL format (adjust based on actual API documentation)
+      // Option 1: Direct redirect (if Wishmoney provides payment URL)
+      // const wishmoneyUrl = `https://payment.wishmoney.com/pay?order_id=${orderNumber}&amount=${amount}&callback=${callbackUrl}`
       // window.location.href = wishmoneyUrl
+      
+      // Option 2: Redirect to payment page with order details
+      navigate(`/payment/wishmoney?order=${orderNumber}&amount=${amount}&callback=${callbackUrl}`)
     } catch (error) {
       console.error('Error creating order:', error)
       showToast(
@@ -380,16 +377,13 @@ const Checkout = () => {
                     className="mr-3"
                   />
                   <div className="flex-1">
-                    <div className="font-semibold flex items-center gap-2">
+                    <div className="font-semibold">
                       Wishmoney
-                      <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">
-                        {language === 'ar' ? 'قريباً' : 'Soon'}
-                      </span>
                     </div>
                     <div className="text-sm text-gray-600">
                       {language === 'ar' 
-                        ? 'سيتم التواصل معك لإتمام الدفع الإلكتروني' 
-                        : 'We will contact you to complete online payment'}
+                        ? 'الدفع الإلكتروني الآمن عبر Wishmoney' 
+                        : 'Secure online payment with Wishmoney'}
                     </div>
                   </div>
                 </label>

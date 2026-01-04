@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import Shop from './pages/Shop'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
+import WishmoneyPayment from './pages/WishmoneyPayment'
 import Account from './pages/Account'
 import ProductDetails from './pages/ProductDetails'
 import AdminLogin from './pages/AdminLogin'
@@ -45,6 +46,7 @@ function App() {
                 <Route path="/shop" element={<Shop />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/checkout" element={<Checkout />} />
+                <Route path="/payment/wishmoney" element={<WishmoneyPayment />} />
                 <Route path="/account" element={<Account />} />
                 <Route path="/product/:id" element={<ProductDetails />} />
                 
