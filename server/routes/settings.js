@@ -96,11 +96,9 @@ router.put('/', verifyToken, (req, res, next) => {
   } else {
     // JSON request, skip multer
     console.log('Non-multipart request, skipping multer');
-    // Ensure body is parsed (should be done by express.json() middleware)
-    if (!req.body || Object.keys(req.body).length === 0) {
-      console.error('Empty body in JSON request - this might be a parsing issue');
-      return res.status(400).json({ error: 'Request body is empty or could not be parsed' })
-    }
+    // Body should be parsed by express.json() middleware
+    // If body is empty, it might be a parsing issue, but let's continue anyway
+    // as some valid requests might have empty bodies
     next()
   }
 }, (req, res) => {
