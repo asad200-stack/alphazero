@@ -97,18 +97,28 @@ const SettingsManagement = () => {
     setLoading(true)
 
     try {
-      const formDataToSend = new FormData()
-      Object.keys(formData).forEach(key => {
-        if (key !== 'logoFile') {
-          formDataToSend.append(key, formData[key])
-        }
-      })
+      // If there's a logo file, use FormData, otherwise use JSON
       if (formData.logoFile) {
+        const formDataToSend = new FormData()
+        Object.keys(formData).forEach(key => {
+          if (key !== 'logoFile') {
+            formDataToSend.append(key, formData[key] || '')
+          }
+        })
         formDataToSend.append('logo', formData.logoFile)
-      }
 
-      // Let axios handle FormData automatically (it will set Content-Type with boundary)
-      await api.put('/settings', formDataToSend)
+        // Let axios handle FormData automatically
+        await api.put('/settings', formDataToSend)
+      } else {
+        // No file, send as JSON
+        const jsonData = { ...formData }
+        delete jsonData.logoFile
+        await api.put('/settings', jsonData, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+      }
 
       await fetchSettings()
       // Toast will be shown from useToast if available
