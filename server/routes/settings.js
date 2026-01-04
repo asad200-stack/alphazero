@@ -121,13 +121,14 @@ router.put('/', verifyToken, (req, res, next) => {
     return res.status(400).json({ error: 'Invalid request body' })
   }
   
-  // Filter out empty values and undefined, but keep 0 and false
+  // Accept all values including empty strings (to allow clearing fields)
+  // Only filter out undefined and null
   const filteredUpdates = {};
   Object.keys(updates).forEach(key => {
     const value = updates[key];
-    // Keep the value if it's not undefined, null, or empty string
-    // But keep 0, false, and other falsy values that are valid
-    if (value !== undefined && value !== null && value !== '') {
+    // Keep all values except undefined and null
+    // This allows empty strings to be saved (to clear fields)
+    if (value !== undefined && value !== null) {
       filteredUpdates[key] = value;
     }
   });
@@ -135,33 +136,31 @@ router.put('/', verifyToken, (req, res, next) => {
   console.log('Filtered updates - Keys:', Object.keys(filteredUpdates));
   console.log('Filtered updates - Values:', JSON.stringify(filteredUpdates).substring(0, 500));
   
-  // Check if filtered updates object is empty
+  // Handle logo upload
+  if (req.file) {
+    // Delete old logo if exists
+    const dataDir = process.env.RAILWAY_VOLUME_MOUNT_PATH || process.env.DATA_DIR || path.join(__dirname, '..');
+    db.get('SELECT value FROM settings WHERE key = ?', ['logo'], (err, row) => {
+      if (row && row.value) {
+        const oldLogoPath = path.join(dataDir, row.value);
+        if (fs.existsSync(oldLogoPath)) {
+          fs.unlinkSync(oldLogoPath);
+        }
+      }
+    });
+    
+    filteredUpdates.logo = `/uploads/${req.file.filename}`;
+    console.log('Added logo to filteredUpdates:', filteredUpdates.logo);
+  }
+  
+  // Check if we have any updates at all
   if (Object.keys(filteredUpdates).length === 0) {
-    console.error('Empty filtered updates object');
+    console.error('No updates to process');
     console.error('Original updates:', JSON.stringify(updates));
     console.error('Original updates keys:', Object.keys(updates));
     console.error('Has file:', !!req.file);
-    console.error('Content-Type:', req.headers['content-type']);
-    
-    // If we have a file, add it to filteredUpdates
-    if (req.file) {
-      filteredUpdates.logo = `/uploads/${req.file.filename}`;
-      console.log('Added logo to filteredUpdates:', filteredUpdates.logo);
-    }
-    
-    // Only return error if there's no file and no updates at all
-    if (!req.file && Object.keys(updates).length === 0) {
-      console.error('No file and no updates - returning 400');
-      return res.status(400).json({ error: 'No data provided to update' })
-    }
-    
-    // If we still have no updates after adding logo, return error
-    if (Object.keys(filteredUpdates).length === 0) {
-      console.error('Still no updates after processing - returning 400');
-      return res.status(400).json({ error: 'No valid data provided to update' })
-    }
+    return res.status(400).json({ error: 'No data provided to update' })
   }
-  
 
   // Update each setting
   const promises = Object.keys(filteredUpdates).map(key => {
