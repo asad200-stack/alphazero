@@ -63,8 +63,7 @@ const Checkout = () => {
   }
 
   const handleWishmoneyPayment = async () => {
-    // TODO: Integrate with Wishmoney API
-    // For now, we'll create the order and redirect to wishmoney payment page
+    // Create order first
     try {
       const orderData = {
         customer_name: formData.customer_name,
@@ -91,11 +90,22 @@ const Checkout = () => {
 
       const response = await api.post('/orders', orderData)
       
-      // Redirect to Wishmoney payment page
-      // Replace with actual Wishmoney payment URL and parameters
-      const wishmoneyUrl = `https://wishmoney.com/payment?order_id=${response.data.order_number}&amount=${getCartTotal()}&callback=${encodeURIComponent(window.location.origin + '/order-success')}`
+      // Show success message and redirect to order success page
+      // Note: Wishmoney integration requires API credentials and proper setup
+      // For now, we'll mark the order as pending and show success message
+      showToast(
+        language === 'ar' 
+          ? `تم إنشاء الطلب بنجاح! رقم الطلب: ${response.data.order_number}. سيتم التواصل معك لإتمام الدفع.`
+          : `Order created successfully! Order number: ${response.data.order_number}. We will contact you to complete the payment.`,
+        'success'
+      )
       
-      window.location.href = wishmoneyUrl
+      clearCart()
+      navigate(`/order-success?order=${response.data.order_number}`)
+      
+      // TODO: When Wishmoney API is configured, uncomment and use the following:
+      // const wishmoneyUrl = `YOUR_WISHMONEY_PAYMENT_URL?order_id=${response.data.order_number}&amount=${getCartTotal()}&callback=${encodeURIComponent(window.location.origin + '/order-success')}`
+      // window.location.href = wishmoneyUrl
     } catch (error) {
       console.error('Error creating order:', error)
       showToast(
