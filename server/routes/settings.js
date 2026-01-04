@@ -70,7 +70,9 @@ router.put('/', verifyToken, (req, res, next) => {
   // Check content type
   const contentType = req.headers['content-type'] || '';
   console.log('Settings PUT request - Content-Type:', contentType);
+  console.log('Settings PUT request - Body type:', typeof req.body);
   console.log('Settings PUT request - Body keys:', Object.keys(req.body || {}));
+  console.log('Settings PUT request - Body:', JSON.stringify(req.body).substring(0, 200));
   
   if (contentType.includes('multipart/form-data')) {
     // Use multer for multipart requests
@@ -94,12 +96,18 @@ router.put('/', verifyToken, (req, res, next) => {
   } else {
     // JSON request, skip multer
     console.log('Non-multipart request, skipping multer');
+    // Ensure body is parsed (should be done by express.json() middleware)
+    if (!req.body || Object.keys(req.body).length === 0) {
+      console.error('Empty body in JSON request - this might be a parsing issue');
+      return res.status(400).json({ error: 'Request body is empty or could not be parsed' })
+    }
     next()
   }
 }, (req, res) => {
   const updates = req.body || {};
   
-  console.log('Processing updates:', Object.keys(updates));
+  console.log('Processing updates - Raw body:', JSON.stringify(updates).substring(0, 300));
+  console.log('Processing updates - Keys:', Object.keys(updates));
   
   // Ensure updates is an object and has data
   if (typeof updates !== 'object' || Array.isArray(updates)) {
@@ -107,17 +115,23 @@ router.put('/', verifyToken, (req, res, next) => {
     return res.status(400).json({ error: 'Invalid request body' })
   }
   
-  // Filter out empty values and undefined
+  // Filter out empty values and undefined, but keep 0 and false
   const filteredUpdates = {};
   Object.keys(updates).forEach(key => {
-    if (updates[key] !== undefined && updates[key] !== null && updates[key] !== '') {
-      filteredUpdates[key] = updates[key];
+    const value = updates[key];
+    // Keep the value if it's not undefined, null, or empty string
+    // But keep 0, false, and other falsy values that are valid
+    if (value !== undefined && value !== null && value !== '') {
+      filteredUpdates[key] = value;
     }
   });
+  
+  console.log('Filtered updates - Keys:', Object.keys(filteredUpdates));
   
   // Check if filtered updates object is empty
   if (Object.keys(filteredUpdates).length === 0) {
     console.error('Empty filtered updates object');
+    console.error('Original updates:', updates);
     return res.status(400).json({ error: 'No valid data provided to update' })
   }
   

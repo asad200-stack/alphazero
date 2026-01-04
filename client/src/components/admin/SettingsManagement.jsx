@@ -102,7 +102,10 @@ const SettingsManagement = () => {
         const formDataToSend = new FormData()
         Object.keys(formData).forEach(key => {
           if (key !== 'logoFile') {
-            formDataToSend.append(key, formData[key] || '')
+            const value = formData[key]
+            if (value !== undefined && value !== null) {
+              formDataToSend.append(key, value)
+            }
           }
         })
         formDataToSend.append('logo', formData.logoFile)
@@ -111,8 +114,19 @@ const SettingsManagement = () => {
         await api.put('/settings', formDataToSend)
       } else {
         // No file, send as JSON
-        const jsonData = { ...formData }
-        delete jsonData.logoFile
+        const jsonData = {}
+        Object.keys(formData).forEach(key => {
+          if (key !== 'logoFile') {
+            const value = formData[key]
+            if (value !== undefined && value !== null && value !== '') {
+              jsonData[key] = value
+            }
+          }
+        })
+        
+        console.log('Sending JSON data:', jsonData)
+        console.log('JSON data keys:', Object.keys(jsonData))
+        
         await api.put('/settings', jsonData, {
           headers: {
             'Content-Type': 'application/json'
