@@ -69,6 +69,8 @@ router.get('/:key', (req, res) => {
 router.put('/', verifyToken, (req, res, next) => {
   // Check content type
   const contentType = req.headers['content-type'] || '';
+  console.log('Settings PUT request - Content-Type:', contentType);
+  console.log('Settings PUT request - Body keys:', Object.keys(req.body || {}));
   
   if (contentType.includes('multipart/form-data')) {
     // Use multer for multipart requests
@@ -82,25 +84,32 @@ router.put('/', verifyToken, (req, res, next) => {
         if (err.message && err.message.includes('Only image files')) {
           return res.status(400).json({ error: err.message })
         }
-        // For missing file, continue - file is optional
-        // Multer will parse other fields even without file
+        // For missing file or parsing errors, log but continue
+        console.warn('Multer warning (continuing):', err.message || err.code)
       }
+      console.log('After multer - Body keys:', Object.keys(req.body || {}));
+      console.log('After multer - File:', req.file ? req.file.filename : 'none');
       next()
     })
   } else {
     // JSON request, skip multer
+    console.log('Non-multipart request, skipping multer');
     next()
   }
 }, (req, res) => {
   const updates = req.body || {};
   
+  console.log('Processing updates:', Object.keys(updates));
+  
   // Ensure updates is an object and has data
   if (typeof updates !== 'object' || Array.isArray(updates)) {
+    console.error('Invalid updates type:', typeof updates, Array.isArray(updates));
     return res.status(400).json({ error: 'Invalid request body' })
   }
   
   // Check if updates object is empty
   if (Object.keys(updates).length === 0) {
+    console.error('Empty updates object');
     return res.status(400).json({ error: 'No data provided to update' })
   }
   
