@@ -35,8 +35,6 @@ const SettingsManagement = () => {
     phone_number: '',
     instagram_url: '',
     store_url: '',
-    banner_text: '',
-    banner_text_en: '',
     banner_enabled: 'true',
     default_language: 'ar',
     holiday_theme: 'none'
@@ -56,8 +54,6 @@ const SettingsManagement = () => {
         phone_number: settings.phone_number || '',
         instagram_url: settings.instagram_url || '',
         store_url: settings.store_url || '',
-      banner_text: settings.banner_text || '',
-      banner_text_en: settings.banner_text_en || '',
       banner_enabled: settings.banner_enabled || 'true',
       default_language: settings.default_language || 'ar',
       holiday_theme: settings.holiday_theme || 'none'
@@ -482,35 +478,6 @@ const SettingsManagement = () => {
               </label>
             </div>
 
-            {formData.banner_enabled === 'true' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-gray-700 font-medium mb-2">
-                    {t('bannerText')}
-                  </label>
-                  <input
-                    type="text"
-                    name="banner_text"
-                    value={formData.banner_text}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-gray-700 font-medium mb-2">
-                    {t('bannerTextEn')}
-                  </label>
-                  <input
-                    type="text"
-                    name="banner_text_en"
-                    value={formData.banner_text_en}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
