@@ -107,16 +107,8 @@ const SettingsManagement = () => {
         formDataToSend.append('logo', formData.logoFile)
       }
 
-      // Remove Content-Type header to let axios set it automatically with boundary
-      await api.put('/settings', formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-        transformRequest: [(data) => {
-          // Let axios handle FormData automatically
-          return data
-        }]
-      })
+      // Let axios handle FormData automatically (it will set Content-Type with boundary)
+      await api.put('/settings', formDataToSend)
 
       await fetchSettings()
       // Toast will be shown from useToast if available

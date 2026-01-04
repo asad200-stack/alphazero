@@ -4,9 +4,6 @@ const API_URL = import.meta.env.VITE_API_URL || '/api'
 
 const api = axios.create({
   baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 })
 
 // Add token to requests if available
@@ -15,6 +12,13 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
+  
+  // Only set Content-Type for non-FormData requests
+  // Let axios handle FormData automatically (it will set multipart/form-data with boundary)
+  if (!(config.data instanceof FormData)) {
+    config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/json'
+  }
+  
   return config
 })
 
