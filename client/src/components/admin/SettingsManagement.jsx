@@ -62,13 +62,21 @@ const SettingsManagement = () => {
       default_language: settings.default_language || 'ar',
       holiday_theme: settings.holiday_theme || 'none'
       })
+      
+      // Always update preview from settings.logo when settings change
       if (settings.logo) {
         const logoUrl = getImageUrl(settings.logo)
-        console.log('Setting preview from settings.logo:', settings.logo, '→', logoUrl)
-        setPreview(logoUrl)
+        console.log('🖼️ Setting preview from settings.logo:', settings.logo, '→', logoUrl)
+        // Only update if different to avoid unnecessary re-renders
+        setPreview(prev => {
+          if (prev !== logoUrl) {
+            return logoUrl
+          }
+          return prev
+        })
       } else {
         // Clear preview if no logo
-        console.log('No logo in settings, clearing preview')
+        console.log('🖼️ No logo in settings, clearing preview')
         setPreview(null)
       }
     }
@@ -159,14 +167,28 @@ const SettingsManagement = () => {
       // Wait for settings to be fetched and updated
       await fetchSettings()
       
-      // If logo was uploaded, ensure preview is updated
+      // Give a small delay to ensure settings context is updated
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
+      // If logo was uploaded, ensure preview is updated immediately
       // fetchSettings will trigger useEffect which updates preview
       // But we also need to clear the logoFile from formData
       if (formData.logoFile) {
+        console.log('Logo was uploaded, clearing logoFile from formData')
         setFormData(prev => {
           const { logoFile, ...rest } = prev
           return rest
         })
+        
+        // Force refresh preview from settings after a short delay
+        // This ensures the new logo URL is loaded
+        setTimeout(() => {
+          if (settings?.logo) {
+            const logoUrl = getImageUrl(settings.logo)
+            console.log('Force updating preview from settings.logo:', settings.logo, '→', logoUrl)
+            setPreview(logoUrl)
+          }
+        }, 200)
       }
       
       // Toast will be shown from useToast if available
