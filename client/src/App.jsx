@@ -32,10 +32,11 @@ function App() {
         <ThemeProvider>
           <LanguageProvider>
             <ToastProvider>
-              <CartProvider>
-                <WishlistProvider>
-                  <RecentlyViewedProvider>
-                    <SearchProvider>
+              <CustomerProvider>
+                <CartProvider>
+                  <WishlistProvider>
+                    <RecentlyViewedProvider>
+                      <SearchProvider>
             <Router
               future={{
                 v7_startTransition: true,
@@ -71,16 +72,16 @@ function App() {
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Router>
-                    </SearchProvider>
-                  </RecentlyViewedProvider>
-                </WishlistProvider>
-              </CartProvider>
-            </CustomerProvider>
-          </ToastProvider>
-        </LanguageProvider>
-      </ThemeProvider>
-    </SettingsProvider>
-  </ErrorBoundary>
+                      </SearchProvider>
+                    </RecentlyViewedProvider>
+                  </WishlistProvider>
+                </CartProvider>
+              </CustomerProvider>
+            </ToastProvider>
+          </LanguageProvider>
+        </ThemeProvider>
+      </SettingsProvider>
+    </ErrorBoundary>
   )
 }
 
