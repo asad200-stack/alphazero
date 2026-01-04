@@ -67,29 +67,24 @@ router.get('/:key', (req, res) => {
 
 // Update settings (protected - admin only)
 router.put('/', verifyToken, (req, res, next) => {
-  // Make logo upload optional - use optional() instead of single()
-  upload.optional().single('logo')(req, res, (err) => {
+  // Make logo upload optional - handle errors gracefully
+  upload.single('logo')(req, res, (err) => {
     if (err) {
       console.error('Multer error:', err)
-      // Only return error if it's a real error (not just missing file)
+      // Only return error for real issues (file size, type), not missing file
       if (err.code === 'LIMIT_FILE_SIZE') {
         return res.status(400).json({ error: 'File size too large. Maximum 2MB allowed.' })
       }
       if (err.message && err.message.includes('Only image files')) {
         return res.status(400).json({ error: err.message })
       }
-      // For other errors, continue (file might be optional)
+      // For missing file or other non-critical errors, continue
+      // Multer will set req.file to undefined if no file is provided
     }
     next()
   })
 }, (req, res) => {
-  // Parse form data manually if needed
   const updates = req.body;
-  
-  // Handle multipart/form-data parsing
-  if (req.headers['content-type'] && req.headers['content-type'].includes('multipart/form-data')) {
-    // Multer already parsed it, updates should be in req.body
-  }
   
   // Handle logo upload
   if (req.file) {
