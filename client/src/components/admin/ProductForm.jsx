@@ -215,11 +215,21 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
 
   const removeImage = (index) => {
     const image = images[index]
-    if (image.id) {
+    console.log('Removing image at index:', index, 'Image:', image)
+    if (image && image.id) {
       // Existing image - mark for deletion
-      setDeletedImages(prev => [...prev, image.id])
+      console.log('Marking image for deletion:', image.id)
+      setDeletedImages(prev => {
+        const newDeleted = [...prev, image.id]
+        console.log('Deleted images:', newDeleted)
+        return newDeleted
+      })
     }
-    setImages(prev => prev.filter((_, i) => i !== index))
+    setImages(prev => {
+      const newImages = prev.filter((_, i) => i !== index)
+      console.log('Images after removal:', newImages)
+      return newImages
+    })
   }
 
   const handleSubmit = async (e) => {
