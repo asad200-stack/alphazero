@@ -125,12 +125,23 @@ router.put('/', verifyToken, (req, res, next) => {
   });
   
   console.log('Filtered updates - Keys:', Object.keys(filteredUpdates));
+  console.log('Filtered updates - Values:', JSON.stringify(filteredUpdates).substring(0, 500));
   
   // Check if filtered updates object is empty
   if (Object.keys(filteredUpdates).length === 0) {
     console.error('Empty filtered updates object');
-    console.error('Original updates:', updates);
-    return res.status(400).json({ error: 'No valid data provided to update' })
+    console.error('Original updates:', JSON.stringify(updates));
+    console.error('Original updates keys:', Object.keys(updates));
+    console.error('Has file:', !!req.file);
+    // Don't return error if updates is empty - maybe user just wants to update logo
+    // Only return error if there's no file and no updates
+    if (!req.file && Object.keys(updates).length === 0) {
+      return res.status(400).json({ error: 'No data provided to update' })
+    }
+    // If we have a file but no other updates, that's fine - just update logo
+    if (req.file) {
+      filteredUpdates.logo = `/uploads/${req.file.filename}`;
+    }
   }
   
   // Handle logo upload
