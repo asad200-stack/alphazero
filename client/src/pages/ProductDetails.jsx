@@ -69,7 +69,8 @@ const ProductDetails = () => {
 
   const handleContact = () => {
     if (settings.whatsapp_number) {
-      const message = encodeURIComponent(`مرحباً، أريد الاستفسار عن: ${product.name_ar || product.name}`)
+      const productName = product.name || product.name_ar || 'this product'
+      const message = encodeURIComponent(`Hello, I would like to inquire about: ${productName}. Please provide me with more information about availability, pricing, and specifications.`)
       window.open(`https://wa.me/${settings.whatsapp_number.replace(/[^0-9]/g, '')}?text=${message}`, '_blank')
     }
   }

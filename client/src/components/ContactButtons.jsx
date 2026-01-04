@@ -5,7 +5,7 @@ const ContactButtons = () => {
 
   const handleWhatsApp = () => {
     if (settings.whatsapp_number) {
-      const message = encodeURIComponent('مرحباً، أريد الاستفسار عن المنتجات')
+      const message = encodeURIComponent('Hello, I would like to inquire about your products. Please provide me with more information.')
       window.open(`https://wa.me/${settings.whatsapp_number.replace(/[^0-9]/g, '')}?text=${message}`, '_blank')
     }
   }
