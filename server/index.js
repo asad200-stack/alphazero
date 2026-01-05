@@ -77,6 +77,14 @@ if (process.env.NODE_ENV === 'production') {
     index: false // Don't auto-serve index.html, we'll handle it manually
   }));
   
+  // Log requests for debugging
+  app.use((req, res, next) => {
+    if (!req.path.startsWith('/api') && !req.path.startsWith('/uploads')) {
+      console.log(`📄 Request: ${req.method} ${req.path}`);
+    }
+    next();
+  });
+  
   // SPA fallback: serve index.html for all non-API routes
   app.get('*', (req, res) => {
     // Skip API routes
