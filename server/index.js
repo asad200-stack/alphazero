@@ -124,6 +124,9 @@ if (process.env.NODE_ENV === 'production') {
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📂 Current directory: ${__dirname}`);
+  console.log(`📂 Dist path: ${path.join(__dirname, '../client/dist')}`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
 
