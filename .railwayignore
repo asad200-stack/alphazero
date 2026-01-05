@@ -1,0 +1,9 @@
+OneDrive/
+pro web/
+profesional-web-business/
+node_modules/
+.DS_Store
+*.log
+.env.local
+.env*.local
+
