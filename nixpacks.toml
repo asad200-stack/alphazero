@@ -4,7 +4,7 @@ nixPkgs = ["nodejs-18_x", "npm-9_x"]
 [phases.install]
 cmds = [
   "cd client && npm install",
-  "cd ../server && npm install || echo 'No server package.json, skipping'"
+  "cd ../server && npm install"
 ]
 
 [phases.build]
