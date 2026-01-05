@@ -73,9 +73,22 @@ if (process.env.NODE_ENV === 'production') {
   
   // Serve static files first (JS, CSS, images, etc.)
   // This middleware will serve files if they exist, otherwise call next()
-  app.use(express.static(distPath, {
-    index: false // Don't auto-serve index.html, we'll handle it manually
-  }));
+  app.use(express.static(distPath));
+  
+  // Explicitly serve index.html for root path
+  app.get('/', (req, res) => {
+    const indexPath = path.resolve(distPath, 'index.html');
+    console.log(`📄 Serving index.html for root path: ${req.path}`);
+    if (fs.existsSync(indexPath)) {
+      const htmlContent = fs.readFileSync(indexPath, 'utf8');
+      const firstLines = htmlContent.split('\n').slice(0, 15).join('\n');
+      console.log(`📄 index.html preview:\n${firstLines}`);
+      res.sendFile(indexPath);
+    } else {
+      console.error(`❌ index.html not found at: ${indexPath}`);
+      res.status(500).send('Frontend build not found');
+    }
+  });
   
   // Log requests for debugging
   app.use((req, res, next) => {
