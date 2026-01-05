@@ -30,7 +30,16 @@ RUN echo "=== Build Output Verification ===" && \
     echo "=== Assets ===" && \
     ls -la client/dist/assets/ || echo "Assets directory not found" && \
     echo "=== Checking for script tags in index.html ===" && \
-    grep -i "script" client/dist/index.html || echo "No script tags found!"
+    grep -i "script" client/dist/index.html || echo "No script tags found!" && \
+    echo "=== JS file size and first 50 lines ===" && \
+    if [ -d client/dist/assets ]; then \
+      JS_FILE=$(ls client/dist/assets/*.js 2>/dev/null | head -1); \
+      if [ -n "$JS_FILE" ]; then \
+        echo "JS file: $JS_FILE"; \
+        ls -lh "$JS_FILE"; \
+        head -50 "$JS_FILE"; \
+      fi; \
+    fi
 
 # Expose port (Railway will set PORT env variable)
 EXPOSE 8080
