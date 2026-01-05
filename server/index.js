@@ -65,29 +65,61 @@ app.use('/api/customers', customersRoutes);
 app.use('/api/shipping', shippingRoutes);
 
 // Serve static files in production
+const distPath = path.join(__dirname, '../client/dist');
+console.log('📁 Static files path:', distPath);
+console.log('📁 Directory exists:', fs.existsSync(distPath));
+console.log('📁 NODE_ENV:', process.env.NODE_ENV);
+
 if (process.env.NODE_ENV === 'production') {
-  const distPath = path.join(__dirname, '../client/dist');
-  console.log('📁 Serving static files from:', distPath);
-  console.log('📁 Directory exists:', fs.existsSync(distPath));
+  // List files in dist directory for debugging
+  if (fs.existsSync(distPath)) {
+    try {
+      const files = fs.readdirSync(distPath);
+      console.log('📁 Files in dist:', files);
+      if (fs.existsSync(path.join(distPath, 'assets'))) {
+        const assets = fs.readdirSync(path.join(distPath, 'assets'));
+        console.log('📁 Assets:', assets.slice(0, 5), '...');
+      }
+    } catch (err) {
+      console.error('❌ Error reading dist:', err.message);
+    }
+  }
   
   // Serve static assets (JS, CSS, images, etc.)
-  app.use(express.static(distPath));
+  app.use(express.static(distPath, {
+    maxAge: '1y',
+    etag: true
+  }));
   
-  // Serve index.html for all non-API routes
-  app.get('*', (req, res, next) => {
-    // Skip API routes
+  // Serve index.html for all non-API routes (must be last)
+  app.get('*', (req, res) => {
+    // Skip API routes - they should have been handled above
     if (req.path.startsWith('/api')) {
-      return next();
+      return res.status(404).json({ error: 'API route not found' });
     }
+    
     const indexPath = path.join(distPath, 'index.html');
-    console.log('📄 Serving index.html from:', indexPath);
+    console.log('📄 Request for:', req.path, '-> Serving index.html');
+    
     if (fs.existsSync(indexPath)) {
-      res.sendFile(indexPath);
+      res.sendFile(indexPath, { root: '/' });
     } else {
       console.error('❌ index.html not found at:', indexPath);
-      res.status(500).send('Frontend build not found');
+      res.status(500).send(`
+        <html>
+          <body>
+            <h1>Frontend Build Not Found</h1>
+            <p>Expected path: ${indexPath}</p>
+            <p>Current directory: ${__dirname}</p>
+            <p>NODE_ENV: ${process.env.NODE_ENV}</p>
+          </body>
+        </html>
+      `);
     }
   });
+} else {
+  // In development, just log that we're not serving static files
+  console.log('⚠️  Not in production mode, static files not served');
 }
 
 app.listen(PORT, () => {
