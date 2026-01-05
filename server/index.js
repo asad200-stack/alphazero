@@ -66,9 +66,27 @@ app.use('/api/shipping', shippingRoutes);
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/dist')));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+  const distPath = path.join(__dirname, '../client/dist');
+  console.log('📁 Serving static files from:', distPath);
+  console.log('📁 Directory exists:', fs.existsSync(distPath));
+  
+  // Serve static assets (JS, CSS, images, etc.)
+  app.use(express.static(distPath));
+  
+  // Serve index.html for all non-API routes
+  app.get('*', (req, res, next) => {
+    // Skip API routes
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    const indexPath = path.join(distPath, 'index.html');
+    console.log('📄 Serving index.html from:', indexPath);
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath);
+    } else {
+      console.error('❌ index.html not found at:', indexPath);
+      res.status(500).send('Frontend build not found');
+    }
   });
 }
 
