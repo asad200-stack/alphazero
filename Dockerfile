@@ -25,10 +25,12 @@ ENV NODE_ENV=production
 # Verify build output exists and show contents
 RUN echo "=== Build Output Verification ===" && \
     ls -la client/dist/ && \
-    echo "=== index.html ===" && \
-    cat client/dist/index.html | head -20 && \
+    echo "=== index.html (full content) ===" && \
+    cat client/dist/index.html && \
     echo "=== Assets ===" && \
-    ls -la client/dist/assets/ || echo "Assets directory not found"
+    ls -la client/dist/assets/ || echo "Assets directory not found" && \
+    echo "=== Checking for script tags in index.html ===" && \
+    grep -i "script" client/dist/index.html || echo "No script tags found!"
 
 # Expose port (Railway will set PORT env variable)
 EXPOSE 8080
