@@ -65,13 +65,19 @@ app.use('/api/shipping', shippingRoutes);
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/dist')));
+  const distPath = path.join(__dirname, '../client/dist');
+  
+  // Serve static files first (JS, CSS, images, etc.)
+  app.use(express.static(distPath));
+  
+  // SPA fallback: serve index.html for all non-API routes
   app.get('*', (req, res) => {
     // Skip API routes
     if (req.path.startsWith('/api')) {
       return res.status(404).json({ error: 'Not found' });
     }
-    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+    // Serve index.html for SPA routing
+    res.sendFile(path.resolve(distPath, 'index.html'));
   });
 }
 
