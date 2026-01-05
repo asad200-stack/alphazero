@@ -96,14 +96,17 @@ if (process.env.NODE_ENV === 'production') {
   // Serve static assets (JS, CSS, images, etc.) - must come before catch-all
   console.log('✅ Setting up static file serving from:', distPath);
   
-  // Serve static files - this will handle all files in dist folder
+  // Serve static files - this will handle all files in dist folder including index.html
+  // When a file is found, express.static serves it and doesn't call next()
+  // When a file is NOT found, express.static calls next() and we serve index.html
   app.use(express.static(distPath, {
     maxAge: '1y',
-    etag: true
+    etag: true,
+    index: 'index.html' // Serve index.html for directory requests
   }));
   
   // SPA fallback: serve index.html for all non-API routes that don't match a file
-  // This must be last, after all other routes
+  // This only runs if express.static didn't find a file (called next())
   app.get('*', (req, res) => {
     // Skip API routes - they should return 404 if not found
     if (req.path.startsWith('/api')) {
