@@ -67,8 +67,15 @@ app.use('/api/shipping', shippingRoutes);
 if (process.env.NODE_ENV === 'production') {
   const distPath = path.join(__dirname, '../client/dist');
   
+  // Log static files setup
+  console.log('📁 Serving static files from:', distPath);
+  console.log('📁 Directory exists:', fs.existsSync(distPath));
+  
   // Serve static files first (JS, CSS, images, etc.)
-  app.use(express.static(distPath));
+  // This middleware will serve files if they exist, otherwise call next()
+  app.use(express.static(distPath, {
+    index: false // Don't auto-serve index.html, we'll handle it manually
+  }));
   
   // SPA fallback: serve index.html for all non-API routes
   app.get('*', (req, res) => {
@@ -76,8 +83,14 @@ if (process.env.NODE_ENV === 'production') {
     if (req.path.startsWith('/api')) {
       return res.status(404).json({ error: 'Not found' });
     }
+    
     // Serve index.html for SPA routing
-    res.sendFile(path.resolve(distPath, 'index.html'));
+    const indexPath = path.resolve(distPath, 'index.html');
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath);
+    } else {
+      res.status(500).send('Frontend build not found');
+    }
   });
 }
 
