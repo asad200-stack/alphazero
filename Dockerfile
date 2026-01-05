@@ -21,8 +21,13 @@ COPY . .
 # Build client (NODE_ENV is already set to production)
 RUN npm run build
 
-# Verify build output exists
-RUN ls -la client/dist/ || echo "Build output not found!"
+# Verify build output exists and show contents
+RUN echo "=== Build Output Verification ===" && \
+    ls -la client/dist/ && \
+    echo "=== index.html ===" && \
+    cat client/dist/index.html | head -20 && \
+    echo "=== Assets ===" && \
+    ls -la client/dist/assets/ || echo "Assets directory not found"
 
 # Expose port (Railway will set PORT env variable)
 EXPOSE 8080
