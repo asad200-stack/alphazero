@@ -4,22 +4,23 @@ FROM node:20-alpine
 # Set working directory
 WORKDIR /app
 
-# Set NODE_ENV to production early
-ENV NODE_ENV=production
-
 # Copy package files first (for better caching)
 COPY package*.json ./
 COPY client/package*.json ./client/
 COPY server/package*.json ./server/
 
-# Install all dependencies
-RUN npm run install-all
+# Install all dependencies (including devDependencies for build)
+# We need devDependencies (like vite) to build the client
+RUN cd client && npm install && cd ../server && npm install --production
 
 # Copy application files
 COPY . .
 
-# Build client (NODE_ENV is already set to production)
+# Build client (NODE_ENV will be set by vite build automatically)
 RUN npm run build
+
+# Now set NODE_ENV to production for runtime
+ENV NODE_ENV=production
 
 # Verify build output exists and show contents
 RUN echo "=== Build Output Verification ===" && \
