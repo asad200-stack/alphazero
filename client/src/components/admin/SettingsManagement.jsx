@@ -40,8 +40,10 @@ const SettingsManagement = () => {
     holiday_theme: 'none'
   })
   const [preview, setPreview] = useState(null)
+  const [bannerPreview, setBannerPreview] = useState(null)
   const [loading, setLoading] = useState(false)
   const fileInputRef = useRef(null)
+  const bannerInputRef = useRef(null)
 
   useEffect(() => {
     if (settings) {
@@ -74,6 +76,19 @@ const SettingsManagement = () => {
         // Clear preview if no logo
         console.log('🖼️ No logo in settings, clearing preview')
         setPreview(null)
+      }
+      
+      // Update banner preview from settings.banner_image
+      if (settings.banner_image) {
+        const bannerUrl = getImageUrl(settings.banner_image)
+        setBannerPreview(prev => {
+          if (prev !== bannerUrl) {
+            return bannerUrl
+          }
+          return prev
+        })
+      } else {
+        setBannerPreview(null)
       }
     }
   }, [settings])
@@ -109,36 +124,68 @@ const SettingsManagement = () => {
     }
   }
 
+  const handleBannerInput = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0]
+      if (!file.type.startsWith('image/')) {
+        alert(t('error'))
+        return
+      }
+      
+      console.log('📁 Banner file selected:', file.name, file.type, file.size)
+      
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        console.log('📷 Banner preview set from FileReader')
+        setBannerPreview(e.target.result)
+      }
+      reader.onerror = (error) => {
+        console.error('❌ FileReader error:', error)
+        alert('Error reading file')
+      }
+      reader.readAsDataURL(file)
+      
+      // Store file for upload
+      setFormData(prev => ({ ...prev, bannerFile: file }))
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      // If there's a logo file, use FormData, otherwise use JSON
-      if (formData.logoFile) {
-        console.log('📤 Uploading logo file:', formData.logoFile.name, formData.logoFile.size)
+      // If there's a logo or banner file, use FormData, otherwise use JSON
+      if (formData.logoFile || formData.bannerFile) {
+        console.log('📤 Uploading file(s):', formData.logoFile?.name, formData.bannerFile?.name)
         const formDataToSend = new FormData()
         Object.keys(formData).forEach(key => {
-          if (key !== 'logoFile') {
+          if (key !== 'logoFile' && key !== 'bannerFile') {
             const value = formData[key]
             if (value !== undefined && value !== null) {
               formDataToSend.append(key, value)
             }
           }
         })
-        formDataToSend.append('logo', formData.logoFile)
+        if (formData.logoFile) {
+          formDataToSend.append('logo', formData.logoFile)
+        }
+        if (formData.bannerFile) {
+          formDataToSend.append('banner', formData.bannerFile)
+        }
         
         console.log('📤 FormData keys:', Array.from(formDataToSend.keys()))
         console.log('📤 FormData has logo:', formDataToSend.has('logo'))
+        console.log('📤 FormData has banner:', formDataToSend.has('banner'))
 
         // Let axios handle FormData automatically
         const response = await api.put('/settings', formDataToSend)
-        console.log('✅ Logo uploaded successfully:', response.data)
+        console.log('✅ Files uploaded successfully:', response.data)
       } else {
         // No file, send as JSON
         const jsonData = {}
         Object.keys(formData).forEach(key => {
-          if (key !== 'logoFile') {
+          if (key !== 'logoFile' && key !== 'bannerFile') {
             const value = formData[key]
             // Include all values, even empty strings, but not undefined/null
             if (value !== undefined && value !== null) {
@@ -178,23 +225,27 @@ const SettingsManagement = () => {
       // Give a small delay to ensure settings context is updated
       await new Promise(resolve => setTimeout(resolve, 100))
       
-      // If logo was uploaded, ensure preview is updated immediately
+      // If logo or banner was uploaded, ensure preview is updated immediately
       // fetchSettings will trigger useEffect which updates preview
-      // But we also need to clear the logoFile from formData
-      if (formData.logoFile) {
-        console.log('Logo was uploaded, clearing logoFile from formData')
+      // But we also need to clear the files from formData
+      if (formData.logoFile || formData.bannerFile) {
+        console.log('File(s) were uploaded, clearing from formData')
         setFormData(prev => {
-          const { logoFile, ...rest } = prev
+          const { logoFile, bannerFile, ...rest } = prev
           return rest
         })
         
         // Force refresh preview from settings after a short delay
-        // This ensures the new logo URL is loaded
+        // This ensures the new URLs are loaded
         setTimeout(() => {
           if (settings?.logo) {
             const logoUrl = getImageUrl(settings.logo)
             console.log('Force updating preview from settings.logo:', settings.logo, '→', logoUrl)
             setPreview(logoUrl)
+          }
+          if (settings?.banner_image) {
+            const bannerUrl = getImageUrl(settings.banner_image)
+            setBannerPreview(bannerUrl)
           }
         }, 200)
       }
@@ -476,6 +527,62 @@ const SettingsManagement = () => {
                 />
                 <span className="text-gray-700">{t('enableBanner')}</span>
               </label>
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">
+                {language === 'ar' ? 'صورة البانر' : 'Banner Image'}
+              </label>
+              <div className="flex items-center space-x-6 space-x-reverse rtl:space-x-reverse">
+                {bannerPreview ? (
+                  <div className="relative">
+                    <img
+                      src={bannerPreview}
+                      alt="Banner preview"
+                      className="h-48 w-auto max-w-2xl object-contain border border-gray-300 rounded-lg p-2 bg-white"
+                      onError={(e) => {
+                        console.error('Error loading banner image:', bannerPreview)
+                        e.target.style.display = 'none'
+                        const placeholder = e.target.nextSibling
+                        if (placeholder) placeholder.style.display = 'flex'
+                      }}
+                    />
+                    <div className="h-48 w-64 border border-gray-300 rounded-lg p-2 bg-gray-50 flex items-center justify-center text-gray-400 text-xs hidden">
+                      <div className="text-center">
+                        <svg className="w-8 h-8 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <div>Banner preview</div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="h-48 w-64 border border-gray-300 rounded-lg p-2 bg-gray-50 flex items-center justify-center text-gray-400 text-xs">
+                    <div className="text-center">
+                      <svg className="w-8 h-8 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <div>{language === 'ar' ? 'معاينة البانر' : 'Banner preview'}</div>
+                    </div>
+                  </div>
+                )}
+                <div>
+                  <input
+                    ref={bannerInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleBannerInput}
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => bannerInputRef.current?.click()}
+                    className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition"
+                  >
+                    {bannerPreview ? (language === 'ar' ? 'تغيير الصورة' : 'Change Image') : (language === 'ar' ? 'رفع بانر' : 'Upload Banner')}
+                  </button>
+                </div>
+              </div>
             </div>
 
           </div>

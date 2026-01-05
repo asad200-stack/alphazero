@@ -16,6 +16,7 @@ export const SettingsProvider = ({ children }) => {
     store_name: 'My Store',
     store_name_en: 'My Store',
     logo: '',
+    banner_image: '',
     primary_color: '#3B82F6',
     secondary_color: '#1E40AF',
     whatsapp_number: '',

@@ -241,7 +241,22 @@ const OrdersManagement = () => {
                               e.stopPropagation()
                               fetchOrderDetails(order.id)
                             }}
-                            className="text-blue-600 hover:text-blue-800"
+                            onTouchStart={(e) => {
+                              e.stopPropagation()
+                            }}
+                            onTouchEnd={(e) => {
+                              e.preventDefault()
+                              e.stopPropagation()
+                              fetchOrderDetails(order.id)
+                            }}
+                            className="text-blue-600 hover:text-blue-800 active:text-blue-900 px-4 py-2.5 min-h-[44px] min-w-[70px] font-medium rounded-md transition-colors duration-150 relative z-10"
+                            style={{ 
+                              touchAction: 'manipulation', 
+                              WebkitTapHighlightColor: 'transparent',
+                              userSelect: 'none',
+                              WebkitUserSelect: 'none',
+                              WebkitTouchCallout: 'none'
+                            }}
                           >
                             {language === 'ar' ? 'عرض' : 'View'}
                           </button>

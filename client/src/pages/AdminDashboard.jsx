@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Routes, Route, Navigate, useNavigate, Link } from 'react-router-dom'
+import { Routes, Route, Navigate, useNavigate, Link, useLocation } from 'react-router-dom'
 import ProductsManagement from '../components/admin/ProductsManagement'
 import SettingsManagement from '../components/admin/SettingsManagement'
 import BannerManagement from '../components/admin/BannerManagement'
@@ -14,7 +14,11 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState(null)
   const navigate = useNavigate()
+  const location = useLocation()
   const { t, language, changeLanguage } = useLanguage()
+  
+  // Determine active route
+  const activePath = location.pathname
 
   useEffect(() => {
     checkAuth()
@@ -116,41 +120,61 @@ const AdminDashboard = () => {
           <div className="flex space-x-4 space-x-reverse rtl:space-x-reverse flex-wrap">
             <Link
               to="/admin/dashboard"
-              className="px-6 py-3 rounded-lg font-medium transition"
-              style={{ 
-                backgroundColor: '#3B82F6',
-                color: 'white'
-              }}
+              className={`px-6 py-3 rounded-lg font-medium transition ${
+                activePath === '/admin/dashboard' || activePath === '/admin'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
             >
               {t('products')}
             </Link>
             <Link
               to="/admin/categories"
-              className="px-6 py-3 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
+              className={`px-6 py-3 rounded-lg font-medium transition ${
+                activePath === '/admin/categories'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
             >
               {language === 'ar' ? 'التصنيفات' : 'Categories'}
             </Link>
             <Link
               to="/admin/banners"
-              className="px-6 py-3 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
+              className={`px-6 py-3 rounded-lg font-medium transition ${
+                activePath === '/admin/banners'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
             >
               {language === 'ar' ? 'البانرات' : 'Banners'}
             </Link>
             <Link
               to="/admin/settings"
-              className="px-6 py-3 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
+              className={`px-6 py-3 rounded-lg font-medium transition ${
+                activePath === '/admin/settings'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
             >
               {t('settings')}
             </Link>
             <Link
               to="/admin/themes"
-              className="px-6 py-3 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
+              className={`px-6 py-3 rounded-lg font-medium transition ${
+                activePath === '/admin/themes'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
             >
               {language === 'ar' ? 'الثيمات' : 'Themes'}
             </Link>
             <Link
               to="/admin/orders"
-              className="px-6 py-3 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition relative"
+              className={`px-6 py-3 rounded-lg font-medium transition relative ${
+                activePath === '/admin/orders'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
             >
               {language === 'ar' ? 'الطلبات' : 'Orders'}
               {stats && stats.pending_orders > 0 && (

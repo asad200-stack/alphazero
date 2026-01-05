@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Header from '../components/Header'
-import BannerSlider from '../components/BannerSlider'
 import TrustElements from '../components/TrustElements'
+import { getImageUrl } from '../utils/config'
 import ProductCard from '../components/ProductCard'
 import ProductCarousel from '../components/ProductCarousel'
 import ContactButtons from '../components/ContactButtons'
@@ -84,7 +84,27 @@ const Home = () => {
         description={language === 'ar' ? 'اكتشف مجموعتنا المميزة من المنتجات' : 'Discover our amazing product collection'}
       />
       <Header />
-      <BannerSlider />
+      
+      {/* Promotional Banner */}
+      {settings.banner_enabled === 'true' && settings.banner_image && (
+        <div className="w-full mb-6">
+          <div className="container mx-auto px-4">
+            <div className="rounded-lg overflow-hidden shadow-lg">
+              <img
+                src={getImageUrl(settings.banner_image)}
+                alt={language === 'ar' ? 'بانر ترويجي' : 'Promotional Banner'}
+                className="w-full h-auto object-cover"
+                style={{ maxHeight: '400px', width: '100%' }}
+                onError={(e) => {
+                  console.error('Error loading banner image:', settings.banner_image)
+                  e.target.style.display = 'none'
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+      
       <TrustElements />
       
       <main className="container mx-auto px-4 py-8 md:py-12">
