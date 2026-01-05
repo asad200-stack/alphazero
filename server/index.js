@@ -5,8 +5,8 @@ const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
-// Render automatically sets PORT, so we use it or default to 5000
-const PORT = process.env.PORT || 5000;
+// Railway automatically sets PORT, so we use it or default to 8080
+const PORT = process.env.PORT || 8080;
 
 // Middleware
 app.use(cors({
@@ -50,9 +50,6 @@ app.use('/uploads', express.static(uploadsDir));
 const productsRoutes = require('./routes/products');
 const settingsRoutes = require('./routes/settings');
 const authRoutes = require('./routes/auth');
-const bannersRoutes = require('./routes/banners');
-const categoriesRoutes = require('./routes/categories');
-const themesRoutes = require('./routes/themes');
 const reviewsRoutes = require('./routes/reviews');
 const ordersRoutes = require('./routes/orders');
 const customersRoutes = require('./routes/customers');
@@ -62,9 +59,6 @@ const shippingRoutes = require('./routes/shipping');
 app.use('/api/products', productsRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/banners', bannersRoutes);
-app.use('/api/categories', categoriesRoutes);
-app.use('/api/themes', themesRoutes);
 app.use('/api/reviews', reviewsRoutes);
 app.use('/api/orders', ordersRoutes);
 app.use('/api/customers', customersRoutes);
