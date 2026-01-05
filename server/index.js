@@ -67,6 +67,10 @@ app.use('/api/shipping', shippingRoutes);
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/dist')));
   app.get('*', (req, res) => {
+    // Skip API routes
+    if (req.path.startsWith('/api')) {
+      return res.status(404).json({ error: 'Not found' });
+    }
     res.sendFile(path.join(__dirname, '../client/dist/index.html'));
   });
 }
