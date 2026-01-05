@@ -94,9 +94,17 @@ if (process.env.NODE_ENV === 'production') {
     
     // Serve index.html for SPA routing
     const indexPath = path.resolve(distPath, 'index.html');
+    console.log(`📄 Serving index.html for: ${req.path}`);
+    
     if (fs.existsSync(indexPath)) {
+      // Read and log first few lines of index.html for debugging
+      const htmlContent = fs.readFileSync(indexPath, 'utf8');
+      const firstLines = htmlContent.split('\n').slice(0, 15).join('\n');
+      console.log(`📄 index.html preview:\n${firstLines}`);
+      
       res.sendFile(indexPath);
     } else {
+      console.error(`❌ index.html not found at: ${indexPath}`);
       res.status(500).send('Frontend build not found');
     }
   });
