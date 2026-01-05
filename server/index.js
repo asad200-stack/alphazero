@@ -102,7 +102,7 @@ if (process.env.NODE_ENV === 'production') {
     console.log('📄 Request for:', req.path, '-> Serving index.html');
     
     if (fs.existsSync(indexPath)) {
-      res.sendFile(indexPath, { root: '/' });
+      res.sendFile(path.resolve(indexPath));
     } else {
       console.error('❌ index.html not found at:', indexPath);
       res.status(500).send(`
