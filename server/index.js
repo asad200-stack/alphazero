@@ -125,11 +125,39 @@ if (process.env.NODE_ENV === 'production') {
   console.log('⚠️  Not in production mode, static files not served');
 }
 
-app.listen(PORT, () => {
+// Error handling for uncaught exceptions
+process.on('uncaughtException', (err) => {
+  console.error('❌ Uncaught Exception:', err);
+  // Don't exit - keep server running
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+  // Don't exit - keep server running
+});
+
+const server = app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📂 Current directory: ${__dirname}`);
   console.log(`📂 Dist path: ${path.join(__dirname, '../client/dist')}`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('⚠️  SIGTERM received, shutting down gracefully...');
+  server.close(() => {
+    console.log('✅ Server closed');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('⚠️  SIGINT received, shutting down gracefully...');
+  server.close(() => {
+    console.log('✅ Server closed');
+    process.exit(0);
+  });
 });
 
 
