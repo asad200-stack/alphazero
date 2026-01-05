@@ -85,23 +85,26 @@ if (process.env.NODE_ENV === 'production') {
     }
   }
   
-  // Serve static assets (JS, CSS, images, etc.)
+  // Serve static assets (JS, CSS, images, etc.) - must come before catch-all
   app.use(express.static(distPath, {
     maxAge: '1y',
-    etag: true
+    etag: true,
+    index: false // Don't serve index.html for directory requests
   }));
   
-  // Serve index.html for all non-API routes (must be last)
-  app.get('*', (req, res) => {
-    // Skip API routes - they should have been handled above
+  // Serve index.html for all non-API, non-asset routes (SPA fallback)
+  app.get('*', (req, res, next) => {
+    // Skip API routes
     if (req.path.startsWith('/api')) {
-      return res.status(404).json({ error: 'API route not found' });
+      return next();
     }
     
+    // Skip asset requests (they should be handled by express.static above)
+    // If express.static couldn't find the file, it calls next() and we serve index.html
     const indexPath = path.join(distPath, 'index.html');
-    console.log('📄 Request for:', req.path, '-> Serving index.html');
     
     if (fs.existsSync(indexPath)) {
+      console.log('📄 SPA fallback for:', req.path, '-> Serving index.html');
       res.sendFile(path.resolve(indexPath));
     } else {
       console.error('❌ index.html not found at:', indexPath);
