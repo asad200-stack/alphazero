@@ -1,3 +1,8 @@
+// Log startup immediately
+console.log('🚀 Starting server...');
+console.log('📂 Process working directory:', process.cwd());
+console.log('📂 __dirname:', __dirname);
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -7,6 +12,9 @@ require('dotenv').config();
 const app = express();
 // Railway automatically sets PORT, so we use it or default to 8080
 const PORT = process.env.PORT || 8080;
+
+console.log('🌍 NODE_ENV:', process.env.NODE_ENV);
+console.log('🔌 PORT:', PORT);
 
 // Middleware
 app.use(cors({
@@ -86,10 +94,12 @@ if (process.env.NODE_ENV === 'production') {
   }
   
   // Serve static assets (JS, CSS, images, etc.) - must come before catch-all
+  console.log('✅ Setting up static file serving from:', distPath);
   app.use(express.static(distPath, {
     maxAge: '1y',
     etag: true,
-    index: false // Don't serve index.html for directory requests
+    index: false, // Don't serve index.html for directory requests
+    fallthrough: true // Continue to next middleware if file not found
   }));
   
   // Serve index.html for all non-API, non-asset routes (SPA fallback)
