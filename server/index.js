@@ -146,11 +146,24 @@ process.on('unhandledRejection', (reason, promise) => {
   // Don't exit - keep server running
 });
 
-const server = app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+const server = app.listen(PORT, (err) => {
+  if (err) {
+    console.error('❌ Failed to start server:', err);
+    process.exit(1);
+  }
+  console.log(`✅ Server successfully started on port ${PORT}`);
   console.log(`📂 Current directory: ${__dirname}`);
   console.log(`📂 Dist path: ${path.join(__dirname, '../client/dist')}`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🌐 Server is ready to accept connections`);
+});
+
+server.on('error', (err) => {
+  console.error('❌ Server error:', err);
+  if (err.code === 'EADDRINUSE') {
+    console.error(`❌ Port ${PORT} is already in use`);
+  }
+  process.exit(1);
 });
 
 // Graceful shutdown
